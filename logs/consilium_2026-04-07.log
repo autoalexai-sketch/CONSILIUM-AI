@@ -1,8 +1,0 @@
-2026-04-07 18:43:25.326 | INFO     | main:<module>:17 - 🚀 CONSILIUM AI v3.0 — запуск сервера
-2026-04-07 18:43:28.043 | INFO     | app.config:<module>:64 - 🔑 OPENROUTER_API_KEY: sk-or-v1-********************
-2026-04-07 18:43:28.105 | INFO     | app.config:<module>:65 - 🔐 JWT: algorithm=HS256 | expire=24h
-2026-04-07 18:43:52.634 | INFO     | app.services:<module>:17 - ✅ Fallback: Claude=True, Gemini=True, Ollama=True
-2026-04-07 18:43:52.635 | INFO     | app.services:<module>:25 - ✅ OpenRouter client initialized
-2026-04-07 18:43:52.635 | INFO     | app.services:<module>:29 - ✅ Cognitive classifier initialized
-2026-04-07 18:43:52.671 | INFO     | app.database:init_database:66 - ✅ Database initialized
-2026-04-07 18:43:52.687 | INFO     | main:<module>:61 - ✅ Сервер готов на http://localhost:8000
