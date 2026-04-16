@@ -1,3 +1,38 @@
-logs/  
-__pycache__/  
-.env 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+env/
+
+# Secrets — NEVER commit
+.env
+*.db
+consilium.db
+consilium_deliberations.db
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+.dockerignore
+
+# Node (if any)
+node_modules/

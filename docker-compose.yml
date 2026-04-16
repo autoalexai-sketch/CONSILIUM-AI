@@ -1,18 +1,20 @@
-version: '3.8'
 services:
   app:
     build: .
+    container_name: consilium-app
+    env_file:
+      - .env
     ports:
       - "8000:8000"
-      - "8501:8501"
-      - "8081:8081"
     volumes:
-      - .:/app
-    environment:
-      - DATABASE_URL=sqlite:///consilium.db
-      - REDIS_URL=redis://localhost:6379
+      - ./consilium.db:/app/consilium.db
+    depends_on:
+      - redis
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    container_name: consilium-redis
     ports:
       - "6379:6379"
+    restart: unless-stopped
