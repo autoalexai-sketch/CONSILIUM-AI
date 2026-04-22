@@ -1,337 +1,1706 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="ru" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Consilium AI - Inteligentny asystent AI">
-    <title>Consilium AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">    
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONSILIUM AI v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════
+   CONSILIUM AI v3.0 — DESIGN SYSTEM
+   ════════════════════════════════════════════ */
+:root {
+  --bg:            #0a0c10;
+  --bg-card:       #0f1318;
+  --bg-hover:      #161c24;
+  --bg-active:     #1a2233;
+  --border:        #1e2530;
+  --border-light:  #252e3d;
+
+  --text:          #e2e8f0;
+  --text-muted:    #64748b;
+  --text-dim:      #3d4f63;
+
+  --accent:        #3b82f6;
+  --accent-glow:   rgba(59,130,246,0.12);
+  --accent-glow2:  rgba(59,130,246,0.06);
+  --green:         #22c55e;
+  --orange:        #f59e0b;
+  --red:           #ef4444;
+  --purple:        #a78bfa;
+  --cyan:          #06b6d4;
+
+  --font-ui:   'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius:    4px;
+  --radius-md: 8px;
+
+  --sidebar-w:        52px;
+  --sidebar-exp:      224px;
+  --monitor-w:        264px;
+  --header-h:         48px;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t: 0.18s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+/* ─── Layout ─── */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--monitor-w);
+  grid-template-rows: var(--header-h) 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ════════════════ HEADER ════════════════ */
+.header {
+  grid-column: 1 / -1;
+  display: flex; align-items: center;
+  padding: 0 14px 0 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  z-index: 100; gap: 10px;
+}
+
+.header-logo {
+  width: var(--sidebar-w); height: var(--header-h);
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--border); flex-shrink: 0;
+}
+
+.logo-svg { width: 28px; height: 28px; }
+
+.header-brand {
+  font-family: var(--font-mono); font-size: 11px;
+  font-weight: 600; letter-spacing: 0.14em;
+  color: var(--text-muted); text-transform: uppercase;
+  white-space: nowrap;
+}
+.header-brand em { color: var(--accent); font-style: normal; }
+
+.sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+
+/* pill buttons */
+.hpill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text-muted); background: transparent;
+  transition: all var(--t) var(--ease); white-space: nowrap;
+}
+.hpill:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
+.hpill svg { width: 10px; height: 10px; flex-shrink: 0; }
+
+.ws-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.proto-tag {
+  font-size: 9px; padding: 1px 5px; border-radius: 2px;
+  background: var(--accent-glow); color: var(--accent); font-weight: 700;
+}
+
+.h-space { flex: 1; }
+
+.conn-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 10px;
+}
+.conn-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  transition: background 0.4s;
+}
+.conn-dot.online  { background: var(--green); animation: pulse-dot 2s infinite; }
+.conn-dot.offline { background: var(--red); }
+.conn-dot.connecting { background: var(--orange); animation: pulse-dot 0.8s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.35} }
+#conn-text { color: var(--text-muted); }
+
+.credits-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+}
+.credits-num { color: var(--green); font-weight: 700; }
+
+.avatar {
+  width: 27px; height: 27px; border-radius: 50%;
+  background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+  border: 1px solid var(--border); cursor: pointer; flex-shrink: 0;
+}
+
+/* ════════════════ SIDEBAR ════════════════ */
+.sidebar {
+  grid-column: 1; grid-row: 2;
+  width: var(--sidebar-w); border-right: 1px solid var(--border);
+  background: var(--bg); display: flex; flex-direction: column;
+  overflow: hidden; position: relative; z-index: 50;
+  transition: width var(--t) var(--ease);
+}
+.sidebar:hover {
+  width: var(--sidebar-exp);
+  box-shadow: 6px 0 24px rgba(0,0,0,.5);
+}
+
+.sb-section { padding: 6px 0; }
+.sb-section + .sb-section { border-top: 1px solid var(--border); }
+
+.sb-label {
+  padding: 5px 14px 3px;
+  font-family: var(--font-mono); font-size: 9px;
+  font-weight: 600; letter-spacing: .1em;
+  color: var(--text-dim); text-transform: uppercase;
+  white-space: nowrap; overflow: hidden;
+  opacity: 0; transition: opacity var(--t);
+}
+.sidebar:hover .sb-label { opacity: 1; }
+
+.nav {
+  display: flex; align-items: center; gap: 0;
+  padding: 7px 0 7px 14px; cursor: pointer;
+  color: var(--text-muted); white-space: nowrap;
+  transition: all var(--t) var(--ease); position: relative;
+  text-decoration: none;
+}
+.nav:hover { background: var(--bg-hover); color: var(--text); }
+.nav.active { color: var(--accent); background: var(--accent-glow2); }
+.nav.active::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: var(--accent);
+}
+
+.nav-ico {
+  width: 24px; height: 24px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-ico svg { width: 15px; height: 15px; }
+
+.nav-txt {
+  flex: 1; font-size: 12px; font-weight: 500; margin-left: 10px;
+  opacity: 0; transform: translateX(-6px);
+  transition: opacity var(--t), transform var(--t);
+}
+.sidebar:hover .nav-txt { opacity: 1; transform: translateX(0); }
+
+.nav-cnt {
+  margin-right: 12px; font-family: var(--font-mono); font-size: 9px;
+  padding: 1px 5px; background: var(--bg-active);
+  color: var(--accent); border-radius: 2px;
+  opacity: 0; transition: opacity var(--t);
+}
+.sidebar:hover .nav-cnt { opacity: 1; }
+
+.sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 6px 0; }
+
+/* ════════════════ MAIN ════════════════ */
+.main {
+  grid-column: 2; grid-row: 2;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* phase progress strip */
+.phase-strip {
+  height: 0; overflow: hidden; background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 0;
+  transition: height .2s var(--ease);
+}
+.phase-strip.on { height: 34px; }
+
+.pstep {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--text-dim); padding: 0 7px;
+  transition: all var(--t);
+}
+.pstep .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.pstep.done   { color: var(--text-muted); }
+.pstep.active { color: var(--accent); }
+.pstep.active .dot { animation: pulse-dot 1s infinite; }
+.parrow { color: var(--text-dim); font-size: 9px; }
+
+/* chat */
+.chat-area {
+  flex: 1; overflow-y: auto; padding: 20px 28px; gap: 16px;
+  display: flex; flex-direction: column;
+}
+
+/* greeting */
+.greeting {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 18px; padding: 32px;
+}
+
+.g-logo { width: 60px; height: 60px; }
+
+.g-title {
+  font-family: var(--font-ui); font-size: 30px; font-weight: 800;
+  letter-spacing: -.035em; text-align: center; line-height: 1.15;
+}
+.g-title .hi { color: var(--text-muted); font-weight: 500; }
+.g-title .name {
+  background: linear-gradient(130deg, #60a5fa, #06b6d4);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.g-sub {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text-dim); letter-spacing: .06em; text-align: center;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; max-width: 500px; margin-top: 6px; }
+.chip {
+  display: flex; align-items: center; gap: 7px; padding: 7px 13px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer; font-size: 12px; color: var(--text-muted);
+  background: transparent; font-family: var(--font-ui);
+  transition: all var(--t) var(--ease);
+}
+.chip:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
+.chip svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* user bubble */
+.umsg {
+  align-self: flex-end; max-width: 68%;
+  background: var(--bg-active); border: 1px solid var(--border-light);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius) var(--radius-md);
+  padding: 10px 14px; font-size: 13px; line-height: 1.6;
+  animation: fadeup .25s ease;
+}
+
+/* deliberation block */
+.d-block { display: flex; flex-direction: column; gap: 5px; animation: fadeup .3s ease; }
+@keyframes fadeup { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* thinking row */
+.think-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 13px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: var(--bg-card);
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  animation: fadeup .2s ease;
+}
+.think-spin {
+  width: 13px; height: 13px; border: 2px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin .65s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* phase card */
+.pcard {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); overflow: hidden;
+}
+.pcard.chairman-card { border-color: rgba(59,130,246,.35); background: linear-gradient(135deg, rgba(59,130,246,.04), transparent); }
+
+.pcard-head {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 13px; border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.015); cursor: pointer;
+  user-select: none;
+}
+.chairman-card .pcard-head { background: rgba(59,130,246,.07); }
+
+.pd { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.pd.scout    { background: var(--cyan); }
+.pd.analyst  { background: var(--accent); }
+.pd.architect{ background: var(--purple); }
+.pd.devil    { background: var(--red); }
+.pd.synth    { background: var(--orange); }
+.pd.verifier { background: var(--green); }
+.pd.chairman { background: #c8d8e8; }
+
+.pname { font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+.pmodel { margin-left: auto; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+.pdur  { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+.ptoks { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); padding: 1px 5px; background: var(--bg-hover); border-radius: 2px; }
+
+.pcard-body {
+  padding: 12px 15px; font-size: 13px; color: var(--text);
+  line-height: 1.7; overflow: hidden;
+  transition: max-height .25s var(--ease);
+}
+.pcard-body.collapsed { max-height: 0; padding-top: 0; padding-bottom: 0; }
+
+/* live stream text in card */
+.stream-text { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+.cursor { display: inline-block; width: 6px; height: 13px; background: var(--accent); margin-left: 2px; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* veto */
+.veto-banner {
+  margin: 3px 0; padding: 8px 13px;
+  background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.2);
+  border-radius: var(--radius); display: flex; align-items: center; gap: 9px;
+  font-family: var(--font-mono); font-size: 10px; color: var(--red);
+}
+
+/* ─── INPUT ─── */
+.input-area {
+  border-top: 1px solid var(--border);
+  padding: 12px 18px 14px; background: var(--bg); flex-shrink: 0;
+}
+.input-box {
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--bg-card); overflow: hidden;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.07);
+}
+.input-ta {
+  width: 100%; min-height: 52px; max-height: 160px;
+  padding: 13px 15px 0; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: var(--font-ui); font-size: 13px;
+  line-height: 1.6; resize: none;
+}
+.input-ta::placeholder { color: var(--text-dim); }
+
+.input-bar {
+  display: flex; align-items: center; gap: 7px; padding: 7px 10px;
+}
+.tbtn {
+  display: flex; align-items: center; gap: 5px; padding: 4px 8px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  color: var(--text-muted); font-size: 11px; font-family: var(--font-ui);
+  transition: all var(--t);
+}
+.tbtn:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
+.tbtn svg { width: 11px; height: 11px; }
+.ispace { flex: 1; }
+
+.pselector {
+  display: flex; align-items: center; gap: 5px; padding: 4px 9px;
+  background: var(--bg-hover); border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  transition: all var(--t);
+}
+.pselector:hover { color: var(--text); border-color: var(--border-light); }
+
+.send {
+  width: 33px; height: 33px; border-radius: var(--radius);
+  background: var(--accent); border: none; cursor: pointer;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  transition: all var(--t); flex-shrink: 0;
+}
+.send:hover { background: #2563eb; transform: scale(1.05); }
+.send:active { transform: scale(.96); }
+.send:disabled { background: var(--bg-hover); color: var(--text-dim); cursor: not-allowed; transform: none; }
+.send svg { width: 13px; height: 13px; }
+
+.input-hint { margin-top: 6px; text-align: center; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+.input-hint kbd { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 2px; padding: 0 4px; font-size: 9px; margin: 0 2px; }
+
+/* ════════════════ MONITOR ════════════════ */
+.monitor {
+  grid-column: 3; grid-row: 2;
+  border-left: 1px solid var(--border); background: var(--bg);
+  overflow-y: auto; overflow-x: hidden; min-height: 0;
+  height: calc(100vh - var(--header-h));
+}
+.mon-head {
+  padding: 11px 15px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  position: sticky; top: 0; z-index: 2; background: var(--bg);
+}
+.mon-title { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+
+.mon-scroll { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+
+.mcard { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.mcard-head { padding: 6px 11px; background: var(--bg-card); font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+.mcard-body { padding: 9px 11px; display: flex; flex-direction: column; gap: 8px; }
+
+/* metrics */
+.mrow { display: flex; flex-direction: column; gap: 4px; }
+.mrow-top { display: flex; justify-content: space-between; align-items: center; }
+.mlabel { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+.mval  { font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+.mval.blue  { color: var(--accent); }
+.mval.green { color: var(--green); }
+.mval.orange{ color: var(--orange); }
+.mval.red   { color: var(--red); }
+
+.mtrack { height: 3px; background: var(--bg-hover); border-radius: 2px; overflow: hidden; }
+.mfill { height: 100%; border-radius: 2px; transition: width .8s var(--ease); }
+.mfill.blue   { background: var(--accent); }
+.mfill.green  { background: var(--green); }
+.mfill.orange { background: var(--orange); }
+.mfill.red    { background: var(--red); }
+
+/* coherence ring */
+.coh-wrap { display: flex; align-items: center; gap: 11px; padding: 2px 0; }
+.coh-ring { position: relative; width: 54px; height: 54px; flex-shrink: 0; }
+.coh-ring svg { transform: rotate(-90deg); }
+.rbg  { fill: none; stroke: var(--bg-hover); stroke-width: 3.5; }
+.rfill{ fill: none; stroke: var(--green); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 131.95; stroke-dashoffset: 131.95; transition: stroke-dashoffset 1.1s var(--ease), stroke .4s; }
+.rlabel { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.rpct { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--green); }
+.rsub { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: .05em; }
+.coh-info .coh-status { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.coh-info .coh-desc { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); line-height: 1.5; }
+
+/* council phases */
+.cphases { display: flex; flex-direction: column; gap: 3px; }
+.cp {
+  display: flex; align-items: center; gap: 8px; padding: 5px 8px;
+  border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px;
+  transition: all var(--t);
+}
+.cp.pending { color: var(--text-dim); }
+.cp.active  { color: var(--accent); background: var(--accent-glow); }
+.cp.done    { color: var(--text-muted); }
+.cp-ico { width: 14px; text-align: center; }
+.cp-name { flex: 1; }
+.cp-model { font-size: 8px; }
+
+/* dims */
+.dims { display: flex; flex-direction: column; gap: 5px; }
+.dim { display: flex; align-items: center; gap: 7px; }
+.dlabel { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); width: 52px; flex-shrink: 0; }
+.dbar { flex: 1; height: 2px; background: var(--bg-hover); border-radius: 1px; overflow: hidden; }
+.dfill { height: 100%; border-radius: 1px; background: var(--accent); transition: width .6s ease; }
+.dval { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); width: 24px; text-align: right; }
+
+/* action board */
+.aboard { display: flex; flex-direction: column; gap: 5px; }
+.aitem { display: flex; align-items: flex-start; gap: 7px; padding: 6px 9px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; line-height: 1.5; background: var(--bg-card); }
+.atype { font-family: var(--font-mono); font-size: 8px; padding: 1px 5px; border-radius: 2px; flex-shrink: 0; margin-top: 1px; font-weight: 600; }
+.atype.decision{ background: rgba(59,130,246,.14); color: var(--accent); }
+.atype.task    { background: rgba(34,197,94,.1);  color: var(--green); }
+.atype.risk    { background: rgba(239,68,68,.1);  color: var(--red); }
+.aboard-empty  { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); padding: 12px; text-align: center; }
+
+/* knowledge pills */
+.kpill { display: flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; color: var(--text-muted); background: var(--bg-card); cursor: pointer; transition: all var(--t); }
+.kpill:hover { border-color: var(--border-light); color: var(--text); }
+.kp-cnt { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-left: auto; }
+
+/* ════ AUTH OVERLAY ════ */
+.auth-overlay {
+  position: fixed; inset: 0; background: rgba(10,12,16,.95);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+.auth-overlay.hidden { display: none; }
+
+.auth-box {
+  width: 380px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 36px 32px; display: flex; flex-direction: column; gap: 24px;
+}
+.auth-logo { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.auth-title { font-family: var(--font-mono); font-size: 18px; font-weight: 700; letter-spacing: .05em; }
+.auth-title em { color: var(--accent); font-style: normal; }
+.auth-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: .04em; }
+
+.auth-fields { display: flex; flex-direction: column; gap: 10px; }
+.auth-field {
+  display: flex; flex-direction: column; gap: 5px;
+}
+.auth-field label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+.auth-field input {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 9px 12px;
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  outline: none; transition: border-color var(--t);
+}
+.auth-field input:focus { border-color: var(--accent); }
+.auth-field input::placeholder { color: var(--text-dim); }
+
+.auth-err { font-family: var(--font-mono); font-size: 10px; color: var(--red); min-height: 14px; }
+
+.auth-btn {
+  padding: 10px; background: var(--accent); border: none;
+  border-radius: var(--radius); color: #fff; font-family: var(--font-mono);
+  font-size: 12px; font-weight: 600; letter-spacing: .06em;
+  cursor: pointer; transition: all var(--t);
+}
+.auth-btn:hover { background: #2563eb; }
+.auth-btn:disabled { background: var(--bg-hover); color: var(--text-dim); cursor: not-allowed; }
+
+.auth-switch { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+.auth-switch span { color: var(--accent); cursor: pointer; }
+.auth-switch span:hover { text-decoration: underline; }
+
+.auth-demo { text-align: center; }
+.demo-btn { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 16px; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; cursor: pointer; transition: all var(--t); }
+.demo-btn:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
+
+/* ════ DROPDOWN ════ */
+.dd { position: relative; }
+.dd-menu {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 4px; min-width: 190px;
+  z-index: 1000; box-shadow: 0 8px 28px rgba(0,0,0,.5); display: none;
+}
+.dd-menu.open { display: block; animation: fadeup .14s ease; }
+/* inp-proto opens upward to avoid off-screen */
+#inp-proto { top: auto; bottom: calc(100% + 6px); left: auto; right: 0; }
+
+.dd-item { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: var(--radius); cursor: pointer; font-size: 12px; color: var(--text-muted); transition: all var(--t); }
+.dd-item:hover { background: var(--bg-hover); color: var(--text); }
+.dd-item.active { color: var(--accent); background: var(--accent-glow); }
+.dd-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* ════ TOAST ════ */
+.toasts { position: fixed; bottom: 18px; right: calc(var(--monitor-w) + 14px); display: flex; flex-direction: column; gap: 7px; z-index: 9000; }
+.toast {
+  padding: 9px 13px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 11px;
+  color: var(--text); box-shadow: 0 4px 18px rgba(0,0,0,.5);
+  animation: slide-in .2s ease; display: flex; align-items: center; gap: 8px;
+}
+@keyframes slide-in { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+
+/* ═══ LIGHT THEME ══════════════════════════════════════ */
+[data-theme="light"] {
+  --bg: #f0f4f9; --bg2: #e8edf5; --bg3: #dce3ed;
+  --bg-card: #ffffff; --bg-hover: #e4eaf4; --bg-active: #dde5f0;
+  --border: #c8d0de; --border-light: #d8e0ec;
+  --text: #1a2235; --text-muted: #5a6880; --text-dim: #8090aa;
+  --accent: #2563eb; --accent-glow: rgba(37,99,235,.12);
+  --scrollbar: #aab4c8; --card-bg: rgba(255,255,255,.92);
+}
+[data-theme="light"] .header { background:#fff; border-bottom-color: #c8d0de; }
+[data-theme="light"] .sidebar { background: #eef2f8; border-right-color: #c8d0de; }
+[data-theme="light"] .im-panel { background: #f0f4f9; border-left-color: #c8d0de; }
+[data-theme="light"] .im-section-title { color: #94a3b8; }
+[data-theme="light"] .im-label { color: #5a6880; }
+[data-theme="light"] .auth-box { background: #fff; border-color: #c8d0de; }
+[data-theme="light"] .director-card { background: rgba(255,255,255,.9); border-color: #c8d0de; }
+[data-theme="light"] .chat-input-wrap { background: rgba(255,255,255,.96); border-color: #c8d0de; }
+[data-theme="light"] .input-field { background: #eef2f8; border-color: #c8d0de; color: #1a2235; }
+[data-theme="light"] .chip { background: rgba(37,99,235,.07); border-color: rgba(37,99,235,.2); color: #1e40af; }
+[data-theme="light"] .chip:hover { background: rgba(37,99,235,.14); }
+[data-theme="light"] .hpill { background: rgba(37,99,235,.07); }
+[data-theme="light"] .dd-menu { background: #fff; border-color: #c8d0de; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+[data-theme="light"] .dd-item:hover { background: #eef2f8; }
+[data-theme="light"] .nav-item:hover  { background: rgba(37,99,235,.07); }
+[data-theme="light"] .nav-item.active { background: rgba(37,99,235,.12); }
+[data-theme="light"] .credits-pill { background: rgba(37,99,235,.07); }
+[data-theme="light"] .conn-badge { background: rgba(37,99,235,.07); }
+[data-theme="light"] .g-title .hi { color: #5a6880; }
+[data-theme="light"] .monitor { background: #f0f4f9; }
+[data-theme="light"] .mcard { border-color: #d0d8e8; }
+[data-theme="light"] .mcard-head { background: #e8edf5; color: #1a2235; }
+[data-theme="light"] .pcard { background: #ffffff; border-color: #d0d8e8; }
+[data-theme="light"] .pcard-head { background: rgba(0,0,0,.02); }
+[data-theme="light"] .think-row { background: #f5f8fc; border-color: #d0d8e8; }
+[data-theme="light"] .msg-user .bubble { background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.2); }
+[data-theme="light"] .phase-card,
+[data-theme="light"] .phase-wrap { background: #ffffff; border-color: #d0d8e8; }
+[data-theme="light"] .chat-area { background: #f5f8fc; }
+[data-theme="light"] .chat-input-area { background: #f0f4f9; border-top-color: #c8d0de; }
+/* ══════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════ */
+</style>
 </head>
-<body class="bg-theme-primary text-theme-primary transition-colors duration-300 h-screen overflow-hidden flex flex-col">
-    <a href="#main-content" class="skip-link">Przejdź do głównej treści</a>
-    
-    <!-- Demo Mode Badge -->
-    <div id="demoBadge" class="demo-badge hidden" title="Praca w trybie offline - dane zapisywane lokalnie">
-        <i class="fas fa-wifi-slash mr-1"></i> DEMO MODE
-    </div>
-    
-    <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="authTitle" tabindex="-1">
-        <div class="bg-theme-primary border border-theme rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-accent-theme rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <i class="fas fa-robot text-white text-2xl" aria-hidden="true"></i>
-                </div>
-                <h2 id="authTitle" class="text-2xl font-bold text-theme-primary">Consilium AI</h2>
-                <p class="text-theme-secondary mt-2" data-i18n="authSubtitle">Zaloguj się, aby kontynuować</p>
-            </div>
-            
-            <!-- Server Error Alert -->
-            <div id="serverErrorAlert" class="hidden mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
-                <i class="fas fa-exclamation-triangle mr-2"></i>
-                <span id="serverErrorText">Błąd połączenia z serwerem</span>
-            </div>
-            
-            <form id="authForm" class="space-y-4" novalidate>
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-1" for="authEmail" data-i18n="email">Email</label>
-                    <input type="email" id="authEmail" required 
-                           class="w-full px-4 py-3 bg-theme-secondary border border-theme rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-theme-primary"
-                           placeholder="twoj@email.com">
-                    <span id="emailError" class="text-red-500 text-xs hidden" data-i18n="invalidEmail">Nieprawidłowy format email</span>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-1" for="authPassword" data-i18n="password">Hasło</label>
-                    <input type="password" id="authPassword" required minlength="6"
-                           class="w-full px-4 py-3 bg-theme-secondary border border-theme rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-theme-primary"
-                           placeholder="••••••••">
-                    <span id="passwordError" class="text-red-500 text-xs hidden" data-i18n="passwordTooShort">Hasło musi mieć min. 6 znaków</span>
-                </div>
-                <div id="confirmPassField" class="hidden">
-                    <label class="block text-sm font-medium text-theme-secondary mb-1" for="authConfirmPassword" data-i18n="confirmPassword">Potwierdź hasło</label>
-                    <input type="password" id="authConfirmPassword"
-                           class="w-full px-4 py-3 bg-theme-secondary border border-theme rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-theme-primary"
-                           placeholder="••••••••">
-                    <span id="confirmPasswordError" class="text-red-500 text-xs hidden" data-i18n="passwordsMismatch">Hasła nie są identyczne</span>
-                </div>
-                
-                <button type="submit" id="authSubmitBtn" 
-                        class="w-full py-3 bg-accent-theme text-white rounded-xl font-medium hover-bg-accent transition-all shadow-lg hover:shadow-xl">
-                    <span data-i18n="login">Zaloguj się</span>
-                </button>
-            </form>
-            
-            <div class="mt-4 text-center">
-                <button id="toggleAuthMode" class="text-accent-theme hover-accent text-sm font-medium" data-i18n="noAccount">
-                    Nie masz konta? Zarejestruj się
-                </button>
-            </div>
-            
-            <div class="mt-4 pt-4 border-t border-theme text-center">
-                <button id="demoModeBtn" class="text-sm text-theme-secondary hover:text-accent-theme transition-colors flex items-center justify-center gap-2 w-full">
-                    <i class="fas fa-flask"></i>
-                    <span>Kontynuuj w trybie demo (offline)</span>
-                </button>
-            </div>
-        </div>
+<body>
+
+<!-- ══════ AUTH OVERLAY ══════ -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <!-- Logo SVG — 7 nodes, no background -->
+      <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
     </div>
 
-    <!-- Header -->
-    <header class="bg-theme-primary border-b border-theme px-4 py-3 flex items-center justify-between shrink-0 z-20 relative">
-        <div class="flex items-center gap-3">
-            <button id="menuBtn" class="lg:hidden p-2 hover:bg-theme-secondary rounded-lg transition-colors" aria-label="Otwórz menu" aria-expanded="false" aria-controls="sidebar">
-                <i class="fas fa-bars text-theme-secondary" aria-hidden="true"></i>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Войти</button>
+      <button onclick="showRegister()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Регистрация</button>
+    </div>
+    <div class="auth-fields">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Пароль</label>
+        <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()"/>
+      </div>
+      <div class="auth-err" id="auth-err"></div>
+    </div>
+
+    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Войти → Совет директоров</button>
+
+    <div class="auth-demo">
+      <button class="demo-btn" onclick="doDemo()">Войти в демо-режим (без сервера)</button>
+    </div>
+
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Сервер: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
+    <div class="auth-switch" id="auth-switch-txt">
+      Нет аккаунта? <span onclick="showRegister()">Зарегистрироваться</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ APP ══════ -->
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">
+      <!-- Icon — no bg, just nodes+lines -->
+      <img src="img/icon.png" id="header-icon" style="width:30px;height:30px;object-fit:contain;border-radius:4px;" alt="icon">
+    </div>
+
+    <span class="header-brand"><em>CONSILIUM</em> AI · v3.0</span>
+    <div class="sep"></div>
+
+    <div class="dd">
+      <button class="hpill" onclick="toggleDD('ws-dd')">
+        <span class="ws-dot" style="background:var(--accent)"></span>
+        <span id="h-ws">Стратегия</span>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
+      </button>
+      <div class="dd-menu" id="ws-dd">
+        <div class="dd-item active" onclick="pickWS(this,'Стратегия','var(--accent)')"><span class="dd-dot" style="background:var(--accent)"></span>Стратегия</div>
+        <div class="dd-item" onclick="pickWS(this,'Проект А','var(--green)')"><span class="dd-dot" style="background:var(--green)"></span>Проект А</div>
+        <div class="dd-item" onclick="pickWS(this,'Личное','var(--purple)')"><span class="dd-dot" style="background:var(--purple)"></span>Личное</div>
+        <div class="dd-item" onclick="pickWS(this,'R&D','var(--orange)')"><span class="dd-dot" style="background:var(--orange)"></span>R&D</div>
+      </div>
+    </div>
+
+    <div class="dd">
+      <button class="hpill" onclick="toggleDD('proto-dd')">
+        <span class="proto-tag" id="h-proto-tag">STD</span>
+        <span id="h-proto">Standard</span>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
+      </button>
+      <div class="dd-menu" id="proto-dd">
+        <div class="dd-item active" onclick="pickProto(this,'Standard','STD')">Standard — 6 фаз</div>
+        <div class="dd-item" onclick="pickProto(this,'Strategy','STR')">Strategy — SWOT + сценарии</div>
+        <div class="dd-item" onclick="pickProto(this,'Crisis','CRS')">Crisis — быстро</div>
+        <div class="dd-item" onclick="pickProto(this,'Reflection','RFL')">Reflection — ретро</div>
+        <div class="dd-item" onclick="pickProto(this,'Planning','PLN')">Planning — цели + план</div>
+        <div class="dd-item" onclick="pickProto(this,'Deep','DPA')">Deep Analysis — расширенный</div>
+      </div>
+    </div>
+
+    <div class="h-space"></div>
+
+    <!-- Connection status -->
+    <div class="conn-badge">
+      <div class="conn-dot offline" id="conn-dot"></div>
+      <span id="conn-text">offline</span>
+    </div>
+    <div class="sep"></div>
+    <div class="credits-pill">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Кредиты: <span class="credits-num" id="credits-num">—</span>
+    </div>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Переключить тему" style="display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.06em;transition:all .2s;margin-right:2px;">
+      <svg id="theme-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span id="theme-label">Тёмная</span>
+    </button>
+    <div class="avatar" id="user-avatar">?</div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Навигация</div>
+      <div class="nav active">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <span class="nav-txt">Чат / Делиберация</span>
+      </div>
+      <div class="nav" onclick="toast('🕐','История — скоро')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <span class="nav-txt">История сессий</span>
+        <span class="nav-cnt" id="history-cnt">0</span>
+      </div>
+      <div class="nav" onclick="toast('📊','Дашборд — скоро')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <span class="nav-txt">Дашборд</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">База знаний</div>
+      <div class="nav" onclick="toast('📋','Решения — скоро')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <span class="nav-txt">Решения</span>
+        <span class="nav-cnt" id="dec-cnt">0</span>
+      </div>
+      <div class="nav" onclick="toast('⭐','Принципы — скоро')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="nav-txt">Принципы</span>
+        <span class="nav-cnt" id="prin-cnt">0</span>
+      </div>
+      <div class="nav" onclick="toast('📚','Wiki — скоро')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <span class="nav-txt">LLM Wiki</span>
+        <span class="nav-cnt" id="wiki-cnt">0</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Инструменты</div>
+      <div class="nav" onclick="toast('🧠','Reflective Pause')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <span class="nav-txt">Reflective Pause</span>
+      </div>
+    </div>
+    <div class="sb-bottom">
+      <div class="nav" onclick="toast('⚙️','Настройки')">
+        <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="nav-txt">Настройки</span>
+      </div>
+      <div class="nav" onclick="logout()">
+        <div class="nav-ico" id="sb-avatar">
+          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;" id="sb-av-text">?</div>
+        </div>
+        <span class="nav-txt" id="sb-user-name">Не авторизован</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- Phase strip -->
+    <div class="phase-strip" id="phase-strip">
+      <div class="pstep pending" id="ps-scout"><span class="dot"></span>Scout</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-analyst"><span class="dot"></span>Analyst</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-architect"><span class="dot"></span>Architect</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-devil"><span class="dot"></span>Devil</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-synth"><span class="dot"></span>Synth</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-verifier"><span class="dot"></span>Verifier</div>
+      <span class="parrow">›</span>
+      <div class="pstep pending" id="ps-chairman"><span class="dot"></span>Chairman</div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-area" id="chat-area">
+      <div class="greeting" id="greeting">
+        <!-- Logo large -->
+        <img src="img/logo.jpg" id="greeting-logo" style="width:150px;height:auto;border-radius:16px;box-shadow:0 6px 32px rgba(37,99,246,.35);display:block;margin:0 auto 12px;" alt="Consilium AI">
+
+        <div class="g-title">
+          <span class="hi">Добрый день, </span>
+          <span class="name" id="g-name">...</span>
+        </div>
+        <div class="g-sub">CONSILIUM · 9 директоров · Knowledge Gate · IWE v3.0</div>
+
+        <div class="chips">
+          <button class="chip" onclick="sendQ('Проведи стратегический анализ текущего проекта')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Стратегический анализ
+          </button>
+          <button class="chip" onclick="sendQ('Помоги принять решение по архитектуре системы')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            Архитектурное решение
+          </button>
+          <button class="chip" onclick="sendQ('Сделай ретроспективу прошлой недели')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ретроспектива
+          </button>
+          <button class="chip" onclick="sendQ('Оцени риски и создай план действий')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Оценка рисков
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <div class="input-box">
+        <textarea class="input-ta" id="msg-in"
+          placeholder="Задайте вопрос Совету директоров..."
+          rows="2"
+          onkeydown="onKey(event)"
+          oninput="autoH(this)"></textarea>
+        <div class="input-bar">
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            Файл
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Wiki
+          </button>
+          <div class="ispace"></div>
+          <div class="dd">
+            <button class="pselector" onclick="toggleDD('inp-proto')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              <span id="inp-proto-lbl">Standard</span>
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="9" height="9"><path d="M2 4l4 4 4-4"/></svg>
             </button>
-            <div class="w-10 h-10 bg-accent-theme rounded-xl flex items-center justify-center shadow-lg">
-                <i class="fas fa-robot text-white text-lg" aria-hidden="true"></i>
+            <div class="dd-menu" id="inp-proto">
+              <div class="dd-item" onclick="pickProtoInp('Standard')">Standard</div>
+              <div class="dd-item" onclick="pickProtoInp('Strategy')">Strategy</div>
+              <div class="dd-item" onclick="pickProtoInp('Crisis')">Crisis</div>
+              <div class="dd-item" onclick="pickProtoInp('Reflection')">Reflection</div>
+              <div class="dd-item" onclick="pickProtoInp('Planning')">Planning</div>
+              <div class="dd-item" onclick="pickProtoInp('Deep')">Deep Analysis</div>
             </div>
-            <div>
-                <h1 class="font-bold text-lg text-theme-primary leading-tight">Consilium AI</h1>
-                <div class="flex items-center gap-2 text-xs text-theme-secondary">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true"></span>
-                    <span id="connectionStatus" data-i18n="online">Online</span>
-                </div>
-            </div>
+          </div>
+          <button class="send" id="send-btn" onclick="doSend()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
         </div>
+      </div>
+      <div class="input-hint"><kbd>Enter</kbd> отправить · <kbd>Shift+Enter</kbd> новая строка</div>
+    </div>
+  </main>
 
-        <div class="flex items-center gap-2">
-            <div id="creditsDisplay" class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-theme-secondary rounded-lg border border-theme">
-                <i class="fas fa-coins text-yellow-500" aria-hidden="true"></i>
-                <span class="text-sm font-medium text-theme-primary" id="creditsAmount">∞</span>
-                <span class="text-xs text-theme-secondary" data-i18n="credits">kredytów</span>
-            </div>
-            
-            <button id="buyCreditsBtn" class="p-2 hover:bg-theme-secondary rounded-lg transition-colors text-accent-theme" aria-label="Kup kredyty">
-                <i class="fas fa-plus-circle text-lg" aria-hidden="true"></i>
-            </button>
-            
-            <button id="settingsBtn" class="p-2 hover:bg-theme-secondary rounded-lg transition-colors text-theme-secondary" aria-label="Ustawienia">
-                <i class="fas fa-cog text-lg" aria-hidden="true"></i>
-            </button>
-            
-            <button id="logoutBtn" class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors text-red-500" aria-label="Wyloguj się">
-                <i class="fas fa-sign-out-alt text-lg" aria-hidden="true"></i>
-            </button>
+  <!-- MONITOR -->
+  <aside class="monitor">
+    <div class="mon-head">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="mon-title">Intelligence Monitor</span>
+    </div>
+    <div class="mon-scroll">
+
+      <div class="mcard">
+        <div class="mcard-head">Анализ задачи</div>
+        <div class="mcard-body">
+          <div class="mrow">
+            <div class="mrow-top"><span class="mlabel">Глубина</span><span class="mval blue" id="m-depth">—</span></div>
+            <div class="mtrack"><div class="mfill blue" id="b-depth" style="width:0%"></div></div>
+          </div>
+          <div class="mrow">
+            <div class="mrow-top"><span class="mlabel">Срочность</span><span class="mval green" id="m-urgency">—</span></div>
+            <div class="mtrack"><div class="mfill green" id="b-urgency" style="width:0%"></div></div>
+          </div>
+          <div class="mrow">
+            <div class="mrow-top"><span class="mlabel">Эмоц. нагрузка</span><span class="mval green" id="m-emotion">—</span></div>
+            <div class="mtrack"><div class="mfill green" id="b-emotion" style="width:0%"></div></div>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <div class="flex flex-1 overflow-hidden relative">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="absolute lg:relative inset-y-0 left-0 w-80 bg-theme-secondary border-r border-theme transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-10 flex flex-col" role="complementary" aria-label="Historia czatów">
-            <div class="p-4 border-b border-theme">
-                <button id="newChatBtn" class="w-full py-3 bg-accent-theme text-white rounded-xl font-medium hover-bg-accent transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                    <span data-i18n="newChat">Nowy czat</span>
-                </button>
+      <div class="mcard">
+        <div class="mcard-head">Когерентность</div>
+        <div class="mcard-body">
+          <div class="coh-wrap">
+            <div class="coh-ring">
+              <svg viewBox="0 0 54 54" width="54" height="54">
+                <circle class="rbg" cx="27" cy="27" r="21"/>
+                <circle class="rfill" id="r-fill" cx="27" cy="27" r="21"/>
+              </svg>
+              <div class="rlabel"><span class="rpct" id="r-pct">—</span><span class="rsub">SCORE</span></div>
             </div>
-            
-            <div class="flex-1 overflow-y-auto p-3 space-y-2" id="chatHistoryList" role="list" aria-label="Lista czatów">
-                <!-- Chat history items -->
+            <div class="coh-info">
+              <div class="coh-status" id="coh-status">Ожидание...</div>
+              <div class="coh-desc" id="coh-desc">Запустите делиберацию</div>
             </div>
-            
-            <div class="p-4 border-t border-theme space-y-2">
-                <button id="clearHistoryBtn" class="w-full py-2 text-sm text-theme-secondary hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all flex items-center justify-center gap-2">
-                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                    <span data-i18n="clearHistory">Wyczyść historię</span>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Overlay for mobile sidebar -->
-        <div id="sidebarOverlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-0 lg:hidden hidden" aria-hidden="true"></div>
-
-        <!-- Main Chat Area -->
-        <main id="main-content" class="flex-1 flex flex-col bg-theme-primary relative" role="main">
-            <!-- Empty State -->
-            <div id="emptyState" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                <div class="w-24 h-24 bg-theme-secondary rounded-3xl flex items-center justify-center mb-6 shadow-lg">
-                    <i class="fas fa-comments text-4xl accent-theme" aria-hidden="true"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-theme-primary mb-2" data-i18n="welcome">Jak mogę Ci pomóc?</h2>
-                <p class="text-theme-secondary max-w-md mb-8" data-i18n="welcomeDesc">
-                    Zadaj pytanie, prześlij plik lub wklej tekst do analizy. Jestem tutaj, aby pomóc Ci w każdym zadaniu.
-                </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
-                    <button class="suggestion-btn p-4 bg-theme-secondary hover:bg-theme-tertiary border border-theme rounded-xl text-left transition-all group" data-prompt="Napisz profesjonalny email do klienta">
-                        <i class="fas fa-envelope accent-theme mb-2 group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                        <p class="text-sm font-medium text-theme-primary" data-i18n="suggestion1">Napisz profesjonalny email</p>
-                    </button>
-                    <button class="suggestion-btn p-4 bg-theme-secondary hover:bg-theme-tertiary border border-theme rounded-xl text-left transition-all group" data-prompt="Wyjaśnij mi złożony temat w prosty sposób">
-                        <i class="fas fa-lightbulb accent-theme mb-2 group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                        <p class="text-sm font-medium text-theme-primary" data-i18n="suggestion2">Wyjaśnij złożony temat</p>
-                    </button>
-                    <button class="suggestion-btn p-4 bg-theme-secondary hover:bg-theme-tertiary border border-theme rounded-xl text-left transition-all group" data-prompt="Przeanalizuj ten kod i znajdź błędy">
-                        <i class="fas fa-code accent-theme mb-2 group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                        <p class="text-sm font-medium text-theme-primary" data-i18n="suggestion3">Przeanalizuj kod</p>
-                    </button>
-                    <button class="suggestion-btn p-4 bg-theme-secondary hover:bg-theme-tertiary border border-theme rounded-xl text-left transition-all group" data-prompt="Pomóż mi zaplanować projekt">
-                        <i class="fas fa-tasks accent-theme mb-2 group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                        <p class="text-sm font-medium text-theme-primary" data-i18n="suggestion4">Zaplanuj projekt</p>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Chat Messages -->
-            <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-6 hidden" role="log" aria-live="polite" aria-atomic="false"></div>
-
-            <!-- Input Area -->
-            <div class="border-t border-theme bg-theme-primary p-4 shrink-0">
-                <div id="filePreview" class="hidden mb-3 flex flex-wrap gap-2"></div>
-                
-                <div class="max-w-4xl mx-auto relative">
-                    <div class="relative flex items-end gap-2 bg-theme-secondary border border-theme rounded-2xl p-2 shadow-lg">
-                        <button id="attachBtn" class="p-3 text-theme-secondary hover:text-theme-primary hover:bg-theme-tertiary rounded-xl transition-all shrink-0" aria-label="Załącz plik">
-                            <i class="fas fa-paperclip text-lg" aria-hidden="true"></i>
-                        </button>
-                        
-                        <input type="file" id="fileInput" class="hidden" multiple accept=".txt,.pdf,.doc,.docx,.png,.jpg,.jpeg,.gif,.mp3,.wav,.m4a">
-                        
-                        <textarea id="messageInput" rows="1" 
-                                  class="flex-1 bg-transparent border-0 resize-none max-h-32 py-3 px-2 text-theme-primary placeholder-theme-tertiary focus:outline-none focus:ring-0"
-                                  placeholder="Napisz wiadomość..." 
-                                  aria-label="Wiadomość"></textarea>
-                        
-                        <button id="voiceBtn" class="p-3 text-theme-secondary hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all shrink-0 relative" aria-label="Nagrywanie głosu">
-                            <i class="fas fa-microphone text-lg" aria-hidden="true"></i>
-                        </button>
-                        
-                        <button id="sendBtn" class="p-3 bg-accent-theme text-white rounded-xl hover-bg-accent transition-all shadow-md shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Wyślij wiadomość">
-                            <i class="fas fa-paper-plane text-lg" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <p class="text-xs text-theme-tertiary text-center mt-2">Consilium AI może popełniać błędy. Sprawdź ważne informacje.</p>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Settings Panel -->
-    <div id="settingsPanel" class="fixed inset-y-0 right-0 w-80 bg-theme-primary border-l border-theme shadow-2xl transform translate-x-full transition-transform duration-300 z-40 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" tabindex="-1">
-        <div class="p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 id="settingsTitle" class="text-xl font-bold text-theme-primary">Ustawienia</h2>
-                <button id="closeSettings" class="p-2 hover:bg-theme-secondary rounded-lg transition-colors text-theme-secondary" aria-label="Zamknij ustawienia">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-2">Język</label>
-                    <select id="languageSelect" class="w-full px-3 py-2 bg-theme-secondary border border-theme rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="pl">Polski</option>
-                        <option value="en">English</option>
-                        <option value="ru">Русский</option>
-                        <option value="ua">Українська</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-2">Motyw</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button class="theme-btn p-3 border border-theme rounded-lg text-center transition-all hover:bg-theme-secondary" data-theme="light">
-                            <i class="fas fa-sun text-yellow-500 mb-1 block"></i>
-                            <span class="text-xs text-theme-primary">Jasny</span>
-                        </button>
-                        <button class="theme-btn p-3 border border-theme rounded-lg text-center transition-all hover:bg-theme-secondary" data-theme="dark">
-                            <i class="fas fa-moon text-blue-400 mb-1 block"></i>
-                            <span class="text-xs text-theme-primary">Ciemny</span>
-                        </button>
-                        <button class="theme-btn p-3 border border-theme rounded-lg text-center transition-all hover:bg-theme-secondary" data-theme="sepia">
-                            <i class="fas fa-coffee text-amber-600 mb-1 block"></i>
-                            <span class="text-xs text-theme-primary">Sepia</span>
-                        </button>
-                        <button class="theme-btn p-3 border border-theme rounded-lg text-center transition-all hover:bg-theme-secondary" data-theme="midnight">
-                            <i class="fas fa-star text-indigo-400 mb-1 block"></i>
-                            <span class="text-xs text-theme-primary">Nocny</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between p-3 bg-theme-secondary rounded-lg border border-theme">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-eye text-theme-secondary"></i>
-                        <div>
-                            <p class="text-sm font-medium text-theme-primary">Tryb nocny</p>
-                            <p class="text-xs text-theme-tertiary">Cieplejsze barwy dla oczu</p>
-                        </div>
-                    </div>
-                    <button id="nightShiftToggle" class="w-12 h-6 bg-theme-tertiary rounded-full relative transition-colors duration-200" role="switch" aria-checked="false">
-                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 shadow-sm"></span>
-                    </button>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-2">Rozmiar czcionki</label>
-                    <input type="range" id="fontSizeSlider" min="14" max="20" value="16" 
-                           class="w-full h-2 bg-theme-tertiary rounded-lg appearance-none cursor-pointer accent-blue-500">
-                    <div class="flex justify-between text-xs text-theme-tertiary mt-1">
-                        <span>A</span>
-                        <span>A</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-theme-secondary mb-2">Model AI</label>
-                    <select id="modelSelect" class="w-full px-3 py-2 bg-theme-secondary border border-theme rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="gpt-4">GPT-4 (Najlepszy)</option>
-                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Szybszy)</option>
-                        <option value="claude">Claude 3</option>
-                    </select>
-                </div>
-
-                <div class="pt-4 border-t border-theme">
-                    <button id="exportBtn" class="w-full py-2 text-sm text-accent-theme hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all flex items-center justify-center gap-2">
-                        <i class="fas fa-download"></i>
-                        <span>Eksportuj czat</span>
-                    </button>
-                </div>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Settings Overlay -->
-    <div id="settingsOverlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 hidden"></div>
-
-    <!-- Buy Credits Modal -->
-    <div id="creditsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
-        <div class="bg-theme-primary border border-theme rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-theme-primary">Kup kredyty</h2>
-                <button id="closeCreditsModal" class="p-2 hover:bg-theme-secondary rounded-lg transition-colors text-theme-secondary">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4 text-sm text-blue-600 dark:text-blue-400">
-                <i class="fas fa-info-circle mr-2"></i>
-                W trybie demo kredyty są nielimitowane.
-            </div>
-            <div class="space-y-3 mb-6 opacity-50 pointer-events-none">
-                <button class="credit-option w-full p-4 border-2 border-theme rounded-xl flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-coins text-yellow-600 dark:text-yellow-400"></i>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-bold text-theme-primary">100 kredytów</p>
-                            <p class="text-sm text-theme-secondary">Podstawowy pakiet</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold accent-theme">$5</span>
-                </button>
-            </div>
+      <div class="mcard">
+        <div class="mcard-head">Совет директоров</div>
+        <div class="mcard-body" style="padding:6px;">
+          <div class="cphases" id="cphases">
+            <div class="cp pending" id="cp-scout"><span class="cp-ico">○</span><span class="cp-name">Scout</span><span class="cp-model" style="color:var(--cyan)">perplexity</span></div>
+            <div class="cp pending" id="cp-analyst"><span class="cp-ico">○</span><span class="cp-name">Analyst</span><span class="cp-model" style="color:var(--accent)">deepseek</span></div>
+            <div class="cp pending" id="cp-architect"><span class="cp-ico">○</span><span class="cp-name">Architect</span><span class="cp-model" style="color:var(--purple)">claude-3.5</span></div>
+            <div class="cp pending" id="cp-devil"><span class="cp-ico">○</span><span class="cp-name">Devil's Advocate</span><span class="cp-model" style="color:var(--red)">deepseek-r1</span></div>
+            <div class="cp pending" id="cp-synth"><span class="cp-ico">○</span><span class="cp-name">Synthesizer</span><span class="cp-model" style="color:var(--orange)">claude-3.5</span></div>
+            <div class="cp pending" id="cp-verifier"><span class="cp-ico">○</span><span class="cp-name">Verifier</span><span class="cp-model" style="color:var(--green)">haiku</span></div>
+            <div class="cp pending" id="cp-chairman"><span class="cp-ico">○</span><span class="cp-name">Chairman</span><span class="cp-model" style="color:var(--text-muted)">gpt-4o</span></div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-theme-secondary border border-theme text-theme-primary px-4 py-3 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3" role="status" aria-live="polite">
-        <i id="toastIcon" class="fas fa-check-circle text-green-500"></i>
-        <span id="toastMessage" class="text-sm font-medium"></span>
-    </div>
+      <div class="mcard">
+        <div class="mcard-head">Когнитивные измерения</div>
+        <div class="mcard-body">
+          <div class="dims" id="dims">
+            <div class="dim"><span class="dlabel">FUTURE</span><div class="dbar"><div class="dfill" id="d-future" style="width:0%"></div></div><span class="dval" id="dv-future">—</span></div>
+            <div class="dim"><span class="dlabel">COMPLEX</span><div class="dbar"><div class="dfill" id="d-complex" style="width:0%"></div></div><span class="dval" id="dv-complex">—</span></div>
+            <div class="dim"><span class="dlabel">FACTUAL</span><div class="dbar"><div class="dfill" id="d-factual" style="width:0%"></div></div><span class="dval" id="dv-factual">—</span></div>
+            <div class="dim"><span class="dlabel">CREATIVE</span><div class="dbar"><div class="dfill" id="d-creative" style="width:0%"></div></div><span class="dval" id="dv-creative">—</span></div>
+            <div class="dim"><span class="dlabel">ETHICAL</span><div class="dbar"><div class="dfill" id="d-ethical" style="width:0%"></div></div><span class="dval" id="dv-ethical">—</span></div>
+          </div>
+        </div>
+      </div>
 
-    <script src="js/app.js"></script>
+      <div class="mcard">
+        <div class="mcard-head">Action Board</div>
+        <div class="mcard-body" style="padding:6px;" id="action-board">
+          <div class="aboard-empty">Решения появятся после делиберации</div>
+        </div>
+      </div>
+
+      <div class="mcard">
+        <div class="mcard-head">Personal Vault</div>
+        <div class="mcard-body" style="padding:6px;gap:5px;">
+          <div class="kpill"><span>📋</span><span class="kp-lbl">Решения</span><span class="kp-cnt" id="kp-decisions">0</span></div>
+          <div class="kpill"><span>⭐</span><span class="kp-lbl">Принципы</span><span class="kp-cnt" id="kp-principles">0</span></div>
+          <div class="kpill"><span>📚</span><span class="kp-lbl">Wiki страниц</span><span class="kp-cnt" id="kp-wiki">0</span></div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CONSILIUM AI v3.0 — JS Core
+   ══════════════════════════════════════════════
+   Backend: FastAPI на http://localhost:8000
+   WebSocket: ws://localhost:8000/ws/council
+   ══════════════════════════════════════════════ */
+
+// ── CONFIG ── измени BASE_URL на адрес своего сервера
+const CFG = {
+  BASE_URL: window.location.origin.includes('localhost') || window.location.origin.includes('127.0')
+    ? 'http://localhost:8000'
+    : window.location.origin,
+  WS_URL:   window.location.origin.includes('localhost') || window.location.origin.includes('127.0')
+    ? 'ws://localhost:8000'
+    : `wss://${window.location.host}`,
+  DEMO_MODE: false,
+};
+
+// ── STATE ──
+const S = {
+  token:       localStorage.getItem('consilium_token') || null,
+  user:        null,
+  isWorking:   false,
+  ws:          null,
+  currentProto:'standard',
+  chatId:      crypto.randomUUID(),
+  currentBlock: null,
+  currentCard:  null,
+};
+
+// ════════════════════ AUTH ════════════════════
+async function doLogin() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-password').value;
+  const err   = document.getElementById('auth-err');
+  const btn   = document.getElementById('auth-btn');
+
+  if (!email || !pass) { err.textContent = 'Введите email и пароль'; return; }
+  btn.disabled = true; btn.textContent = 'Входим...'; err.textContent = '';
+
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      throw new Error(d.detail || 'Неверные данные');
+    }
+    const data = await res.json();
+    S.token = data.token || data.access_token;
+    localStorage.setItem('consilium_token', S.token);
+    await loadUser();
+    hideAuth();
+  } catch(e) {
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = 'Войти → Совет директоров';
+  }
+}
+
+async function doDemo() {
+  CFG.DEMO_MODE = true;
+  S.user = { email: 'demo@consilium.ai', role: 'demo' };
+  S.token = 'demo';
+  hideAuth();
+  updateUserUI('Demo');
+  setConn('demo', 'demo-режим');
+  toast('🚀', 'Демо-режим активирован');
+}
+
+function showRegister() {
+  const f = document.getElementById('auth-switch-txt');
+  const btn = document.getElementById('auth-btn');
+  const emailF = document.getElementById('auth-email');
+  f.innerHTML = 'Уже есть аккаунт? <span onclick="showLogin()">Войти</span>';
+  btn.textContent = 'Создать аккаунт';
+  btn.onclick = doRegister;
+}
+function showLogin() {
+  const f = document.getElementById('auth-switch-txt');
+  const btn = document.getElementById('auth-btn');
+  f.innerHTML = 'Нет аккаунта? <span onclick="showRegister()">Зарегистрироваться</span>';
+  btn.textContent = 'Войти → Совет директоров';
+  btn.onclick = doLogin;
+}
+
+async function doRegister() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-password').value;
+  const err   = document.getElementById('auth-err');
+  const btn   = document.getElementById('auth-btn');
+
+  if (!email || !pass) { err.textContent = 'Заполните все поля'; return; }
+  btn.disabled = true; btn.textContent = 'Создаём...';
+
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail||'Ошибка'); }
+    const data = await res.json();
+    S.token = data.token || data.access_token;
+    localStorage.setItem('consilium_token', S.token);
+    await loadUser();
+    hideAuth();
+    toast('✅', 'Аккаунт создан!');
+  } catch(e) {
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = 'Создать аккаунт';
+  }
+}
+
+async function loadUser() {
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${S.token}` }
+    });
+    if (!res.ok) throw new Error('Неверный токен');
+    S.user = await res.json();
+    const name = S.user.email?.split('@')[0] || 'Пользователь';
+    updateUserUI(name);
+    loadCredits();
+    loadKnowledgeCounts();
+    connectWS();
+  } catch(e) {
+    localStorage.removeItem('consilium_token');
+    S.token = null;
+    throw e;
+  }
+}
+
+function updateUserUI(name) {
+  const cap = name.charAt(0).toUpperCase() + name.slice(1);
+  document.getElementById('g-name').textContent = cap;
+  document.getElementById('user-avatar').textContent = cap.slice(0,2).toUpperCase();
+  document.getElementById('sb-user-name').textContent = cap;
+  document.getElementById('sb-av-text').textContent = cap.slice(0,2).toUpperCase();
+}
+
+async function loadCredits() {
+  if (CFG.DEMO_MODE) { document.getElementById('credits-num').textContent = '∞'; return; }
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/api/auth/credits`, {
+      headers: { Authorization: `Bearer ${S.token}` }
+    });
+    const d = await res.json();
+    document.getElementById('credits-num').textContent = d.credits ?? d.balance ?? '?';
+  } catch{}
+}
+
+async function loadKnowledgeCounts() {
+  if (CFG.DEMO_MODE) {
+    document.getElementById('kp-decisions').textContent = '3';
+    document.getElementById('kp-principles').textContent = '5';
+    document.getElementById('kp-wiki').textContent = '7';
+    document.getElementById('dec-cnt').textContent = '3';
+    document.getElementById('prin-cnt').textContent = '5';
+    document.getElementById('wiki-cnt').textContent = '7';
+    document.getElementById('history-cnt').textContent = '12';
+    return;
+  }
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/api/knowledge/items`, {
+      headers: { Authorization: `Bearer ${S.token}` }
+    });
+    const d = await res.json();
+    const cnt = Array.isArray(d) ? d.length : (d.total ?? 0);
+    document.getElementById('kp-decisions').textContent = cnt;
+  } catch{}
+}
+
+function hideAuth() { document.getElementById('auth-overlay').classList.add('hidden'); }
+function logout() {
+  localStorage.removeItem('consilium_token');
+  S.token = null; S.user = null;
+  if (S.ws) { S.ws.close(); S.ws = null; }
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  setConn('offline','offline');
+  CFG.DEMO_MODE = false;
+}
+
+// ════════════════════ WEBSOCKET ════════════════════
+function connectWS() {
+  if (CFG.DEMO_MODE) { setConn('online','demo'); return; }
+  setConn('connecting','подключение...');
+
+  const url = `${CFG.WS_URL}/ws/council`;
+  S.ws = new WebSocket(url);
+
+  S.ws.onopen = () => {
+    // First message MUST contain token for backend auth
+    S.ws.send(JSON.stringify({token: S.token, message: '__ping__', chat_id: S.chatId || 'init_'+Date.now()}));
+    setConn('online','online');
+    toast('🔗','WebSocket подключён');
+  };
+
+  S.ws.onclose = () => {
+    setConn('offline','offline');
+    // Reconnect after 3s
+    setTimeout(() => { if (S.token && !CFG.DEMO_MODE) connectWS(); }, 3000);
+  };
+
+  S.ws.onerror = () => setConn('offline','ошибка');
+
+  S.ws.onmessage = (ev) => {
+    try { handleWSMsg(JSON.parse(ev.data)); }
+    catch(e) { console.warn('WS parse error', e); }
+  };
+}
+
+function sendWS(obj) {
+  if (S.ws && S.ws.readyState === WebSocket.OPEN) {
+    S.ws.send(JSON.stringify(obj));
+    return true;
+  }
+  return false;
+}
+
+// ═══ WebSocket message handlers ═══
+function handleWSMsg(msg) {
+  switch(msg.type) {
+
+    case 'phase_start':
+      activatePS(msg.phase);
+      activateCP(msg.phase);
+      if (msg.phase !== 'scout') addThinkRow(msg.director || msg.phase, msg.model || '');
+      startPhaseCard(msg.phase, msg.director || msg.phase, msg.model || '');
+      break;
+
+    case 'live_thought':
+      appendToken(msg.token || msg.content || '');
+      break;
+
+    case 'phase_complete':
+      finalizePhaseCard(msg.phase, msg.summary || '', msg.tokens || 0, msg.duration_ms || 0);
+      completeCP(msg.phase, msg.duration_ms);
+      removeThinkRow();
+      break;
+
+    case 'synthesizer_veto':
+      addVetoBanner(msg.coherence, msg.reason);
+      break;
+
+    case 'final_response':
+      onFinalResponse(msg);
+      break;
+
+    case 'classification':
+      updateMonitorFromClassification(msg.task_profile || msg);
+      break;
+
+    case 'error':
+      toast('❌', msg.message || 'Ошибка сервера');
+      resetWorking();
+      break;
+  }
+}
+
+// ════════════════════ SEND MESSAGE ════════════════════
+function sendQ(text) { document.getElementById('msg-in').value = text; doSend(); }
+
+function doSend() {
+  const inp = document.getElementById('msg-in');
+  const text = inp.value.trim();
+  if (!text || S.isWorking) return;
+
+  inp.value = ''; inp.style.height = 'auto';
+  const greet = document.getElementById('greeting');
+  if (greet) greet.remove();
+
+  addUserMsg(text);
+  startWorking();
+  resetPhaseSteps();
+  resetCPhases();
+
+  if (CFG.DEMO_MODE) {
+    runDemo(text);
+    return;
+  }
+
+  // Real WebSocket deliberation
+  // Backend expects: {token, message, chat_id}
+  const sent = sendWS({
+    token: S.token,
+    message: text,
+    chat_id: S.chatId || ('chat_' + Date.now()),
+  });
+
+  if (!sent) {
+    // Fallback to REST /chat
+    callChatREST(text);
+  }
+}
+
+async function callChatREST(text) {
+  try {
+    const res = await fetch(`${CFG.BASE_URL}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${S.token}`,
+      },
+      body: JSON.stringify({ message: text, chat_id: S.chatId }),
+    });
+    const data = await res.json();
+    addSimpleResponse(data.response || 'Нет ответа', data.phases_used);
+    updateCreditsUI(data.credits_left);
+    resetWorking();
+  } catch(e) {
+    toast('❌','Ошибка запроса: '+e.message);
+    resetWorking();
+  }
+}
+
+// ════════════════════ DEMO SIMULATION ════════════════════
+const DEMO_PHASES = [
+  { id:'scout',    name:'Scout',           model:'perplexity/sonar',       ms:1700 },
+  { id:'analyst',  name:'Analyst',         model:'deepseek/deepseek-chat', ms:2100 },
+  { id:'architect',name:'Architect',       model:'claude-3.5-sonnet',      ms:1900 },
+  { id:'devil',    name:"Devil's Advocate",model:'deepseek-r1',            ms:1500 },
+  { id:'synth',    name:'Synthesizer',     model:'claude-3.5-sonnet',      ms:2400 },
+  { id:'verifier', name:'Verifier',        model:'claude-3.5-haiku',       ms:1100 },
+  { id:'chairman', name:'Chairman',        model:'openai/gpt-4o',          ms:2700 },
+];
+
+const DEMO_CONTENT = {
+  scout:    `Сбор данных завершён · Уровень уверенности: <span style="color:var(--green)">ВЫСОКИЙ</span><br><br>Найдено 4 релевантных источника. Контекст из Personal Vault подгружен: 2 принципа, 1 похожее решение.`,
+  analyst:  `CoT-анализ выявил 3 ключевых паттерна. Задача классифицирована как <strong>COMPLEX + FUTURE</strong>. Декомпозиция на 4 независимых подзадачи выполнена.`,
+  architect:`MVP-first архитектура предложена. 3 модульных компонента, обратная совместимость обеспечена. Два альтернативных подхода выделены для сравнения.`,
+  devil:    `<span style="color:var(--red)">⚠ Риски выявлены:</span><br>1. Single point of failure в API-зависимости<br>2. Временные оценки могут быть занижены на 30-40%`,
+  synth:    `Синтез завершён. Когерентность: <span style="color:var(--green)">87%</span>. VETO не активирован. Позиции Scout и Architect согласованы.`,
+  verifier: `<span style="color:var(--green)">✓ Knowledge Gate: 7/7 проверок пройдено</span><br>✓ Принципы · ✓ DRY · ✓ YAGNI · ✓ Evidence · ✓ Coherence ≥ 50% · ✓ Actionable`,
+  chairman: `<strong>Решение Председателя:</strong><br><br>Рекомендую: MVP компонента A в течение 2 недель. Исследование альтернативы B параллельно. Риски Advocate включены в план митигации. Следующий шаг: согласовать ресурсы до пятницы.`,
+};
+
+async function runDemo(query) {
+  // Simulate classifier
+  simulateClassifier();
+
+  S.currentBlock = document.createElement('div');
+  S.currentBlock.className = 'd-block';
+  document.getElementById('chat-area').appendChild(S.currentBlock);
+
+  for (const p of DEMO_PHASES) {
+    activatePS(p.id); activateCP(p.id);
+
+    // Thinking
+    const tr = addThinkRow(p.name, p.model);
+    await sleep(p.ms * 0.4);
+    if (tr) tr.remove();
+
+    // Card
+    startPhaseCard(p.id, p.name, p.model);
+    // Stream content
+    await streamContent(DEMO_CONTENT[p.id], p.ms * 0.6);
+    finalizePhaseCard(p.id, '', Math.floor(300+Math.random()*500), p.ms);
+    completeCP(p.id, p.ms);
+    scrollChat();
+  }
+
+  onFinalResponse({ credits_used: 3, total_ms: 14500, content: '' });
+}
+
+let _streamTarget = null;
+function startPhaseCard(phaseId, name, model) {
+  const isChairman = phaseId === 'chairman';
+  const card = document.createElement('div');
+  card.className = `pcard${isChairman?' chairman-card':''}`;
+  card.id = `card-${phaseId}`;
+  card.innerHTML = `
+    <div class="pcard-head" onclick="toggleCard(this)">
+      <div class="pd ${phaseId}"></div>
+      <span class="pname">${name}</span>
+      <span class="pmodel">${model}</span>
+      <span class="pdur" id="dur-${phaseId}">...</span>
+      <span class="ptoks" id="tok-${phaseId}">—</span>
+    </div>
+    <div class="pcard-body" id="body-${phaseId}">
+      <div class="stream-text" id="st-${phaseId}"></div>
+    </div>`;
+  if (S.currentBlock) S.currentBlock.appendChild(card);
+  _streamTarget = document.getElementById(`st-${phaseId}`);
+  scrollChat();
+}
+
+async function streamContent(html, duration) {
+  if (!_streamTarget) return;
+  // For real WS this just appends tokens; for demo we do char-by-char on plain text
+  const plain = html.replace(/<[^>]+>/g, '');
+  const chars = plain.length;
+  const delay = duration / chars;
+  // Actually set HTML immediately but animate opacity for demo feel
+  _streamTarget.innerHTML = html;
+  _streamTarget.style.opacity = 0;
+  let t = 0;
+  while (t < 1) {
+    t += 0.06; _streamTarget.style.opacity = Math.min(t, 1);
+    await sleep(30);
+  }
+}
+
+function appendToken(token) {
+  if (_streamTarget) _streamTarget.textContent += token;
+  scrollChat();
+}
+
+function finalizePhaseCard(phaseId, summary, tokens, ms) {
+  const d = document.getElementById(`dur-${phaseId}`);
+  const t = document.getElementById(`tok-${phaseId}`);
+  if (d) d.textContent = ms + 'ms';
+  if (t) t.textContent = tokens + ' tok';
+  _streamTarget = null;
+}
+
+function addThinkRow(name, model) {
+  if (!S.currentBlock) {
+    S.currentBlock = document.createElement('div');
+    S.currentBlock.className = 'd-block';
+    document.getElementById('chat-area').appendChild(S.currentBlock);
+  }
+  const el = document.createElement('div');
+  el.className = 'think-row'; el.id = 'think-row';
+  el.innerHTML = `<div class="think-spin"></div><span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${name} думает... <span style="color:var(--border-light)">[${model}]</span></span>`;
+  S.currentBlock.appendChild(el);
+  scrollChat(); return el;
+}
+function removeThinkRow() { document.getElementById('think-row')?.remove(); }
+
+function addVetoBanner(coherence, reason) {
+  if (!S.currentBlock) return;
+  const el = document.createElement('div');
+  el.className = 'veto-banner';
+  el.innerHTML = `⚠ VETO: когерентность ${coherence}% · ${reason}`;
+  S.currentBlock.appendChild(el);
+  updateCoherence(coherence, true);
+}
+
+function addSimpleResponse(text, phases) {
+  const area = document.getElementById('chat-area');
+  const el = document.createElement('div');
+  el.style.cssText = 'padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);font-size:13px;line-height:1.7;animation:fadeup .3s ease';
+  el.textContent = text;
+  area.appendChild(el);
+  scrollChat();
+}
+
+function onFinalResponse(msg) {
+  resetWorking();
+  const used = msg.credits_used || 0;
+  const ms = msg.total_ms || 0;
+  toast('✅', `Делиберация завершена · ${used} кред · ${(ms/1000).toFixed(1)}с`);
+  updateCoherence(87, false);
+  updateActionBoard();
+  loadCredits();
+  S.currentBlock = null;
+  S.chatId = crypto.randomUUID(); // new chat for next message
+}
+
+// ════════════════════ MONITOR UPDATE ════════════════════
+function simulateClassifier() {
+  const depth   = 6 + Math.floor(Math.random()*3);
+  const urgency = Math.floor(20+Math.random()*40);
+  const emotion = Math.floor(10+Math.random()*30);
+  setMetric('depth',  depth, `${depth}/10`, depth>=7?'blue':'blue', depth*10);
+  setMetric('urgency',urgency,`${urgency}%`, urgency>60?'red':urgency>40?'orange':'green', urgency);
+  setMetric('emotion',emotion,`${emotion}%`, emotion>60?'red':emotion>40?'orange':'green', emotion);
+  const dims = {future:75,complex:60,factual:45,creative:35,ethical:20};
+  Object.entries(dims).forEach(([k,v])=>{
+    const b=document.getElementById(`d-${k}`), vv=document.getElementById(`dv-${k}`);
+    if(b){b.style.width=v+'%'; b.style.background=v>60?'var(--accent)':'var(--border-light)';}
+    if(vv) vv.textContent=v+'%';
+  });
+}
+
+function updateMonitorFromClassification(tp) {
+  if (!tp) return;
+  const d = tp.required_depth || tp.depth || 6;
+  const u = Math.round((tp.urgency||0.3)*100);
+  const e = Math.round((tp.emotional_load||0.2)*100);
+  setMetric('depth',  d, `${d}/10`, 'blue', d*10);
+  setMetric('urgency',u, `${u}%`, u>60?'red':u>40?'orange':'green', u);
+  setMetric('emotion',e, `${e}%`, e>60?'red':e>40?'orange':'green', e);
+}
+
+function setMetric(id, raw, lbl, cls, pct) {
+  const v=document.getElementById(`m-${id}`), b=document.getElementById(`b-${id}`);
+  if(v){v.textContent=lbl; v.className=`mval ${cls}`;}
+  if(b){b.style.width=pct+'%'; b.className=`mfill ${cls}`;}
+}
+
+function updateCoherence(score, isVeto) {
+  const circ = 131.95;
+  const ring = document.getElementById('r-fill');
+  const pct  = document.getElementById('r-pct');
+  const st   = document.getElementById('coh-status');
+  const desc = document.getElementById('coh-desc');
+  const offset = circ - (score/100)*circ;
+  pct.textContent = score+'%';
+  ring.style.strokeDashoffset = offset;
+  if(score>=70){
+    ring.style.stroke='var(--green)'; pct.style.color='var(--green)';
+    st.textContent='Высокая когерентность'; desc.textContent='Директора согласованы';
+  } else if(score>=50){
+    ring.style.stroke='var(--orange)'; pct.style.color='var(--orange)';
+    st.textContent='Средняя'; desc.textContent='Есть расхождения';
+  } else {
+    ring.style.stroke='var(--red)'; pct.style.color='var(--red)';
+    st.textContent='⚠ VETO активирован'; desc.textContent='Требует переработки';
+  }
+}
+
+function updateActionBoard() {
+  document.getElementById('action-board').innerHTML = `
+    <div class="aitem"><span class="atype decision">DECISION</span>MVP компонента A · срок 2 нед.</div>
+    <div class="aitem"><span class="atype task">TASK</span>Согласовать ресурсы до пятницы</div>
+    <div class="aitem"><span class="atype risk">RISK</span>Добавить fallback-механизм API</div>
+  `;
+}
+
+function updateCreditsUI(n) {
+  if (n !== undefined) document.getElementById('credits-num').textContent = n;
+}
+
+// ════════════════════ PHASE STEPS ════════════════════
+function activatePS(id) {
+  document.querySelectorAll('.pstep').forEach(s => {
+    if (s.id===`ps-${id}`) s.className='pstep active';
+    else if (s.className.includes('active')) s.className='pstep done';
+  });
+}
+function resetPhaseSteps() {
+  document.querySelectorAll('.pstep').forEach(s => s.className='pstep pending');
+}
+
+function activateCP(id) {
+  const el=document.getElementById(`cp-${id}`);
+  if(el){ el.className='cp active'; el.querySelector('.cp-ico').textContent='●'; }
+}
+function completeCP(id, ms) {
+  const el=document.getElementById(`cp-${id}`);
+  if(el){
+    el.className='cp done';
+    el.querySelector('.cp-ico').textContent='✓';
+    const m=el.querySelector('.cp-model');
+    if(m && ms) m.textContent=`${ms}ms`;
+  }
+}
+function resetCPhases() {
+  document.querySelectorAll('.cp').forEach(c=>{
+    c.className='cp pending';
+    c.querySelector('.cp-ico').textContent='○';
+    // restore model label colors
+  });
+}
+
+// ════════════════════ WORKING STATE ════════════════════
+function startWorking() {
+  S.isWorking = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('phase-strip').classList.add('on');
+}
+function resetWorking() {
+  S.isWorking = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('phase-strip').classList.remove('on');
+  resetPhaseSteps();
+}
+
+// ════════════════════ UI HELPERS ════════════════════
+function addUserMsg(text) {
+  const el=document.createElement('div');
+  el.className='umsg'; el.textContent=text;
+  document.getElementById('chat-area').appendChild(el);
+  scrollChat();
+}
+function toggleCard(hdr) {
+  const b=hdr.nextElementSibling;
+  b.classList.toggle('collapsed');
+}
+function scrollChat() {
+  const a=document.getElementById('chat-area'); a.scrollTop=a.scrollHeight;
+}
+function setConn(cls,text) {
+  document.getElementById('conn-dot').className=`conn-dot ${cls}`;
+  document.getElementById('conn-text').textContent=text;
+}
+function onKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();} }
+function autoH(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,150)+'px'; }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// dropdowns
+function toggleDD(id) {
+  document.querySelectorAll('.dd-menu').forEach(m=>{ if(m.id!==id) m.classList.remove('open'); });
+  document.getElementById(id)?.classList.toggle('open');
+}
+document.addEventListener('click', e=>{ if(!e.target.closest('.dd')) document.querySelectorAll('.dd-menu').forEach(m=>m.classList.remove('open')); });
+
+function pickWS(el, name) {
+  document.getElementById('h-ws').textContent=name;
+  el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active'); toggleDD('');
+}
+const PROTO_TAGS = {Standard:'STD',Strategy:'STR',Crisis:'CRS',Reflection:'RFL',Planning:'PLN',Deep:'DPA'};
+function pickProto(el, name, tag) {
+  document.getElementById('h-proto').textContent=name;
+  document.getElementById('h-proto-tag').textContent=tag;
+  document.getElementById('inp-proto-lbl').textContent=name;
+  el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active'); toggleDD('');
+  S.currentProto=name.toLowerCase();
+  toast('⚡',`Протокол: ${name}`);
+}
+function pickProtoInp(name) {
+  document.getElementById('inp-proto-lbl').textContent=name;
+  document.getElementById('h-proto').textContent=name;
+  document.getElementById('h-proto-tag').textContent=PROTO_TAGS[name]||'?';
+  toggleDD('inp-proto');
+  S.currentProto=name.toLowerCase();
+}
+
+// toast
+function toast(icon, text) {
+  const area=document.getElementById('toasts');
+  const el=document.createElement('div');
+  el.className='toast'; el.innerHTML=`<span>${icon}</span>${text}`;
+  area.appendChild(el); setTimeout(()=>el.remove(),2800);
+}
+
+// ════════════════════ INIT ════════════════════
+(async function init() {
+  if (S.token) {
+    try { await loadUser(); hideAuth(); }
+    catch(e) { /* show auth */ }
+  }
+})();
+
+function updateLogoForTheme(theme) {
+  const greetingLogo = document.getElementById('greeting-logo');
+  if (greetingLogo) {
+    greetingLogo.src = (theme === 'light') ? 'img/logo1.png' : 'img/logo.jpg';
+  }
+  const headerIcon = document.getElementById('header-icon');
+  if (headerIcon) {
+    headerIcon.src = (theme === 'light') ? 'img/icon2.jpg' : 'img/icon.png';
+  }
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const next = (root.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('consilium-theme', next);
+  updateLogoForTheme(next);
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (next === 'light') {
+    icon && (icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
+    label && (label.textContent = 'Светлая');
+  } else {
+    icon && (icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>');
+    label && (label.textContent = 'Тёмная');
+  }
+}
+(function() {
+  const t = localStorage.getItem('consilium-theme');
+  if (t) { document.documentElement.setAttribute('data-theme', t); }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (t === 'light') {
+      const i = document.getElementById('theme-icon');
+      const l = document.getElementById('theme-label');
+      i && (i.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
+      l && (l.textContent = 'Светлая');
+      updateLogoForTheme('light');
+    }
+  });
+})();
+
+function showRegister() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('register-overlay').style.display = 'flex';
+}
+function showLogin() {
+  document.getElementById('register-overlay').style.display = 'none';
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+async function doRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const pwd = document.getElementById('reg-password').value;
+  const pwd2 = document.getElementById('reg-password2').value;
+  const err = document.getElementById('reg-err');
+  err.style.color = ''; err.textContent = '';
+  if (!email || !pwd) { err.textContent = 'Заполните все поля'; return; }
+  if (pwd.length < 6) { err.textContent = 'Пароль минимум 6 символов'; return; }
+  if (pwd !== pwd2) { err.textContent = 'Пароли не совпадают'; return; }
+  try {
+    const r = await fetch(CFG.BASE_URL + '/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, password: pwd})
+    });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.detail || 'Ошибка регистрации'; return; }
+    err.style.color = '#22c55e'; err.textContent = 'Аккаунт создан! Входим...';
+    setTimeout(showLogin, 1200);
+  } catch(e) { err.textContent = 'Сервер недоступен. Попробуйте демо-режим.'; }
+}
+
+</script>
+
+<div class="auth-overlay" id="register-overlay" style="display:none;">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
+    </div>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button onclick="showLogin()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Войти</button>
+      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Регистрация</button>
+    </div>
+    <div class="auth-fields">
+      <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"/></div>
+      <div class="auth-field"><label>Пароль</label><input type="password" id="reg-password" placeholder="••••••••"/></div>
+      <div class="auth-field"><label>Повторите пароль</label><input type="password" id="reg-password2" placeholder="••••••••"/></div>
+      <div class="auth-err" id="reg-err"></div>
+    </div>
+    <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
+    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">⚡ Демо-режим (без сервера)</button></div>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Сервер: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
+  </div>
+</div>
 </body>
 </html>

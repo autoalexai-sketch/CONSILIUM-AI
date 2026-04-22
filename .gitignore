@@ -13,9 +13,11 @@ env/
 
 # Secrets — NEVER commit
 .env
+
+# Database (локальная)
 *.db
-consilium.db
-consilium_deliberations.db
+*.sqlite
+*.sqlite3
 
 # Logs
 logs/
@@ -31,8 +33,13 @@ desktop.ini
 .idea/
 *.swp
 
-# Docker
-.dockerignore
+# Docker Desktop (огромные файлы)
+DockerDesktopWSL/
 
-# Node (if any)
-node_modules/
+# Мусор
+assemble.py
+copy_frontend.ps1
+setup_images.py
+update_frontend.py
+write_index.py
+powershell
