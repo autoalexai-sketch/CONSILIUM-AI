@@ -1207,8 +1207,14 @@ function handleWSMsg(msg) {
       appendToken(msg.token || msg.content || '');
       break;
 
-    case 'phase_complete':
-      finalizePhaseCard(msg.phase, msg.summary || '', msg.tokens || 0, msg.duration_ms || 0);
+    case 'phase_done':       // backend sends this
+    case 'phase_complete':   // demo compatibility
+      finalizePhaseCard(
+        msg.phase,
+        msg.preview || msg.summary || '',
+        msg.tokens || 0,
+        msg.duration_ms || 0
+      );
       completeCP(msg.phase, msg.duration_ms);
       removeThinkRow();
       break;
@@ -1217,7 +1223,8 @@ function handleWSMsg(msg) {
       addVetoBanner(msg.coherence, msg.reason);
       break;
 
-    case 'final_response':
+    case 'final':            // backend sends this
+    case 'final_response':   // demo compatibility
       onFinalResponse(msg);
       break;
 
@@ -1380,11 +1387,14 @@ function appendToken(token) {
   scrollChat();
 }
 
-function finalizePhaseCard(phaseId, summary, tokens, ms) {
-  const d = document.getElementById(`dur-${phaseId}`);
-  const t = document.getElementById(`tok-${phaseId}`);
-  if (d) d.textContent = ms + 'ms';
+function finalizePhaseCard(phaseId, content, tokens, ms) {
+  const d  = document.getElementById(`dur-${phaseId}`);
+  const t  = document.getElementById(`tok-${phaseId}`);
+  const st = document.getElementById(`st-${phaseId}`);
+  if (d) d.textContent = ms ? ms + 'ms' : '—';
   if (t) t.textContent = tokens + ' tok';
+  // Показываем preview/content если он пришёл от сервера
+  if (st && content && !st.textContent.trim()) st.textContent = content;
   _streamTarget = null;
 }
 

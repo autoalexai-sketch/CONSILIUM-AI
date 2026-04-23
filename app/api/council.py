@@ -49,6 +49,25 @@ async def _emit(on_phase: Optional[Callable], msg: dict) -> None:
         logger.debug(f"WS emit skipped: {e}")
 
 
+def _is_simple_query(query: str) -> bool:
+    """True — простой фактический вопрос, не требует полного совета."""
+    q = query.strip().lower()
+    words = q.split()
+    # Слишком короткий
+    if len(words) <= 5:
+        return True
+    # Паттерны простых вопросов
+    simple = [
+        'погода', 'температура', 'курс валют', 'сколько стоит',
+        'какая погода', 'какой сегодня', 'какое сегодня', 'что такое',
+        'кто такой', 'когда открылся', 'когда открывается',
+        'weather', 'temperature', 'what is', 'who is', 'when did',
+        'привет', 'здраствуй', 'hello', 'hi ', 'спасибо', 'thank',
+        'столица', 'население', 'площадь', 'длина', 'высота',
+    ]
+    return any(p in q for p in simple)
+
+
 async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -> dict:
     """Единый вызов директора с fallback."""
     return await fallback_manager.call_with_backup(
@@ -69,6 +88,45 @@ async def run_council_deliberation(
 
     logger.info(f"{'='*60}")
     logger.info(f"📝 ЗАПРОС: {query[:70]}...")
+
+    # ── FAST-TRACK: простые вопросы — один директор без совета ─────────────────
+    if _is_simple_query(query):
+        logger.info("⚡ Fast-track: простой вопрос, пропускаем совет")
+        await _emit(on_phase, {"type": "phase_start", "phase": "chairman",
+                               "text": "Быстрый ответ..."})
+        lang_map = {"ru": "русском", "uk": "украинском",
+                   "ua": "украинском", "pl": "польском", "en": "English"}
+        # Определяем язык быстро
+        detected_lang = "ru"
+        if any(w in query.lower() for w in ["the ", "what ", "how ", "when ", "where "]):
+            detected_lang = "en"
+        elif any(w in query.lower() for w in ["jak ", "czy ", "co ", "gdzie ", "kiłka"]):
+            detected_lang = "pl"
+        elif any(ord(c) in range(0x400, 0x450) for c in query[:20]):
+            detected_lang = "ru"
+        lang_name = lang_map.get(detected_lang, "русском")
+        prompt = f"Отвечай на {lang_name} языке. Будь точным и полезным.\n\n{query}"
+        res = await fallback_manager._call_groq(prompt)
+        answer = res.get("content", "") if res.get("success") else "[Не удалось получить ответ]"
+        await _emit(on_phase, {
+            "type": "phase_done", "phase": "chairman",
+            "tokens": res.get("tokens", 0), "provider": res.get("provider", "groq"),
+            "preview": answer[:300]
+        })
+        return {
+            "success": True, "query": query,
+            "profile": {"language": detected_lang, "dimensions": ["FACTUAL"],
+                        "urgency": 0.3, "depth": 2},
+            "council": {"selected": ["chairman"], "directors": {}},
+            "deliberation": {"chairman": {"model": "groq", "success": True,
+                             "preview": answer[:300], "tokens": res.get("tokens", 0),
+                             "cost_usd": 0.0}},
+            "final_decision": answer,
+            "total_cost_usd": 0.0,
+            "credits_needed": 1,
+            "errors": None,
+            "synthesis_report": None,
+        }
 
     # ── 1. КЛАССИФИКАЦИЯ ─────────────────────────────────────────────────
     await _emit(on_phase, {
