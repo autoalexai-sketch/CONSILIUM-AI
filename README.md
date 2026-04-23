@@ -164,8 +164,11 @@ Server streams:
 
 ## Founder
 
-**Alex** / autoalex.ai  
-Location: Łódź, Poland (CEE)  
+Oleksandr Latyntsev
+Kraków, Poland (CEE)
+Self-employed AI Integrator
+autoalex.ai | GitHub: autoalexai-sketch
+Building AI Boardroom for Directors
 Email: autoalexai@gmail.com  
 Landing: [consilium-ai-v3.carrd.co](https://consilium-ai-v3.carrd.co)
 
