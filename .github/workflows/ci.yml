@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      OPENROUTER_API_KEY: test-openrouter-key
+      DEEPSEEK_API_KEY: test-deepseek-key
+      GROQ_API_KEY: test-groq-key
+      ANTHROPIC_API_KEY: test-anthropic-key
+      GEMINI_API_KEY: test-gemini-key
+      SECRET_KEY: test-secret-key-for-ci-only
+      DATABASE_URL: sqlite:///./ci_test.db
+      CORS_ORIGINS: "*"
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      APP_ENV: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run smoke tests
+        run: |
+          pytest tests/ -q --tb=short
+
+      - name: Check health endpoint import
+        run: |
+          python -c "from main import app; print('main.py imports OK')"

@@ -3,6 +3,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-brightgreen)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![CI](https://github.com/autoalexai-sketch/CONSILIUM-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/autoalexai-sketch/CONSILIUM-AI/actions/workflows/ci.yml)
 [![Status](https://img.shields.io/badge/Status-Public%20Alpha-orange)](https://consilium-ai-v3.carrd.co)
 
 **Consilium AI** is a multi-agent Intellectual Work Environment for strategic decision-making. Not just another chat — a structured **Board of Directors** of specialized AI agents that deliberate on your questions from every angle.
