@@ -6,7 +6,7 @@ main.py — Точка входа CONSILIUM AI v3.0
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from loguru import logger
 import os
 
@@ -70,6 +70,11 @@ async def health():
         "version": "3.0.0",
         "env": os.getenv("APP_ENV", "dev"),
     }
+
+@app.head("/health")
+async def health_head():
+    """Render использует HEAD для healthcheck на cold-start."""
+    return Response(status_code=200)
 
 @app.get("/version")
 async def version():

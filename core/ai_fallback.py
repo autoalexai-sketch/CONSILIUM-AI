@@ -1,7 +1,8 @@
 """
 AI Fallback Manager для Consilium AI
-Цепочка: Groq → OpenRouter → Gemini → Ollama
+Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama
 Groq добавлен первым — бесплатный, быстрый, свежий ключ.
+DeepSeek V4 вторым — дешевый (~$0.28/1M), MoE-архитектура, OpenAI-совместим.
 """
 
 import os
@@ -19,9 +20,10 @@ class AIFallbackManager:
     """
     Провайдеры в порядке приоритета:
       1. Groq         — бесплатный, быстрый (llama3-70b-8192)
-      2. OpenRouter   — платный, все модели
-      3. Gemini       — бесплатный лимит
-      4. Ollama       — локальный
+      2. DeepSeek V4  — дешево, MoE, OpenAI-совместим
+      3. OpenRouter   — платный, все модели
+      4. Gemini       — бесплатный лимит
+      5. Ollama       — локальный
     """
 
     def __init__(self):
@@ -34,6 +36,16 @@ class AIFallbackManager:
             print("✅ Groq доступен (приоритет 1)")
         else:
             print("⚠️ GROQ_API_KEY не найден")
+
+        # DeepSeek V4 (приоритет 2 — дешево, MoE, OpenAI-совместим)
+        self.deepseek_key = os.getenv("DEEPSEEK_API_KEY")
+        self.deepseek_available = bool(self.deepseek_key)
+        self.deepseek_url = "https://api.deepseek.com/v1/chat/completions"
+        self.deepseek_model = "deepseek-v4-pro"
+        if self.deepseek_available:
+            print("✅ DeepSeek V4 доступен (приоритет 2)")
+        else:
+            print("⚠️ DEEPSEEK_API_KEY не найден")
 
         # Claude (для Synthesizer)
         self.claude_key = os.getenv("ANTHROPIC_API_KEY")
@@ -72,6 +84,39 @@ class AIFallbackManager:
             print(f"⚠️ Ollama недоступна: {e}")
             return False
 
+    # ── DeepSeek V4 вызов ────────────────────────────────────────────────
+    async def _call_deepseek(self, prompt: str, model: str = None) -> Dict[str, Any]:
+        """DeepSeek V4 API (OpenAI-compatible). ~$0.28/1M tokens."""
+        target = model or self.deepseek_model
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                response = await client.post(
+                    self.deepseek_url,
+                    headers={"Authorization": f"Bearer {self.deepseek_key}",
+                             "Content-Type": "application/json"},
+                    json={
+                        "model": target,
+                        "messages": [{"role": "user", "content": prompt}],
+                        "max_tokens": 2000,
+                        "temperature": 0.7,
+                    },
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"]
+                    tokens = data.get("usage", {}).get("total_tokens", 0)
+                    self.last_provider = "deepseek"
+                    return {"success": True, "content": content,
+                            "provider": "deepseek", "model": target,
+                            "tokens": tokens,
+                            "cost_usd": round(tokens * 0.00000028, 6)}
+                else:
+                    err = response.text[:200]
+                    return {"success": False,
+                            "error": f"DeepSeek HTTP {response.status_code}: {err}"}
+        except Exception as e:
+            return {"success": False, "error": f"DeepSeek exception: {str(e)[:100]}"}
+
     # ── Groq вызов ───────────────────────────────────────────────────────
     async def _call_groq(self, prompt: str, model: str = None) -> Dict[str, Any]:
         """Прямой вызов Groq API (OpenAI-compatible)."""
@@ -106,7 +151,7 @@ class AIFallbackManager:
 
     # ── Главная цепочка ───────────────────────────────────────────────────
     async def call_with_backup(self, primary_func: Callable, *args, **kwargs) -> Dict[str, Any]:
-        """Цепочка: Groq → OpenRouter → Gemini → Ollama"""
+        """Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama"""
 
         # Если локальная модель (без '/') → сразу Ollama
         spec_arg = args[0] if args else None
@@ -142,7 +187,20 @@ class AIFallbackManager:
             except Exception as e:
                 print(f"⚠️ Groq exception: {str(e)[:80]}")
 
-        # ── УРОВЕНЬ 2: OpenRouter ────────────────────────────────────────
+        # ── УРОВЕНЬ 2: DeepSeek V4 ───────────────────────────────────────
+        if self.deepseek_available:
+            try:
+                prompt = self._extract_prompt(args, kwargs)
+                result = await self._call_deepseek(prompt)
+                if result.get("success"):
+                    print(f"✅ DeepSeek: {len(result.get('content',''))} chars")
+                    return result
+                else:
+                    print(f"⚠️ DeepSeek failed: {result.get('error','')[:80]}")
+            except Exception as e:
+                print(f"⚠️ DeepSeek exception: {str(e)[:80]}")
+
+        # ── УРОВЕНЬ 3: OpenRouter ────────────────────────────────────────
         try:
             result = await asyncio.wait_for(primary_func(*args, **kwargs), timeout=60.0)
             if result and hasattr(result, '__dataclass_fields__'):
@@ -167,7 +225,7 @@ class AIFallbackManager:
         except Exception as e:
             print(f"⚠️ OpenRouter failed: {str(e)[:100]}")
 
-        # ── УРОВЕНЬ 3: Gemini ────────────────────────────────────────────
+        # ── УРОВЕНЬ 4: Gemini ────────────────────────────────────────────
         if self.gemini_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
@@ -182,7 +240,7 @@ class AIFallbackManager:
             except Exception as e:
                 print(f"⚠️ Gemini failed: {str(e)[:100]}")
 
-        # ── УРОВЕНЬ 4: Ollama ────────────────────────────────────────────
+        # ── УРОВЕНЬ 5: Ollama ────────────────────────────────────────────
         if self.ollama_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
@@ -197,7 +255,7 @@ class AIFallbackManager:
                 print(f"⚠️ Ollama failed: {str(e)[:120]}")
 
         return {"success": False,
-                "error": "All providers failed (Groq → OpenRouter → Gemini → Ollama)",
+                "error": "All providers failed (Groq → DeepSeek → OpenRouter → Gemini → Ollama)",
                 "provider": "none",
                 "content": "[Ошибка: все провайдеры недоступны. Проверьте GROQ_API_KEY в .env]"}
 

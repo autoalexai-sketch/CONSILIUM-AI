@@ -1011,12 +1011,16 @@ async function doLogin() {
   if (!email || !pass) { err.textContent = 'Введите email и пароль'; return; }
   btn.disabled = true; btn.textContent = 'Входим...'; err.textContent = '';
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
   try {
     const res = await fetch(`${CFG.BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pass }),
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
     if (!res.ok) {
       const d = await res.json().catch(() => ({}));
       throw new Error(d.detail || 'Неверные данные');
@@ -1027,7 +1031,12 @@ async function doLogin() {
     await loadUser();
     hideAuth();
   } catch(e) {
-    err.textContent = e.message;
+    clearTimeout(timer);
+    if (e.name === 'AbortError') {
+      err.textContent = 'Сервер просыпается (cold start) — подождите 10 сек и попробуйте снова';
+    } else {
+      err.textContent = e.message;
+    }
     btn.disabled = false; btn.textContent = 'Войти → Совет директоров';
   }
 }
@@ -1067,12 +1076,16 @@ async function doRegister() {
   if (!email || !pass) { err.textContent = 'Заполните все поля'; return; }
   btn.disabled = true; btn.textContent = 'Создаём...';
 
+  const ctrl2 = new AbortController();
+  const timer2 = setTimeout(() => ctrl2.abort(), 15000);
   try {
     const res = await fetch(`${CFG.BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pass }),
+      signal: ctrl2.signal,
     });
+    clearTimeout(timer2);
     if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail||'Ошибка'); }
     const data = await res.json();
     S.token = data.token || data.access_token;
@@ -1081,7 +1094,12 @@ async function doRegister() {
     hideAuth();
     toast('✅', 'Аккаунт создан!');
   } catch(e) {
-    err.textContent = e.message;
+    clearTimeout(timer2);
+    if (e.name === 'AbortError') {
+      err.textContent = 'Сервер просыпается (cold start) — подождите 10 сек и попробуйте снова';
+    } else {
+      err.textContent = e.message;
+    }
     btn.disabled = false; btn.textContent = 'Создать аккаунт';
   }
 }
