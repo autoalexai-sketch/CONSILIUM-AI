@@ -14,14 +14,16 @@ app/api/ws_council.py — WebSocket эндпоинт для стриминга �
 """
 
 import json
+import time
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, BackgroundTasks
 from sqlalchemy.sql import select, update
 from loguru import logger
 
 from app.database import engine, users
 from app.dependencies import verify_jwt_token
 from app.api.council import run_council_deliberation
+from core.experience.experience_service import experience_service
 
 router = APIRouter()
 
@@ -90,6 +92,19 @@ async def ws_council(websocket: WebSocket):
         user_credits = user.credits
         logger.info(f"🔌 WS: user={user_id} credits={user_credits} msg={message[:50]}...")
 
+        # ── Experience: начинаем сессию ───────────────────────────────────
+        exp_session_id: int | None = None
+        t_start = time.monotonic()
+        try:
+            exp_session_id = experience_service.create_session(
+                user_id=user_id,
+                chat_id=chat_id or "ws",
+                query_text=message,
+                protocol_used="council",
+            )
+        except Exception as _e:
+            logger.warning(f"⚠️ ExperienceService.create_session failed: {_e}")
+
         # 4. Callback для стриминга фаз клиенту
         async def on_phase(msg: dict) -> None:
             await websocket.send_json(msg)
@@ -111,6 +126,33 @@ async def ws_council(websocket: WebSocket):
             conn.commit()
 
         logger.info(f"🔌 WS: done | credits {user_credits}→{new_credits}")
+
+        # ── Experience: финализируем сессию ────────────────────────────────
+        if exp_session_id is not None:
+            try:
+                latency_ms = int((time.monotonic() - t_start) * 1000)
+                coherence  = result.get("coherence_score")
+                cost       = result.get("total_cost_usd", 0.0)
+                experience_service.finalize_session(
+                    session_id=exp_session_id,
+                    status="success",
+                    outcome_label="unverified",
+                    coherence_score=coherence,
+                    latency_ms=latency_ms,
+                    cost_usd=cost,
+                )
+                # Сигнал качества от Synthesizer
+                if coherence is not None:
+                    experience_service.add_signal(
+                        session_id=exp_session_id,
+                        signal_type="coherence_score",
+                        value_num=float(coherence),
+                        source="synthesizer",
+                        weight=1.0,
+                    )
+                logger.debug(f"📝 Experience logged: session={exp_session_id} latency={latency_ms}ms")
+            except Exception as _e:
+                logger.warning(f"⚠️ ExperienceService.finalize failed: {_e}")
 
         # 7. Финальный результат
         await websocket.send_json({

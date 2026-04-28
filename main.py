@@ -16,6 +16,8 @@ from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
 from app.api.council import router as council_router
 from app.api.ws_council import router as ws_router
+from app.api.experience import router as experience_router
+from app.middleware.security import add_security_headers
 
 # ── Приложение ────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -37,11 +39,15 @@ app.add_middleware(
 # Auth монтируем дважды:
 #   /register  /login  /verify       ← используется при регистрации
 #   /api/auth/register  /api/auth/login  /api/auth/verify  ← используется при логине
-app.include_router(auth_router,    prefix="",          tags=["auth"])
-app.include_router(auth_router,    prefix="/api/auth", tags=["auth-compat"])
-app.include_router(chat_router,    prefix="",          tags=["chat"])
-app.include_router(council_router, prefix="",          tags=["council"])
-app.include_router(ws_router,      prefix="",          tags=["websocket"])
+app.include_router(auth_router,       prefix="",          tags=["auth"])
+app.include_router(auth_router,       prefix="/api/auth",  tags=["auth-compat"])
+app.include_router(chat_router,       prefix="",           tags=["chat"])
+app.include_router(council_router,    prefix="",           tags=["council"])
+app.include_router(ws_router,         prefix="",           tags=["websocket"])
+app.include_router(experience_router, tags=["experience"])
+
+# ── Security headers ──────────────────────────────────────────────────────
+add_security_headers(app)
 
 # ── Статические файлы (frontend) ──────────────────────────────────────────
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")

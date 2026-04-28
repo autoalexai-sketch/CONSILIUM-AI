@@ -110,8 +110,14 @@ def test_ws_rejects_invalid_token():
 
 
 # ── ExperienceRanker unit test ─────────────────────────────────────────────
-# TODO: включить в Этапе 4 когда core/experience/ будет создан
-# def test_experience_ranker_weights(): ...
+def test_experience_ranker_weights():
+    """Теперь core/experience/ существует — разблокировано."""
+    from core.experience.experience_ranker import ExperienceRanker
+    r = ExperienceRanker()
+    standard = r.score(0.8, 0.6, "standard")
+    crisis    = r.score(0.8, 0.6, "crisis")
+    assert standard > 0.6
+    assert crisis   > 0.6
 
 
 # ── ai_fallback: DeepSeek провайдер инициализируется ──────────────────────
