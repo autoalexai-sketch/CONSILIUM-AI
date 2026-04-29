@@ -18,6 +18,7 @@ from app.api.council import router as council_router
 from app.api.ws_council import router as ws_router
 from app.api.experience import router as experience_router
 from app.middleware.security import add_security_headers
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # ── Приложение ────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -48,6 +49,9 @@ app.include_router(experience_router, tags=["experience"])
 
 # ── Security headers ──────────────────────────────────────────────────────
 add_security_headers(app)
+
+# ── Prometheus ──────────────────────────────────────────────────────
+Instrumentator().instrument(app).expose(app)
 
 # ── Статические файлы (frontend) ──────────────────────────────────────────
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
