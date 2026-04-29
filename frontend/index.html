@@ -1163,7 +1163,14 @@ async function loadKnowledgeCounts() {
   } catch{}
 }
 
-function hideAuth() { document.getElementById('auth-overlay').classList.add('hidden'); }
+function hideAuth() {
+  // Инлайновый style имеет приоритет над классом hidden — сбрасываем оба
+  const overlay = document.getElementById('auth-overlay');
+  overlay.style.display = 'none';
+  overlay.classList.add('hidden');
+  const regOverlay = document.getElementById('register-overlay');
+  if (regOverlay) { regOverlay.style.display = 'none'; regOverlay.classList.add('hidden'); }
+}
 function logout() {
   localStorage.removeItem('consilium_token');
   S.token = null; S.user = null;
@@ -1428,7 +1435,10 @@ function addThinkRow(name, model) {
   S.currentBlock.appendChild(el);
   scrollChat(); return el;
 }
-function removeThinkRow() { document.getElementById('think-row')?.remove(); }
+function removeThinkRow() {
+  // Убираем ВСЕ think-row — иначе при нескольких фазах первый id забивает последующие
+  document.querySelectorAll('.think-row').forEach(el => el.remove());
+}
 
 function addVetoBanner(coherence, reason) {
   if (!S.currentBlock) return;
@@ -1450,6 +1460,11 @@ function addSimpleResponse(text, phases) {
 
 function onFinalResponse(msg) {
   resetWorking();
+  // Показываем полный ответ Chairman (preview был обрезан до 200 символов)
+  if (msg.response) {
+    const st = document.getElementById('st-chairman');
+    if (st) st.textContent = msg.response;
+  }
   const used = msg.credits_used || 0;
   const ms = msg.total_ms || 0;
   toast('✅', `Делиберация завершена · ${used} кред · ${(ms/1000).toFixed(1)}с`);
