@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.Python
+
+# Virtual environments — главная причина 15GB контекста
+venv/
+.venv/
+env/
+ENV/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Databases & local data
+*.db
+*.sqlite
+*.sqlite3
+consilium.db
+
+# Logs
+logs/
+*.log
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests (не нужны в production образе)
+tests/
+pytest.ini
+.pytest_cache/
+
+# Docker itself
+DockerDesktopWSL/
