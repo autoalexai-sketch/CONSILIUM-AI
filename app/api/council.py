@@ -135,6 +135,11 @@ async def run_council_deliberation(
     })
     profile = await classifier.analyze(query)
     await save_classification_log(query, profile)
+    await _emit(on_phase, {
+        "type": "phase_done", "phase": "classifier",
+        "tokens": 0, "provider": "local",
+        "preview": f"{profile.primary_dimension.value} | depth={profile.required_depth}"
+    })
 
     # ── 2. ВЫБОР СОВЕТА ──────────────────────────────────────────────────
     is_free = user_credits <= 0

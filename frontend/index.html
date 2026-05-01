@@ -1244,6 +1244,12 @@ function handleWSMsg(msg) {
       removeThinkRow();
       break;
 
+    case 'phase_error':      // director failed — закрываем карточку с ошибкой
+      finalizePhaseCard(msg.phase, `⚠️ ${msg.error || 'провайдер недоступен'}`, 0, 0);
+      completeCP(msg.phase, 0);
+      removeThinkRow();
+      break;
+
     case 'synthesizer_veto':
       addVetoBanner(msg.coherence, msg.reason);
       break;
