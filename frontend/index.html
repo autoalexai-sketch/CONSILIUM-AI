@@ -999,6 +999,7 @@ const S = {
   chatId:      crypto.randomUUID(),
   currentBlock: null,
   currentCard:  null,
+  sid:         0,   // уникальный id сессии — инкрементируется при каждом doSend()
 };
 
 // ════════════════════ AUTH ════════════════════
@@ -1283,6 +1284,13 @@ function doSend() {
   if (greet) greet.remove();
 
   addUserMsg(text);
+
+  // Новый уникальный id сессии + новый блок для этого ответа
+  S.sid++;
+  S.currentBlock = document.createElement('div');
+  S.currentBlock.className = 'd-block';
+  document.getElementById('chat-area').appendChild(S.currentBlock);
+
   startWorking();
   resetPhaseSteps();
   resetCPhases();
@@ -1350,10 +1358,7 @@ const DEMO_CONTENT = {
 async function runDemo(query) {
   // Simulate classifier
   simulateClassifier();
-
-  S.currentBlock = document.createElement('div');
-  S.currentBlock.className = 'd-block';
-  document.getElementById('chat-area').appendChild(S.currentBlock);
+  // S.currentBlock уже создан в doSend() — не создаём дубль
 
   for (const p of DEMO_PHASES) {
     activatePS(p.id); activateCP(p.id);
@@ -1377,23 +1382,24 @@ async function runDemo(query) {
 
 let _streamTarget = null;
 function startPhaseCard(phaseId, name, model) {
+  const sid = S.sid;
   const isChairman = phaseId === 'chairman';
   const card = document.createElement('div');
   card.className = `pcard${isChairman?' chairman-card':''}`;
-  card.id = `card-${phaseId}`;
+  card.id = `card-${sid}-${phaseId}`;
   card.innerHTML = `
     <div class="pcard-head" onclick="toggleCard(this)">
       <div class="pd ${phaseId}"></div>
       <span class="pname">${name}</span>
       <span class="pmodel">${model}</span>
-      <span class="pdur" id="dur-${phaseId}">...</span>
-      <span class="ptoks" id="tok-${phaseId}">—</span>
+      <span class="pdur" id="dur-${sid}-${phaseId}">...</span>
+      <span class="ptoks" id="tok-${sid}-${phaseId}">—</span>
     </div>
-    <div class="pcard-body" id="body-${phaseId}">
-      <div class="stream-text" id="st-${phaseId}"></div>
+    <div class="pcard-body" id="body-${sid}-${phaseId}">
+      <div class="stream-text" id="st-${sid}-${phaseId}"></div>
     </div>`;
   if (S.currentBlock) S.currentBlock.appendChild(card);
-  _streamTarget = document.getElementById(`st-${phaseId}`);
+  _streamTarget = document.getElementById(`st-${sid}-${phaseId}`);
   scrollChat();
 }
 
@@ -1419,12 +1425,12 @@ function appendToken(token) {
 }
 
 function finalizePhaseCard(phaseId, content, tokens, ms) {
-  const d  = document.getElementById(`dur-${phaseId}`);
-  const t  = document.getElementById(`tok-${phaseId}`);
-  const st = document.getElementById(`st-${phaseId}`);
+  const sid = S.sid;
+  const d  = document.getElementById(`dur-${sid}-${phaseId}`);
+  const t  = document.getElementById(`tok-${sid}-${phaseId}`);
+  const st = document.getElementById(`st-${sid}-${phaseId}`);
   if (d) d.textContent = ms ? ms + 'ms' : '—';
   if (t) t.textContent = tokens + ' tok';
-  // Показываем preview/content если он пришёл от сервера
   if (st && content && !st.textContent.trim()) st.textContent = content;
   _streamTarget = null;
 }
@@ -1466,9 +1472,9 @@ function addSimpleResponse(text, phases) {
 
 function onFinalResponse(msg) {
   resetWorking();
-  // Показываем полный ответ Chairman (preview был обрезан до 200 символов)
+  // Показываем полный ответ Chairman текущей сессии (не первого блока в DOM)
   if (msg.response) {
-    const st = document.getElementById('st-chairman');
+    const st = document.getElementById(`st-${S.sid}-chairman`);
     if (st) st.textContent = msg.response;
   }
   const used = msg.credits_used || 0;
