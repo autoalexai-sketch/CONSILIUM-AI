@@ -47,7 +47,13 @@ class CognitiveClassifier:
     PROCEDURAL_UK = ["як","який порядок","покроково","покрокова інструкція","процес","процедура","алгоритм","спосіб","метод","чекліст","план дій","де отримати","куди звернутися","порядок дій","інструкція","кроки","етапи"]
     FACTUAL_UK = ["скільки","що таке","коли","де","хто","який","котрий","розмір","ставка","норма","правило","закон","вартість","ціна","термін","дата","кількість"]
     CREATIVE_UK = ["придумати","назва","ідея для","дизайн","логотип","назвати","бренд","концепція","креатив","створити","вигадати","розробити","згенерувати","помислити"]
-    ETHICAL_UK = ["правильно","етично","морально","чи повинен я","совість","провина","відповідальність","зрада","чесність","справедливість","добре чи погано","чесно","порядно"]
+    ETHICAL_UK = ["правильно","етично","морально","чи повинен я","совість","провина","відповідальність","зрада","чесність","справедливість","добре чи погано","чесно","порядно",
+                  # Репутація та бізнес-етика
+                  "репутаційний ризик","репутація","імідж","сумнівний","сумнівні методи","утилізація","відходи","екологічний",
+                  "єдиний постачальник","постачальник","ланцюг постачань","корупція","хабар","конфлікт інтересів",
+                  "порушення","незаконно","нелегально","маніпуляція","обман","шахрайство",
+                  # Дилеми та рішення
+                  "дилема","моральний вибір","ціна питання","за яку ціну","чи варто","чи можна","межа","де межа"]
     CHAOS_UK = ["кризис","катастрофа","аварія","злам","загроза","терміново і незрозуміло","паніка","не знаю що робити","все руйнується","допоможіть терміново","вибухова ситуація","колапс"]
     COMPLEX_UK = ["залежить від","неоднозначно","багато факторів","складна система","взаємопов'язано","непередбачувано","парадокс","дилема","протиріччя","компроміс","баланс","система"]
     COMPLICATED_UK = ["багато документів","декілька етапів","багато частин","складна процедура","багато кроків","бюрократія","паперова тяганина","інстанції","погодження"]
@@ -72,7 +78,22 @@ class CognitiveClassifier:
     PROCEDURAL_MARKERS = ["как","какой порядок","пошагово","пошаговая инструкция","процесс","процедура","алгоритм","способ","метод","чеклист","план действий","roadmap","где получить","jak","proces","procedura","krok po kroku","instrukcja","how to","steps","process","procedure","checklist","guide","tutorial","walkthrough","where to get"]
     FACTUAL_MARKERS = ["сколько","что такое","когда","где","кто","какой","который","размер","ставка","норма","правило","закон","ile","co to","kiedy","gdzie","kto","jaki","rozmiar","stawka","norma","prawo","reguła","how much","what is","when","where","who","which","size","rate","rule","law","norm","what are"]
     CREATIVE_MARKERS = ["придумать","название","идея для","дизайн","логотип","назвать","бренд","концепция","креатив","создать","wymyślić","nazwa","pomysł na","projekt","logo","marka","koncepcja","kreatywne","stworzyć","create","name for","design","logo","brand","concept","creative","idea for","brainstorm","invent"]
-    ETHICAL_MARKERS = ["правильно","этично","морально","должен ли я","совесть","вина","ответственность","предательство","честность","słusznie","etycznie","moralnie","powinienem","sumienie","wina","odpowiedzialność","uczciwość","right thing","ethical","moral","should I","conscience","guilt","responsibility","honesty","betrayal","fair"]
+    ETHICAL_MARKERS = ["правильно","этично","морально","должен ли я","совесть","вина","ответственность","предательство","честность","słusznie","etycznie","moralnie","powinienem","sumienie","wina","odpowiedzialność","uczciwość","right thing","ethical","moral","should I","conscience","guilt","responsibility","honesty","betrayal","fair",
+                       # Репутация и бизнес-этика (из теста: вопрос про поставщика)
+                       "репутационный риск","репутация","имидж","сомнительный","сомнительные методы","утилизация","отходы","экологический ущерб",
+                       "единственный поставщик","поставщик","цепочка поставок","коррупция","взятка","конфликт интересов",
+                       "нарушение","незаконно","нелегально","манипуляция","обман","мошенничество","злоупотребление",
+                       "репутационный","ущерб репутации","риск для репутации",
+                       # Польский
+                       "reputacja","ryzyko reputacyjne","wątpliwe metody","utylizacja","odpady","dostawca","jedyny dostawca",
+                       "korupcja","łapówka","konflikt interesów","naruszenie","nielegalne","manipulacja","oszustwo",
+                       # English
+                       "reputation","reputational risk","questionable","dubious","waste disposal","supplier","sole supplier",
+                       "supply chain","corruption","bribery","conflict of interest","violation","illegal","manipulation","fraud","abuse",
+                       "whistleblower","cover up","cover-up","greenwashing","malpractice","misconduct",
+                       # Дилеммы
+                       "дилемма","моральный выбор","какой ценой","стоит ли","где граница","можно ли","этический выбор",
+                       "dylemat moralny","czy warto","gdzie granica","ethical dilemma","moral dilemma","trade-off ethics"]
     CHAOS_MARKERS = ["кризис","катастрофа","авария","взлом","угроза","срочно и непонятно","паника","не знаю что делать","всё рушится","помогите срочно","kryzys","katastrofa","wypadek","włamanie","zagrożenie","crisis","disaster","emergency","hacked","threat","everything collapsing","don't know what to do","urgent help"]
     COMPLEX_MARKERS = ["зависит от","неоднозначно","много факторов","сложная система","взаимосвязано","непредсказуемо","парадокс","дилемма","zależy od","niejednoznaczne","wiele czynników","system","wzajemnie połączone","nieprzewidywalne","paradoks","dylemat","depends on","uncertain","many factors","complex system","interconnected","unpredictable","paradox","dilemma","trade-off"]
     COMPLICATED_MARKERS = ["много документов","несколько этапов","много частей","сложная процедура","много шагов","бюрократия","wiele dokumentów","etapy","części","skomplikowana procedura","biurokracja","kroki","many documents","multiple stages","many parts","complicated procedure","many steps","bureaucracy"]
