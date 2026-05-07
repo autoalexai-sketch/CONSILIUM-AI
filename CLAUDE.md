@@ -5,7 +5,7 @@
 CONSILIUM AI v3.0 — мультиагентная система делиберации ("Совет директоров") на FastAPI.
 9 ролей: Scout, Analyst, Architect, Devil's Advocate, Synthesizer, Verifier, Chairman + др.
 Цель: IWE (Intellectual Work Environment) для стратегических решений, CEE-рынок (PL/UA/EN).
-Автор: Oleksandr Latyntsev, Łódź PL. GitHub: autoalexai-sketch/CONSILIUM-AI
+Автор: Oleksandr Latyntsev, Kraków PL. GitHub: autoalexai-sketch/CONSILIUM-AI
 
 ---
 
