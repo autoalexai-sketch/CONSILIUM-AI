@@ -1,5 +1,5 @@
-"""
-app/database.py — Подключение к базе данных, определение таблиц.
+﻿"""
+app/database.py â€” ĐźĐľĐ´ĐşĐ»ŃŽŃ‡ĐµĐ˝Đ¸Đµ Đş Đ±Đ°Đ·Đµ Đ´Đ°Đ˝Đ˝Ń‹Ń…, ĐľĐżŃ€ĐµĐ´ĐµĐ»ĐµĐ˝Đ¸Đµ Ń‚Đ°Đ±Đ»Đ¸Ń†.
 """
 
 from datetime import datetime
@@ -39,7 +39,7 @@ chat_history = Table(
     Column("updated_at", DateTime, default=datetime.utcnow),
 )
 
-# ── Experience Layer ──────────────────────────────────────────────────────────
+# â”€â”€ Experience Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 experience_sessions = Table(
     "experience_sessions",
     metadata,
@@ -78,30 +78,71 @@ experience_signals = Table(
 )
 
 
+# ── Decision Journal ──────────────────────────────────────────────────────────
+decision_journal = Table(
+    "decision_journal",
+    metadata,
+    Column("id",            Integer,      primary_key=True),
+    Column("user_id",       Integer,      nullable=False),
+    Column("session_id",    Integer,      nullable=True),
+    Column("title",         String(255),  nullable=False),
+    Column("query_text",    Text,         nullable=False),
+    Column("verdict",       Text,         nullable=False),
+    Column("council_used",  String(500),  nullable=True),
+    Column("outcome_label", String(50),   nullable=True),
+    Column("tags",          String(500),  nullable=True),
+    Column("is_pinned",     Boolean,      default=False),
+    Column("created_at",    DateTime,     default=datetime.utcnow),
+    Column("updated_at",    DateTime,     default=datetime.utcnow),
+)
+
+# ── User Principles ───────────────────────────────────────────────────────────
+user_principles = Table(
+    "user_principles",
+    metadata,
+    Column("id",          Integer,     primary_key=True),
+    Column("user_id",     Integer,     nullable=False),
+    Column("title",       String(255), nullable=False),
+    Column("body",        Text,        nullable=False),
+    Column("source",      String(255), nullable=True),
+    Column("category",    String(100), nullable=True),
+    Column("is_active",   Boolean,     default=True),
+    Column("created_at",  DateTime,    default=datetime.utcnow),
+)
 def init_database() -> None:
-    """Создаёт таблицы при первом запуске или обновляет структуру."""
+    """ĐˇĐľĐ·Đ´Đ°Ń‘Ń‚ Ń‚Đ°Đ±Đ»Đ¸Ń†Ń‹ ĐżŃ€Đ¸ ĐżĐµŃ€Đ˛ĐľĐĽ Đ·Đ°ĐżŃŃĐşĐµ Đ¸Đ»Đ¸ ĐľĐ±Đ˝ĐľĐ˛Đ»ŃŹĐµŃ‚ ŃŃ‚Ń€ŃĐşŃ‚ŃŃ€Ń."""
     inspector = inspect(engine)
 
     if inspector.has_table("users"):
         columns = [col["name"] for col in inspector.get_columns("users")]
         if "auth_token" not in columns:
-            logger.warning("Структура БД устарела — выполняется миграция...")
+            logger.warning("ĐˇŃ‚Ń€ŃĐşŃ‚ŃŃ€Đ° Đ‘Đ” ŃŃŃ‚Đ°Ń€ĐµĐ»Đ° â€” Đ˛Ń‹ĐżĐľĐ»Đ˝ŃŹĐµŃ‚ŃŃŹ ĐĽĐ¸ĐłŃ€Đ°Ń†Đ¸ŃŹ...")
             metadata.drop_all(engine, tables=[users])
             metadata.create_all(engine)
-            logger.info("✅ База данных обновлена!")
+            logger.info("âś… Đ‘Đ°Đ·Đ° Đ´Đ°Đ˝Đ˝Ń‹Ń… ĐľĐ±Đ˝ĐľĐ˛Đ»ĐµĐ˝Đ°!")
     else:
         metadata.create_all(engine)
 
     if not inspector.has_table("chat_history"):
         chat_history.create(engine)
 
-    # Experience Layer — создаём если ещё нет
+    # Experience Layer â€” ŃĐľĐ·Đ´Đ°Ń‘ĐĽ ĐµŃĐ»Đ¸ ĐµŃ‰Ń‘ Đ˝ĐµŃ‚
     if not inspector.has_table("experience_sessions"):
         experience_sessions.create(engine)
-        logger.info("✅ experience_sessions table created")
+        logger.info("âś… experience_sessions table created")
 
     if not inspector.has_table("experience_signals"):
         experience_signals.create(engine)
-        logger.info("✅ experience_signals table created")
+        logger.info("âś… experience_signals table created")
 
-    logger.info("✅ Database initialized")
+    if not inspector.has_table("decision_journal"):
+        decision_journal.create(engine)
+        logger.info("decision_journal table created")
+
+    if not inspector.has_table("user_principles"):
+        user_principles.create(engine)
+        logger.info("user_principles table created")
+
+    logger.info("âś… Database initialized")
+
+

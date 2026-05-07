@@ -1,11 +1,11 @@
-"""
-app/api/ws_council.py — WebSocket эндпоинт для стриминга делиберации.
+﻿"""
+app/api/ws_council.py â€” WebSocket ŃŤĐ˝Đ´ĐżĐľĐ¸Đ˝Ń‚ Đ´Đ»ŃŹ ŃŃ‚Ń€Đ¸ĐĽĐ¸Đ˝ĐłĐ° Đ´ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸Đ¸.
 
-Протокол:
-  Клиент → Сервер (первое сообщение, JSON):
-    {"token": "eyJ...", "message": "текст запроса", "chat_id": "chat_..."}
+ĐźŃ€ĐľŃ‚ĐľĐşĐľĐ»:
+  ĐšĐ»Đ¸ĐµĐ˝Ń‚ â†’ ĐˇĐµŃ€Đ˛ĐµŃ€ (ĐżĐµŃ€Đ˛ĐľĐµ ŃĐľĐľĐ±Ń‰ĐµĐ˝Đ¸Đµ, JSON):
+    {"token": "eyJ...", "message": "Ń‚ĐµĐşŃŃ‚ Đ·Đ°ĐżŃ€ĐľŃĐ°", "chat_id": "chat_..."}
 
-  Сервер → Клиент:
+  ĐˇĐµŃ€Đ˛ĐµŃ€ â†’ ĐšĐ»Đ¸ĐµĐ˝Ń‚:
     {"type": "council_ready",  "selected": [...]}
     {"type": "phase_start",    "phase": "scout", "text": "..."}
     {"type": "phase_done",     "phase": "scout", "tokens": 198, "provider": "...", "preview": "..."}
@@ -31,10 +31,10 @@ router = APIRouter()
 @router.websocket("/ws/council")
 async def ws_council(websocket: WebSocket):
     await websocket.accept()
-    logger.info("🔌 WS: новое подключение")
+    logger.info("đź”Ś WS: Đ˝ĐľĐ˛ĐľĐµ ĐżĐľĐ´ĐşĐ»ŃŽŃ‡ĐµĐ˝Đ¸Đµ")
 
     try:
-        # 1. Читаем первое сообщение
+        # 1. Đ§Đ¸Ń‚Đ°ĐµĐĽ ĐżĐµŃ€Đ˛ĐľĐµ ŃĐľĐľĐ±Ń‰ĐµĐ˝Đ¸Đµ
         raw = await websocket.receive_text()
         try:
             data = json.loads(raw)
@@ -47,10 +47,10 @@ async def ws_council(websocket: WebSocket):
         message = data.get("message", "").strip()
         chat_id = data.get("chat_id", "")
 
-        # Пинг при подключении — не обрабатываем как запрос
+        # ĐźĐ¸Đ˝Đł ĐżŃ€Đ¸ ĐżĐľĐ´ĐşĐ»ŃŽŃ‡ĐµĐ˝Đ¸Đ¸ â€” Đ˝Đµ ĐľĐ±Ń€Đ°Đ±Đ°Ń‚Ń‹Đ˛Đ°ĐµĐĽ ĐşĐ°Đş Đ·Đ°ĐżŃ€ĐľŃ
         if message == "__ping__":
             await websocket.send_json({"type": "pong"})
-            # Ждём следующее сообщение
+            # Đ–Đ´Ń‘ĐĽ ŃĐ»ĐµĐ´ŃŃŽŃ‰ĐµĐµ ŃĐľĐľĐ±Ń‰ĐµĐ˝Đ¸Đµ
             raw2 = await websocket.receive_text()
             try:
                 data = json.loads(raw2)
@@ -66,7 +66,7 @@ async def ws_council(websocket: WebSocket):
             await websocket.close(code=1008)
             return
 
-        # 2. Верификация JWT
+        # 2. Đ’ĐµŃ€Đ¸Ń„Đ¸ĐşĐ°Ń†Đ¸ŃŹ JWT
         payload = verify_jwt_token(token)
         if payload is None:
             await websocket.send_json({"type": "error", "message": "Token invalid or expired."})
@@ -80,7 +80,7 @@ async def ws_council(websocket: WebSocket):
             await websocket.close(code=4001)
             return
 
-        # 3. Получаем пользователя
+        # 3. ĐźĐľĐ»ŃŃ‡Đ°ĐµĐĽ ĐżĐľĐ»ŃŚĐ·ĐľĐ˛Đ°Ń‚ĐµĐ»ŃŹ
         with engine.connect() as conn:
             user = conn.execute(select(users).where(users.c.id == user_id)).fetchone()
 
@@ -90,9 +90,9 @@ async def ws_council(websocket: WebSocket):
             return
 
         user_credits = user.credits
-        logger.info(f"🔌 WS: user={user_id} credits={user_credits} msg={message[:50]}...")
+        logger.info(f"đź”Ś WS: user={user_id} credits={user_credits} msg={message[:50]}...")
 
-        # ── Experience: начинаем сессию ───────────────────────────────────
+        # â”€â”€ Experience: Đ˝Đ°Ń‡Đ¸Đ˝Đ°ĐµĐĽ ŃĐµŃŃĐ¸ŃŽ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         exp_session_id: int | None = None
         t_start = time.monotonic()
         try:
@@ -103,13 +103,13 @@ async def ws_council(websocket: WebSocket):
                 protocol_used="council",
             )
         except Exception as _e:
-            logger.warning(f"⚠️ ExperienceService.create_session failed: {_e}")
+            logger.warning(f"âš ď¸Ź ExperienceService.create_session failed: {_e}")
 
-        # 4. Callback для стриминга фаз клиенту
+        # 4. Callback Đ´Đ»ŃŹ ŃŃ‚Ń€Đ¸ĐĽĐ¸Đ˝ĐłĐ° Ń„Đ°Đ· ĐşĐ»Đ¸ĐµĐ˝Ń‚Ń
         async def on_phase(msg: dict) -> None:
             await websocket.send_json(msg)
 
-        # 5. Запускаем делиберацию
+        # 5. Đ—Đ°ĐżŃŃĐşĐ°ĐµĐĽ Đ´ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸ŃŽ
         result = await run_council_deliberation(
             query=message,
             user_credits=user_credits,
@@ -117,7 +117,7 @@ async def ws_council(websocket: WebSocket):
             on_phase=on_phase,
         )
 
-        # 6. Списываем кредиты
+        # 6. ĐˇĐżĐ¸ŃŃ‹Đ˛Đ°ĐµĐĽ ĐşŃ€ĐµĐ´Đ¸Ń‚Ń‹
         credits_needed = result.get("credits_needed", 1)
         new_credits = max(0, user_credits - credits_needed)
 
@@ -125,9 +125,9 @@ async def ws_council(websocket: WebSocket):
             conn.execute(update(users).where(users.c.id == user_id).values(credits=new_credits))
             conn.commit()
 
-        logger.info(f"🔌 WS: done | credits {user_credits}→{new_credits}")
+        logger.info(f"đź”Ś WS: done | credits {user_credits}â†’{new_credits}")
 
-        # ── Experience: финализируем сессию ────────────────────────────────
+        # â”€â”€ Experience: Ń„Đ¸Đ˝Đ°Đ»Đ¸Đ·Đ¸Ń€ŃĐµĐĽ ŃĐµŃŃĐ¸ŃŽ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if exp_session_id is not None:
             try:
                 latency_ms = int((time.monotonic() - t_start) * 1000)
@@ -141,7 +141,7 @@ async def ws_council(websocket: WebSocket):
                     latency_ms=latency_ms,
                     cost_usd=cost,
                 )
-                # Сигнал качества от Synthesizer
+                # ĐˇĐ¸ĐłĐ˝Đ°Đ» ĐşĐ°Ń‡ĐµŃŃ‚Đ˛Đ° ĐľŃ‚ Synthesizer
                 if coherence is not None:
                     experience_service.add_signal(
                         session_id=exp_session_id,
@@ -150,11 +150,11 @@ async def ws_council(websocket: WebSocket):
                         source="synthesizer",
                         weight=1.0,
                     )
-                logger.debug(f"📝 Experience logged: session={exp_session_id} latency={latency_ms}ms")
+                logger.debug(f"đź“ť Experience logged: session={exp_session_id} latency={latency_ms}ms")
             except Exception as _e:
-                logger.warning(f"⚠️ ExperienceService.finalize failed: {_e}")
+                logger.warning(f"âš ď¸Ź ExperienceService.finalize failed: {_e}")
 
-        # 7. Финальный результат
+        # 7. Đ¤Đ¸Đ˝Đ°Đ»ŃŚĐ˝Ń‹Đą Ń€ĐµĐ·ŃĐ»ŃŚŃ‚Đ°Ń‚
         await websocket.send_json({
             "type":         "final",
             "response":     result.get("final_decision", ""),
@@ -166,9 +166,9 @@ async def ws_council(websocket: WebSocket):
         })
 
     except WebSocketDisconnect:
-        logger.info("🔌 WS: клиент отключился")
+        logger.info("đź”Ś WS: ĐşĐ»Đ¸ĐµĐ˝Ń‚ ĐľŃ‚ĐşĐ»ŃŽŃ‡Đ¸Đ»ŃŃŹ")
     except Exception as e:
-        logger.error(f"🔌 WS: ошибка: {e}")
+        logger.error(f"đź”Ś WS: ĐľŃĐ¸Đ±ĐşĐ°: {e}")
         try:
             await websocket.send_json({"type": "error", "message": f"Server error: {str(e)[:100]}"})
         except Exception:
@@ -178,3 +178,4 @@ async def ws_council(websocket: WebSocket):
             await websocket.close()
         except Exception:
             pass
+
