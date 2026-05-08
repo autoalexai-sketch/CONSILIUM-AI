@@ -19,6 +19,11 @@ from app.api.ws_council import router as ws_router
 from app.api.experience import router as experience_router
 from app.api.knowledge import router as knowledge_router
 from app.middleware.security import add_security_headers
+try:
+    from prometheus_fastapi_instrumentator import Instrumentator
+    _PROMETHEUS_AVAILABLE = True
+except ImportError:
+    _PROMETHEUS_AVAILABLE = False
 
 # â”€â”€ ĐźŃ€Đ¸Đ»ĐľĐ¶ĐµĐ˝Đ¸Đµ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app = FastAPI(

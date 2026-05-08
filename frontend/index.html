@@ -1164,7 +1164,14 @@ async function loadKnowledgeCounts() {
   } catch{}
 }
 
-function hideAuth() { document.getElementById('auth-overlay').classList.add('hidden'); }
+function hideAuth() {
+  // Инлайновый style имеет приоритет над классом hidden — сбрасываем оба
+  const overlay = document.getElementById('auth-overlay');
+  overlay.style.display = 'none';
+  overlay.classList.add('hidden');
+  const regOverlay = document.getElementById('register-overlay');
+  if (regOverlay) { regOverlay.style.display = 'none'; regOverlay.classList.add('hidden'); }
+}
 function logout() {
   localStorage.removeItem('consilium_token');
   S.token = null; S.user = null;
@@ -1235,6 +1242,12 @@ function handleWSMsg(msg) {
         msg.duration_ms || 0
       );
       completeCP(msg.phase, msg.duration_ms);
+      removeThinkRow();
+      break;
+
+    case 'phase_error':      // director failed — закрываем карточку с ошибкой
+      finalizePhaseCard(msg.phase, `⚠️ ${msg.error || 'провайдер недоступен'}`, 0, 0);
+      completeCP(msg.phase, 0);
       removeThinkRow();
       break;
 
@@ -1432,7 +1445,10 @@ function addThinkRow(name, model) {
   S.currentBlock.appendChild(el);
   scrollChat(); return el;
 }
-function removeThinkRow() { document.getElementById('think-row')?.remove(); }
+function removeThinkRow() {
+  // Убираем ВСЕ think-row — иначе при нескольких фазах первый id забивает последующие
+  document.querySelectorAll('.think-row').forEach(el => el.remove());
+}
 
 function addVetoBanner(coherence, reason) {
   if (!S.currentBlock) return;

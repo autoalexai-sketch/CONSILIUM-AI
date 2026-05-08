@@ -136,6 +136,13 @@ async def run_council_deliberation(
     })
     profile = await classifier.analyze(query)
     await save_classification_log(query, profile)
+    _dim = next(iter(profile.dimensions), None)
+    _dim_name = _dim.value if _dim else "UNKNOWN"
+    await _emit(on_phase, {
+        "type": "phase_done", "phase": "classifier",
+        "tokens": 0, "provider": "local",
+        "preview": f"{_dim_name} | depth={profile.required_depth}"
+    })
 
     # â”€â”€ 2. Đ’Đ«Đ‘ĐžĐ  ĐˇĐžĐ’Đ•Đ˘Đ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     is_free = user_credits <= 0
