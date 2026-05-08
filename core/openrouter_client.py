@@ -72,7 +72,9 @@ class OpenRouterClient:
     async def call_director(self, spec, messages: List[Dict[str, str]],
                              temperature: Optional[float] = None,
                              max_tokens: Optional[int] = None,
-                             director_type: Optional[str] = None) -> DirectorResponse:
+                             director_type: Optional[str] = None,
+                             cache_enabled: bool = True,
+                             cache_ttl: int = 3600) -> DirectorResponse:
         start_time = datetime.now()
         if temperature is None:
             temperature = self.temperature_map.get(director_type, 0.7)
@@ -81,17 +83,28 @@ class OpenRouterClient:
         payload = {"model": model_name, "messages": messages,
                    "temperature": temperature, "max_tokens": max_tokens or 2000}
 
+        # ── OpenRouter Response Caching ───────────────────────────────────
+        request_headers = dict(self.headers)
+        if cache_enabled:
+            request_headers["X-OpenRouter-Cache"] = "true"
+            request_headers["X-OpenRouter-Cache-TTL"] = str(cache_ttl)
+
         try:
             if not self.session:
                 self.session = aiohttp.ClientSession(headers=self.headers)
 
             async with self.session.post(
                 f"{self.base_url}/chat/completions", json=payload,
+                headers=request_headers,
                 timeout=aiohttp.ClientTimeout(total=300)
             ) as response:
                 data = await response.json()
                 latency = (datetime.now() - start_time).total_seconds() * 1000
                 spec_id = getattr(spec, 'id', 'unknown')
+                cache_hit = response.headers.get("x-openrouter-cache-hit", "false") == "true"
+                if cache_hit:
+                    from loguru import logger
+                    logger.debug(f"⚡ Cache HIT: {model_name} ({director_type})")
 
                 if response.status != 200:
                     err = data.get("error", {})
@@ -126,7 +139,9 @@ class OpenRouterClient:
                                          system: Optional[str] = None,
                                          temperature: Optional[float] = None,
                                          director_type: Optional[str] = None,
-                                         max_tokens: int = 2000) -> Dict[str, Any]:
+                                         max_tokens: int = 2000,
+                                         cache_enabled: bool = True,
+                                         cache_ttl: int = 3600) -> Dict[str, Any]:
         start_time = time.time()
         if system is None and director_type:
             system = self.system_prompts.get(director_type)
@@ -140,11 +155,18 @@ class OpenRouterClient:
 
         payload = {"model": model, "messages": messages,
                    "temperature": temperature, "max_tokens": max_tokens}
+
+        request_headers = dict(self.headers)
+        if cache_enabled:
+            request_headers["X-OpenRouter-Cache"] = "true"
+            request_headers["X-OpenRouter-Cache-TTL"] = str(cache_ttl)
+
         try:
             if not self.session:
                 self.session = aiohttp.ClientSession(headers=self.headers)
             async with self.session.post(
                 f"{self.base_url}/chat/completions", json=payload,
+                headers=request_headers,
                 timeout=aiohttp.ClientTimeout(total=60)
             ) as response:
                 data = await response.json()
