@@ -162,6 +162,8 @@ async def ws_council(websocket: WebSocket):
             "deliberation": result.get("deliberation", {}),
             "credits_left": new_credits,
             "chat_id":      chat_id,
+            "coherence_score": result.get("coherence_score"),
+            "journal_id":     result.get("journal_id"),
         })
 
     except WebSocketDisconnect:

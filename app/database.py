@@ -92,6 +92,7 @@ decision_journal = Table(
     Column("outcome_label", String(50),   nullable=True),
     Column("tags",          String(500),  nullable=True),
     Column("is_pinned",     Boolean,      default=False),
+    Column("approval_state", String(20),   default="draft"),   # draft|verified|approved
     Column("created_at",    DateTime,     default=datetime.utcnow),
     Column("updated_at",    DateTime,     default=datetime.utcnow),
 )

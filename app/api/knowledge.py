@@ -169,3 +169,35 @@ async def delete_principle(principle_id: int, current_user=Depends(get_current_u
             .values(is_active=False)
         )
     return {"status": "ok"}
+
+
+class ApprovalUpdate(BaseModel):
+    state: str  # draft | verified | approved
+
+
+@router.patch("/journal/{entry_id}/approve")
+async def set_approval_state(
+    entry_id: int,
+    payload: ApprovalUpdate,
+    current_user=Depends(get_current_user),
+):
+    """Изменить статус решения: draft → verified → approved."""
+    valid_states = {"draft", "verified", "approved"}
+    if payload.state not in valid_states:
+        raise HTTPException(status_code=400, detail=f"State must be one of: {valid_states}")
+    with engine.begin() as conn:
+        row = conn.execute(
+            select(decision_journal).where(
+                (decision_journal.c.id == entry_id) &
+                (decision_journal.c.user_id == current_user.id)
+            )
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Entry not found")
+        conn.execute(
+            update(decision_journal)
+            .where(decision_journal.c.id == entry_id)
+            .values(approval_state=payload.state, updated_at=datetime.utcnow())
+        )
+    logger.info(f"📋 Journal entry {entry_id} → {payload.state} (user={current_user.id})")
+    return {"status": "ok", "id": entry_id, "approval_state": payload.state}

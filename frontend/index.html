@@ -1741,6 +1741,24 @@ async function doRegister() {
   } catch(e) { err.textContent = 'ĐˇĐµŃ€Đ˛ĐµŃ€ Đ˝ĐµĐ´ĐľŃŃ‚ŃĐżĐµĐ˝. ĐźĐľĐżŃ€ĐľĐ±ŃĐąŃ‚Đµ Đ´ĐµĐĽĐľ-Ń€ĐµĐ¶Đ¸ĐĽ.'; }
 }
 
+
+// Approval States — кнопки под Chairman-карточкой
+function setApproval(journalId, state, btn) {
+  if (!S.token || CFG.DEMO_MODE) return;
+  fetch(`${CFG.BASE_URL}/api/knowledge/journal/${journalId}/approve`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+    body: JSON.stringify({ state })
+  }).then(r => {
+    if (r.ok) {
+      // Подсветить активную кнопку
+      btn.closest('div').querySelectorAll('button').forEach(b => b.style.fontWeight = 'normal');
+      btn.style.fontWeight = '700';
+      const labels = { draft: '📝 Черновик', verified: '✓ Верифицирован', approved: '✅ Утверждён' };
+      toast('📋', `Решение: ${labels[state]}`);
+    }
+  }).catch(() => toast('❌', 'Ошибка сохранения статуса'));
+}
 </script>
 
 <div class="auth-overlay" id="register-overlay" style="display:none;">
