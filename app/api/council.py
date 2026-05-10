@@ -15,6 +15,7 @@ from core.cognitive_classifier import CognitiveDimension, TaskProfile
 from core.council_selector import CouncilSelector
 from core.prompts import PromptBuilder, PromptUtils
 from core.synthesizer_integration import SynthesizerPhase
+from core.context_gateway import context_gateway
 from app.dependencies import save_classification_log
 from app.middleware.rate_limiter import rate_limiter
 from app.services import classifier, openrouter
@@ -136,6 +137,10 @@ async def run_council_deliberation(
     })
     profile = await classifier.analyze(query)
     await save_classification_log(query, profile)
+
+    # ── Context Gateway: принципы + похожие решения ─────────────────────
+    ctx = context_gateway.get_context(query=query, user_id=user_id)
+    context_block = ctx["context_block"]
     _dim = next(iter(profile.dimensions), None)
     _dim_name = _dim.value if _dim else "UNKNOWN"
     await _emit(on_phase, {
@@ -184,7 +189,7 @@ async def run_council_deliberation(
                                "text": "Evidence: ŃĐşĐ°Đ˝Đ¸Ń€ĐľĐ˛Đ°Đ˝Đ¸Đµ Đ¸ŃŃ‚ĐľŃ‡Đ˝Đ¸ĐşĐľĐ˛..."})
         prompt = (_build_free_prompt("scout", query, profile.suggested_language) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_scout_prompt(query, profile), profile.suggested_language))
+                      PromptBuilder.build_scout_prompt(query, profile) + (context_block if context_block else ''), profile.suggested_language))
         res = await _call_director("scout", prompt, directors["scout"], is_free)
         results["scout"] = res
         if not res.get("error"):
