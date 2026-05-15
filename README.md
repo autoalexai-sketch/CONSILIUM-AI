@@ -170,7 +170,7 @@ Kraków, Poland (CEE)
 Self-employed AI Integrator
 autoalex.ai | GitHub: autoalexai-sketch
 Building AI Boardroom for Directors
-Email: autoalexai@gmail.com  
+Email:  hello@ai-consilium.com 
 Landing: [consilium-ai-v3.carrd.co](https://consilium-ai-v3.carrd.co)
 
 ---
