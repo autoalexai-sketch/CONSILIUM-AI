@@ -1,4 +1,4 @@
-﻿"""
+"""
 app/api/knowledge.py — Decision Journal + User Principles
 P0 — персональная база решений и принципов пользователя
 """

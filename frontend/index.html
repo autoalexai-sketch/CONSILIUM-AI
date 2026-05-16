@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CONSILIUM AI v3.0 â€” DESIGN SYSTEM
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════════════
+   CONSILIUM AI v3.0 — DESIGN SYSTEM
+   ════════════════════════════════════════════ */
 :root {
   --bg:            #0a0c10;
   --bg-card:       #0f1318;
@@ -61,7 +61,7 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
 
-/* â”€â”€â”€ Layout â”€â”€â”€ */
+/* ─── Layout ─── */
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr var(--monitor-w);
@@ -70,7 +70,7 @@ body {
   overflow: hidden;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEADER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════ HEADER ════════════════ */
 .header {
   grid-column: 1 / -1;
   display: flex; align-items: center;
@@ -148,7 +148,7 @@ body {
   border: 1px solid var(--border); cursor: pointer; flex-shrink: 0;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════ SIDEBAR ════════════════ */
 .sidebar {
   grid-column: 1; grid-row: 2;
   width: var(--sidebar-w); border-right: 1px solid var(--border);
@@ -211,7 +211,7 @@ body {
 
 .sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 6px 0; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════ MAIN ════════════════ */
 .main {
   grid-column: 2; grid-row: 2;
   display: flex; flex-direction: column; overflow: hidden;
@@ -355,7 +355,7 @@ body {
   font-family: var(--font-mono); font-size: 10px; color: var(--red);
 }
 
-/* â”€â”€â”€ INPUT â”€â”€â”€ */
+/* ─── INPUT ─── */
 .input-area {
   border-top: 1px solid var(--border);
   padding: 12px 18px 14px; background: var(--bg); flex-shrink: 0;
@@ -414,7 +414,7 @@ body {
 .input-hint { margin-top: 6px; text-align: center; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
 .input-hint kbd { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 2px; padding: 0 4px; font-size: 9px; margin: 0 2px; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MONITOR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════ MONITOR ════════════════ */
 .monitor {
   grid-column: 3; grid-row: 2;
   border-left: 1px solid var(--border); background: var(--bg);
@@ -499,7 +499,7 @@ body {
 .kpill:hover { border-color: var(--border-light); color: var(--text); }
 .kp-cnt { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-left: auto; }
 
-/* â•â•â•â• AUTH OVERLAY â•â•â•â• */
+/* ════ AUTH OVERLAY ════ */
 .auth-overlay {
   position: fixed; inset: 0; background: rgba(10,12,16,.95);
   display: flex; align-items: center; justify-content: center; z-index: 9999;
@@ -550,7 +550,7 @@ body {
 .demo-btn { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 16px; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; cursor: pointer; transition: all var(--t); }
 .demo-btn:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
 
-/* â•â•â•â• DROPDOWN â•â•â•â• */
+/* ════ DROPDOWN ════ */
 .dd { position: relative; }
 .dd-menu {
   position: absolute; top: calc(100% + 6px); left: 0;
@@ -567,7 +567,7 @@ body {
 .dd-item.active { color: var(--accent); background: var(--accent-glow); }
 .dd-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
-/* â•â•â•â• TOAST â•â•â•â• */
+/* ════ TOAST ════ */
 .toasts { position: fixed; bottom: 18px; right: calc(var(--monitor-w) + 14px); display: flex; flex-direction: column; gap: 7px; z-index: 9000; }
 .toast {
   padding: 9px 13px; background: var(--bg-card); border: 1px solid var(--border);
@@ -577,7 +577,7 @@ body {
 }
 @keyframes slide-in { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
 
-/* â•â•â• LIGHT THEME â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ═══ LIGHT THEME ══════════════════════════════════════ */
 [data-theme="light"] {
   --bg: #f0f4f9; --bg2: #e8edf5; --bg3: #dce3ed;
   --bg-card: #ffffff; --bg-hover: #e4eaf4; --bg-active: #dde5f0;
@@ -616,23 +616,23 @@ body {
 [data-theme="light"] .phase-wrap { background: #ffffff; border-color: #d0d8e8; }
 [data-theme="light"] .chat-area { background: #f5f8fc; }
 [data-theme="light"] .chat-input-area { background: #f0f4f9; border-top-color: #c8d0de; }
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════ */
 </style>
 </head>
 <body>
 
-<!-- â•â•â•â•â•â• AUTH OVERLAY â•â•â•â•â•â• -->
+<!-- ══════ AUTH OVERLAY ══════ -->
 <div class="auth-overlay" id="auth-overlay">
   <div class="auth-box">
     <div class="auth-logo">
-      <!-- Logo SVG â€” 7 nodes, no background -->
+      <!-- Logo SVG — 7 nodes, no background -->
       <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
     </div>
 
     <div style="display:flex;gap:4px;margin-bottom:16px;">
-      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Đ’ĐľĐąŃ‚Đ¸</button>
-      <button onclick="showRegister()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Đ ĐµĐłĐ¸ŃŃ‚Ń€Đ°Ń†Đ¸ŃŹ</button>
+      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Sign In</button>
+      <button onclick="showRegister()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Sign Up</button>
     </div>
     <div class="auth-fields">
       <div class="auth-field">
@@ -640,49 +640,49 @@ body {
         <input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email"/>
       </div>
       <div class="auth-field">
-        <label>ĐźĐ°Ń€ĐľĐ»ŃŚ</label>
-        <input type="password" id="auth-password" placeholder="â€˘â€˘â€˘â€˘â€˘â€˘â€˘â€˘" autocomplete="current-password"
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password"
                onkeydown="if(event.key==='Enter') doLogin()"/>
       </div>
       <div class="auth-err" id="auth-err"></div>
     </div>
 
-    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Đ’ĐľĐąŃ‚Đ¸ â†’ ĐˇĐľĐ˛ĐµŃ‚ Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛</button>
+    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Sign In → Board of Directors</button>
 
     <div class="auth-demo">
-      <button class="demo-btn" onclick="doDemo()">Đ’ĐľĐąŃ‚Đ¸ Đ˛ Đ´ĐµĐĽĐľ-Ń€ĐµĐ¶Đ¸ĐĽ (Đ±ĐµĐ· ŃĐµŃ€Đ˛ĐµŃ€Đ°)</button>
+      <button class="demo-btn" onclick="doDemo()">Sign In в демо-режим (без сервера)</button>
     </div>
 
-    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">ĐˇĐµŃ€Đ˛ĐµŃ€: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Server: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
     <div class="auth-switch" id="auth-switch-txt">
-      ĐťĐµŃ‚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚Đ°? <span onclick="showRegister()">Đ—Đ°Ń€ĐµĐłĐ¸ŃŃ‚Ń€Đ¸Ń€ĐľĐ˛Đ°Ń‚ŃŚŃŃŹ</span>
+      No account? <span onclick="showRegister()">Register</span>
     </div>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â• APP â•â•â•â•â•â• -->
+<!-- ══════ APP ══════ -->
 <div class="app">
 
   <!-- HEADER -->
   <header class="header">
     <div class="header-logo">
-      <!-- Icon â€” no bg, just nodes+lines -->
+      <!-- Icon — no bg, just nodes+lines -->
       <img src="img/icon.png" id="header-icon" style="width:30px;height:30px;object-fit:contain;border-radius:4px;" alt="icon">
     </div>
 
-    <span class="header-brand"><em>CONSILIUM</em> AI Â· v3.0</span>
+    <span class="header-brand"><em>CONSILIUM</em> AI · v3.0</span>
     <div class="sep"></div>
 
     <div class="dd">
       <button class="hpill" onclick="toggleDD('ws-dd')">
         <span class="ws-dot" style="background:var(--accent)"></span>
-        <span id="h-ws">ĐˇŃ‚Ń€Đ°Ń‚ĐµĐłĐ¸ŃŹ</span>
+        <span id="h-ws">Strategy</span>
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
       </button>
       <div class="dd-menu" id="ws-dd">
-        <div class="dd-item active" onclick="pickWS(this,'ĐˇŃ‚Ń€Đ°Ń‚ĐµĐłĐ¸ŃŹ','var(--accent)')"><span class="dd-dot" style="background:var(--accent)"></span>ĐˇŃ‚Ń€Đ°Ń‚ĐµĐłĐ¸ŃŹ</div>
-        <div class="dd-item" onclick="pickWS(this,'ĐźŃ€ĐľĐµĐşŃ‚ Đ','var(--green)')"><span class="dd-dot" style="background:var(--green)"></span>ĐźŃ€ĐľĐµĐşŃ‚ Đ</div>
-        <div class="dd-item" onclick="pickWS(this,'Đ›Đ¸Ń‡Đ˝ĐľĐµ','var(--purple)')"><span class="dd-dot" style="background:var(--purple)"></span>Đ›Đ¸Ń‡Đ˝ĐľĐµ</div>
+        <div class="dd-item active" onclick="pickWS(this,'Strategy','var(--accent)')"><span class="dd-dot" style="background:var(--accent)"></span>Strategy</div>
+        <div class="dd-item" onclick="pickWS(this,'Project A','var(--green)')"><span class="dd-dot" style="background:var(--green)"></span>Project A</div>
+        <div class="dd-item" onclick="pickWS(this,'Personal','var(--purple)')"><span class="dd-dot" style="background:var(--purple)"></span>Personal</div>
         <div class="dd-item" onclick="pickWS(this,'R&D','var(--orange)')"><span class="dd-dot" style="background:var(--orange)"></span>R&D</div>
       </div>
     </div>
@@ -694,12 +694,12 @@ body {
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
       </button>
       <div class="dd-menu" id="proto-dd">
-        <div class="dd-item active" onclick="pickProto(this,'Standard','STD')">Standard â€” 6 Ń„Đ°Đ·</div>
-        <div class="dd-item" onclick="pickProto(this,'Strategy','STR')">Strategy â€” SWOT + ŃŃ†ĐµĐ˝Đ°Ń€Đ¸Đ¸</div>
-        <div class="dd-item" onclick="pickProto(this,'Crisis','CRS')">Crisis â€” Đ±Ń‹ŃŃ‚Ń€Đľ</div>
-        <div class="dd-item" onclick="pickProto(this,'Reflection','RFL')">Reflection â€” Ń€ĐµŃ‚Ń€Đľ</div>
-        <div class="dd-item" onclick="pickProto(this,'Planning','PLN')">Planning â€” Ń†ĐµĐ»Đ¸ + ĐżĐ»Đ°Đ˝</div>
-        <div class="dd-item" onclick="pickProto(this,'Deep','DPA')">Deep Analysis â€” Ń€Đ°ŃŃĐ¸Ń€ĐµĐ˝Đ˝Ń‹Đą</div>
+        <div class="dd-item active" onclick="pickProto(this,'Standard','STD')">Standard — 6 phases</div>
+        <div class="dd-item" onclick="pickProto(this,'Strategy','STR')">Strategy — SWOT + scenarios</div>
+        <div class="dd-item" onclick="pickProto(this,'Crisis','CRS')">Crisis — fast</div>
+        <div class="dd-item" onclick="pickProto(this,'Reflection','RFL')">Reflection — retro</div>
+        <div class="dd-item" onclick="pickProto(this,'Planning','PLN')">Planning — goals + plan</div>
+        <div class="dd-item" onclick="pickProto(this,'Deep','DPA')">Deep Analysis — extended</div>
       </div>
     </div>
 
@@ -713,11 +713,11 @@ body {
     <div class="sep"></div>
     <div class="credits-pill">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      ĐšŃ€ĐµĐ´Đ¸Ń‚Ń‹: <span class="credits-num" id="credits-num">â€”</span>
+      Credits: <span class="credits-num" id="credits-num">—</span>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()" title="ĐźĐµŃ€ĐµĐşĐ»ŃŽŃ‡Đ¸Ń‚ŃŚ Ń‚ĐµĐĽŃ" style="display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.06em;transition:all .2s;margin-right:2px;">
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme" style="display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.06em;transition:all .2s;margin-right:2px;">
       <svg id="theme-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      <span id="theme-label">Đ˘Ń‘ĐĽĐ˝Đ°ŃŹ</span>
+      <span id="theme-label">Dark</span>
     </button>
     <div class="avatar" id="user-avatar">?</div>
   </header>
@@ -725,56 +725,56 @@ body {
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-section">
-      <div class="sb-label">ĐťĐ°Đ˛Đ¸ĐłĐ°Ń†Đ¸ŃŹ</div>
+      <div class="sb-label">Navigation</div>
       <div class="nav active">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <span class="nav-txt">Đ§Đ°Ń‚ / Đ”ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸ŃŹ</span>
+        <span class="nav-txt">Chat / Deliberation</span>
       </div>
-      <div class="nav" onclick="toast('đź•','ĐŃŃ‚ĐľŃ€Đ¸ŃŹ â€” ŃĐşĐľŃ€Đľ')">
+      <div class="nav" onclick="toast('🕐','History — coming soon')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-        <span class="nav-txt">ĐŃŃ‚ĐľŃ€Đ¸ŃŹ ŃĐµŃŃĐ¸Đą</span>
+        <span class="nav-txt">Session History</span>
         <span class="nav-cnt" id="history-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('đź“Š','Đ”Đ°ŃĐ±ĐľŃ€Đ´ â€” ŃĐşĐľŃ€Đľ')">
+      <div class="nav" onclick="toast('📊','Dashboard — coming soon')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-        <span class="nav-txt">Đ”Đ°ŃĐ±ĐľŃ€Đ´</span>
+        <span class="nav-txt">Dashboard</span>
       </div>
     </div>
     <div class="sb-section">
-      <div class="sb-label">Đ‘Đ°Đ·Đ° Đ·Đ˝Đ°Đ˝Đ¸Đą</div>
-      <div class="nav" onclick="toast('đź“‹','Đ ĐµŃĐµĐ˝Đ¸ŃŹ â€” ŃĐşĐľŃ€Đľ')">
+      <div class="sb-label">Knowledge Base</div>
+      <div class="nav" onclick="toast('📋','Decisions — coming soon')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <span class="nav-txt">Đ ĐµŃĐµĐ˝Đ¸ŃŹ</span>
+        <span class="nav-txt">Decisions</span>
         <span class="nav-cnt" id="dec-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('â­','ĐźŃ€Đ¸Đ˝Ń†Đ¸ĐżŃ‹ â€” ŃĐşĐľŃ€Đľ')">
+      <div class="nav" onclick="toast('⭐','Principles — coming soon')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <span class="nav-txt">ĐźŃ€Đ¸Đ˝Ń†Đ¸ĐżŃ‹</span>
+        <span class="nav-txt">Principles</span>
         <span class="nav-cnt" id="prin-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('đź“š','Wiki â€” ŃĐşĐľŃ€Đľ')">
+      <div class="nav" onclick="toast('📚','Wiki — coming soon')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="nav-txt">LLM Wiki</span>
         <span class="nav-cnt" id="wiki-cnt">0</span>
       </div>
     </div>
     <div class="sb-section">
-      <div class="sb-label">ĐĐ˝ŃŃ‚Ń€ŃĐĽĐµĐ˝Ń‚Ń‹</div>
+      <div class="sb-label">Tools</div>
       <div class="nav" onclick="toast('đź§ ','Reflective Pause')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
         <span class="nav-txt">Reflective Pause</span>
       </div>
     </div>
     <div class="sb-bottom">
-      <div class="nav" onclick="toast('âš™ď¸Ź','ĐťĐ°ŃŃ‚Ń€ĐľĐąĐşĐ¸')">
+      <div class="nav" onclick="toast('⚙️','Settings')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-        <span class="nav-txt">ĐťĐ°ŃŃ‚Ń€ĐľĐąĐşĐ¸</span>
+        <span class="nav-txt">Settings</span>
       </div>
       <div class="nav" onclick="logout()">
         <div class="nav-ico" id="sb-avatar">
           <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;" id="sb-av-text">?</div>
         </div>
-        <span class="nav-txt" id="sb-user-name">ĐťĐµ Đ°Đ˛Ń‚ĐľŃ€Đ¸Đ·ĐľĐ˛Đ°Đ˝</span>
+        <span class="nav-txt" id="sb-user-name">Not authorized</span>
       </div>
     </div>
   </aside>
@@ -784,17 +784,17 @@ body {
     <!-- Phase strip -->
     <div class="phase-strip" id="phase-strip">
       <div class="pstep pending" id="ps-scout"><span class="dot"></span>Scout</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-analyst"><span class="dot"></span>Analyst</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-architect"><span class="dot"></span>Architect</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-devil"><span class="dot"></span>Devil</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-synth"><span class="dot"></span>Synth</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-verifier"><span class="dot"></span>Verifier</div>
-      <span class="parrow">â€ş</span>
+      <span class="parrow">›</span>
       <div class="pstep pending" id="ps-chairman"><span class="dot"></span>Chairman</div>
     </div>
 
@@ -805,27 +805,27 @@ body {
         <img src="img/logo.jpg" id="greeting-logo" style="width:150px;height:auto;border-radius:16px;box-shadow:0 6px 32px rgba(37,99,246,.35);display:block;margin:0 auto 12px;" alt="Consilium AI">
 
         <div class="g-title">
-          <span class="hi">Đ”ĐľĐ±Ń€Ń‹Đą Đ´ĐµĐ˝ŃŚ, </span>
+          <span class="hi">Good day, </span>
           <span class="name" id="g-name">...</span>
         </div>
-        <div class="g-sub">CONSILIUM Â· 9 Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛ Â· Knowledge Gate Â· IWE v3.0</div>
+        <div class="g-sub">CONSILIUM · 9 directors · Knowledge Gate · IWE v3.0</div>
 
         <div class="chips">
-          <button class="chip" onclick="sendQ('ĐźŃ€ĐľĐ˛ĐµĐ´Đ¸ ŃŃ‚Ń€Đ°Ń‚ĐµĐłĐ¸Ń‡ĐµŃĐşĐ¸Đą Đ°Đ˝Đ°Đ»Đ¸Đ· Ń‚ĐµĐşŃŃ‰ĐµĐłĐľ ĐżŃ€ĐľĐµĐşŃ‚Đ°')">
+          <button class="chip" onclick="sendQ('Run a strategic analysis of the current project')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            ĐˇŃ‚Ń€Đ°Ń‚ĐµĐłĐ¸Ń‡ĐµŃĐşĐ¸Đą Đ°Đ˝Đ°Đ»Đ¸Đ·
+            Strategic analysis
           </button>
-          <button class="chip" onclick="sendQ('ĐźĐľĐĽĐľĐłĐ¸ ĐżŃ€Đ¸Đ˝ŃŹŃ‚ŃŚ Ń€ĐµŃĐµĐ˝Đ¸Đµ ĐżĐľ Đ°Ń€Ń…Đ¸Ń‚ĐµĐşŃ‚ŃŃ€Đµ ŃĐ¸ŃŃ‚ĐµĐĽŃ‹')">
+          <button class="chip" onclick="sendQ('Help make an architecture decision')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-            ĐŃ€Ń…Đ¸Ń‚ĐµĐşŃ‚ŃŃ€Đ˝ĐľĐµ Ń€ĐµŃĐµĐ˝Đ¸Đµ
+            Architecture decision
           </button>
-          <button class="chip" onclick="sendQ('ĐˇĐ´ĐµĐ»Đ°Đą Ń€ĐµŃ‚Ń€ĐľŃĐżĐµĐşŃ‚Đ¸Đ˛Ń ĐżŃ€ĐľŃĐ»ĐľĐą Đ˝ĐµĐ´ĐµĐ»Đ¸')">
+          <button class="chip" onclick="sendQ('Run last week's retrospective')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            Đ ĐµŃ‚Ń€ĐľŃĐżĐµĐşŃ‚Đ¸Đ˛Đ°
+            Retrospective
           </button>
-          <button class="chip" onclick="sendQ('ĐžŃ†ĐµĐ˝Đ¸ Ń€Đ¸ŃĐşĐ¸ Đ¸ ŃĐľĐ·Đ´Đ°Đą ĐżĐ»Đ°Đ˝ Đ´ĐµĐąŃŃ‚Đ˛Đ¸Đą')">
+          <button class="chip" onclick="sendQ('Assess risks and create action plan')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            ĐžŃ†ĐµĐ˝ĐşĐ° Ń€Đ¸ŃĐşĐľĐ˛
+            Risk assessment
           </button>
         </div>
       </div>
@@ -835,14 +835,14 @@ body {
     <div class="input-area">
       <div class="input-box">
         <textarea class="input-ta" id="msg-in"
-          placeholder="Đ—Đ°Đ´Đ°ĐąŃ‚Đµ Đ˛ĐľĐżŃ€ĐľŃ ĐˇĐľĐ˛ĐµŃ‚Ń Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛..."
+          placeholder="Ask the Board of Directors..."
           rows="2"
           onkeydown="onKey(event)"
           oninput="autoH(this)"></textarea>
         <div class="input-bar">
           <button class="tbtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            Đ¤Đ°ĐąĐ»
+            File
           </button>
           <button class="tbtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -871,7 +871,7 @@ body {
           </button>
         </div>
       </div>
-      <div class="input-hint"><kbd>Enter</kbd> ĐľŃ‚ĐżŃ€Đ°Đ˛Đ¸Ń‚ŃŚ Â· <kbd>Shift+Enter</kbd> Đ˝ĐľĐ˛Đ°ŃŹ ŃŃ‚Ń€ĐľĐşĐ°</div>
+      <div class="input-hint"><kbd>Enter</kbd> send · <kbd>Shift+Enter</kbd> new line</div>
     </div>
   </main>
 
@@ -884,25 +884,25 @@ body {
     <div class="mon-scroll">
 
       <div class="mcard">
-        <div class="mcard-head">ĐĐ˝Đ°Đ»Đ¸Đ· Đ·Đ°Đ´Đ°Ń‡Đ¸</div>
+        <div class="mcard-head">Task analysis</div>
         <div class="mcard-body">
           <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">Đ“Đ»ŃĐ±Đ¸Đ˝Đ°</span><span class="mval blue" id="m-depth">â€”</span></div>
+            <div class="mrow-top"><span class="mlabel">Depth</span><span class="mval blue" id="m-depth">—</span></div>
             <div class="mtrack"><div class="mfill blue" id="b-depth" style="width:0%"></div></div>
           </div>
           <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">ĐˇŃ€ĐľŃ‡Đ˝ĐľŃŃ‚ŃŚ</span><span class="mval green" id="m-urgency">â€”</span></div>
+            <div class="mrow-top"><span class="mlabel">Urgency</span><span class="mval green" id="m-urgency">—</span></div>
             <div class="mtrack"><div class="mfill green" id="b-urgency" style="width:0%"></div></div>
           </div>
           <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">Đ­ĐĽĐľŃ†. Đ˝Đ°ĐłŃ€ŃĐ·ĐşĐ°</span><span class="mval green" id="m-emotion">â€”</span></div>
+            <div class="mrow-top"><span class="mlabel">Emotional load</span><span class="mval green" id="m-emotion">—</span></div>
             <div class="mtrack"><div class="mfill green" id="b-emotion" style="width:0%"></div></div>
           </div>
         </div>
       </div>
 
       <div class="mcard">
-        <div class="mcard-head">ĐšĐľĐłĐµŃ€ĐµĐ˝Ń‚Đ˝ĐľŃŃ‚ŃŚ</div>
+        <div class="mcard-head">Coherence</div>
         <div class="mcard-body">
           <div class="coh-wrap">
             <div class="coh-ring">
@@ -910,18 +910,18 @@ body {
                 <circle class="rbg" cx="27" cy="27" r="21"/>
                 <circle class="rfill" id="r-fill" cx="27" cy="27" r="21"/>
               </svg>
-              <div class="rlabel"><span class="rpct" id="r-pct">â€”</span><span class="rsub">SCORE</span></div>
+              <div class="rlabel"><span class="rpct" id="r-pct">—</span><span class="rsub">SCORE</span></div>
             </div>
             <div class="coh-info">
-              <div class="coh-status" id="coh-status">ĐžĐ¶Đ¸Đ´Đ°Đ˝Đ¸Đµ...</div>
-              <div class="coh-desc" id="coh-desc">Đ—Đ°ĐżŃŃŃ‚Đ¸Ń‚Đµ Đ´ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸ŃŽ</div>
+              <div class="coh-status" id="coh-status">Waiting...</div>
+              <div class="coh-desc" id="coh-desc">Start deliberation</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="mcard">
-        <div class="mcard-head">ĐˇĐľĐ˛ĐµŃ‚ Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛</div>
+        <div class="mcard-head">Board of Directors</div>
         <div class="mcard-body" style="padding:6px;">
           <div class="cphases" id="cphases">
             <div class="cp pending" id="cp-scout"><span class="cp-ico">â—‹</span><span class="cp-name">Scout</span><span class="cp-model" style="color:var(--cyan)">perplexity</span></div>
@@ -936,14 +936,14 @@ body {
       </div>
 
       <div class="mcard">
-        <div class="mcard-head">ĐšĐľĐłĐ˝Đ¸Ń‚Đ¸Đ˛Đ˝Ń‹Đµ Đ¸Đ·ĐĽĐµŃ€ĐµĐ˝Đ¸ŃŹ</div>
+        <div class="mcard-head">Cognitive dimensions</div>
         <div class="mcard-body">
           <div class="dims" id="dims">
-            <div class="dim"><span class="dlabel">FUTURE</span><div class="dbar"><div class="dfill" id="d-future" style="width:0%"></div></div><span class="dval" id="dv-future">â€”</span></div>
-            <div class="dim"><span class="dlabel">COMPLEX</span><div class="dbar"><div class="dfill" id="d-complex" style="width:0%"></div></div><span class="dval" id="dv-complex">â€”</span></div>
-            <div class="dim"><span class="dlabel">FACTUAL</span><div class="dbar"><div class="dfill" id="d-factual" style="width:0%"></div></div><span class="dval" id="dv-factual">â€”</span></div>
-            <div class="dim"><span class="dlabel">CREATIVE</span><div class="dbar"><div class="dfill" id="d-creative" style="width:0%"></div></div><span class="dval" id="dv-creative">â€”</span></div>
-            <div class="dim"><span class="dlabel">ETHICAL</span><div class="dbar"><div class="dfill" id="d-ethical" style="width:0%"></div></div><span class="dval" id="dv-ethical">â€”</span></div>
+            <div class="dim"><span class="dlabel">FUTURE</span><div class="dbar"><div class="dfill" id="d-future" style="width:0%"></div></div><span class="dval" id="dv-future">—</span></div>
+            <div class="dim"><span class="dlabel">COMPLEX</span><div class="dbar"><div class="dfill" id="d-complex" style="width:0%"></div></div><span class="dval" id="dv-complex">—</span></div>
+            <div class="dim"><span class="dlabel">FACTUAL</span><div class="dbar"><div class="dfill" id="d-factual" style="width:0%"></div></div><span class="dval" id="dv-factual">—</span></div>
+            <div class="dim"><span class="dlabel">CREATIVE</span><div class="dbar"><div class="dfill" id="d-creative" style="width:0%"></div></div><span class="dval" id="dv-creative">—</span></div>
+            <div class="dim"><span class="dlabel">ETHICAL</span><div class="dbar"><div class="dfill" id="d-ethical" style="width:0%"></div></div><span class="dval" id="dv-ethical">—</span></div>
           </div>
         </div>
       </div>
@@ -951,16 +951,16 @@ body {
       <div class="mcard">
         <div class="mcard-head">Action Board</div>
         <div class="mcard-body" style="padding:6px;" id="action-board">
-          <div class="aboard-empty">Đ ĐµŃĐµĐ˝Đ¸ŃŹ ĐżĐľŃŹĐ˛ŃŹŃ‚ŃŃŹ ĐżĐľŃĐ»Đµ Đ´ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸Đ¸</div>
+          <div class="aboard-empty">Decisions will appear after deliberation</div>
         </div>
       </div>
 
       <div class="mcard">
         <div class="mcard-head">Personal Vault</div>
         <div class="mcard-body" style="padding:6px;gap:5px;">
-          <div class="kpill"><span>đź“‹</span><span class="kp-lbl">Đ ĐµŃĐµĐ˝Đ¸ŃŹ</span><span class="kp-cnt" id="kp-decisions">0</span></div>
-          <div class="kpill"><span>â­</span><span class="kp-lbl">ĐźŃ€Đ¸Đ˝Ń†Đ¸ĐżŃ‹</span><span class="kp-cnt" id="kp-principles">0</span></div>
-          <div class="kpill"><span>đź“š</span><span class="kp-lbl">Wiki ŃŃ‚Ń€Đ°Đ˝Đ¸Ń†</span><span class="kp-cnt" id="kp-wiki">0</span></div>
+          <div class="kpill"><span>📋</span><span class="kp-lbl">Decisions</span><span class="kp-cnt" id="kp-decisions">0</span></div>
+          <div class="kpill"><span>⭐</span><span class="kp-lbl">Principles</span><span class="kp-cnt" id="kp-principles">0</span></div>
+          <div class="kpill"><span>📚</span><span class="kp-lbl">Wiki pages</span><span class="kp-cnt" id="kp-wiki">0</span></div>
         </div>
       </div>
 
@@ -971,14 +971,14 @@ body {
 <div class="toasts" id="toasts"></div>
 
 <script>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CONSILIUM AI v3.0 â€” JS Core
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Backend: FastAPI Đ˝Đ° http://localhost:8000
+/* ══════════════════════════════════════════════
+   CONSILIUM AI v3.0 — JS Core
+   ══════════════════════════════════════════════
+   Backend: FastAPI at http://localhost:8000
    WebSocket: ws://localhost:8000/ws/council
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ══════════════════════════════════════════════ */
 
-// â”€â”€ CONFIG â”€â”€ Đ¸Đ·ĐĽĐµĐ˝Đ¸ BASE_URL Đ˝Đ° Đ°Đ´Ń€ĐµŃ ŃĐ˛ĐľĐµĐłĐľ ŃĐµŃ€Đ˛ĐµŃ€Đ°
+// ── CONFIG ──  BASE_URL    
 const CFG = {
   BASE_URL: window.location.origin.includes('localhost') || window.location.origin.includes('127.0')
     ? 'http://localhost:8000'
@@ -989,7 +989,7 @@ const CFG = {
   DEMO_MODE: false,
 };
 
-// â”€â”€ STATE â”€â”€
+// ── STATE ──
 const S = {
   token:       localStorage.getItem('consilium_token') || null,
   user:        null,
@@ -1002,15 +1002,15 @@ const S = {
   sid:         0,
 };
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• AUTH â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ AUTH ════════════════════
 async function doLogin() {
   const email = document.getElementById('auth-email').value.trim();
   const pass  = document.getElementById('auth-password').value;
   const err   = document.getElementById('auth-err');
   const btn   = document.getElementById('auth-btn');
 
-  if (!email || !pass) { err.textContent = 'Đ’Đ˛ĐµĐ´Đ¸Ń‚Đµ email Đ¸ ĐżĐ°Ń€ĐľĐ»ŃŚ'; return; }
-  btn.disabled = true; btn.textContent = 'Đ’Ń…ĐľĐ´Đ¸ĐĽ...'; err.textContent = '';
+  if (!email || !pass) { err.textContent = 'Enter email and password'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...'; err.textContent = '';
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 15000);
@@ -1024,7 +1024,7 @@ async function doLogin() {
     clearTimeout(timer);
     if (!res.ok) {
       const d = await res.json().catch(() => ({}));
-      throw new Error(d.detail || 'ĐťĐµĐ˛ĐµŃ€Đ˝Ń‹Đµ Đ´Đ°Đ˝Đ˝Ń‹Đµ');
+      throw new Error(d.detail || 'Invalid credentials');
     }
     const data = await res.json();
     S.token = data.token || data.access_token;
@@ -1034,11 +1034,11 @@ async function doLogin() {
   } catch(e) {
     clearTimeout(timer);
     if (e.name === 'AbortError') {
-      err.textContent = 'ĐˇĐµŃ€Đ˛ĐµŃ€ ĐżŃ€ĐľŃŃ‹ĐżĐ°ĐµŃ‚ŃŃŹ (cold start) â€” ĐżĐľĐ´ĐľĐ¶Đ´Đ¸Ń‚Đµ 10 ŃĐµĐş Đ¸ ĐżĐľĐżŃ€ĐľĐ±ŃĐąŃ‚Đµ ŃĐ˝ĐľĐ˛Đ°';
+      err.textContent = 'Server is starting (cold start) — wait 10 sec and try again';
     } else {
       err.textContent = e.message;
     }
-    btn.disabled = false; btn.textContent = 'Đ’ĐľĐąŃ‚Đ¸ â†’ ĐˇĐľĐ˛ĐµŃ‚ Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛';
+    btn.disabled = false; btn.textContent = 'Sign In → Board of Directors';
   }
 }
 
@@ -1048,23 +1048,23 @@ async function doDemo() {
   S.token = 'demo';
   hideAuth();
   updateUserUI('Demo');
-  setConn('demo', 'demo-Ń€ĐµĐ¶Đ¸ĐĽ');
-  toast('đźš€', 'Đ”ĐµĐĽĐľ-Ń€ĐµĐ¶Đ¸ĐĽ Đ°ĐşŃ‚Đ¸Đ˛Đ¸Ń€ĐľĐ˛Đ°Đ˝');
+  setConn('demo', 'demo-mode');
+  toast('🚀', 'Demo mode activated');
 }
 
 function showRegister() {
   const f = document.getElementById('auth-switch-txt');
   const btn = document.getElementById('auth-btn');
   const emailF = document.getElementById('auth-email');
-  f.innerHTML = 'ĐŁĐ¶Đµ ĐµŃŃ‚ŃŚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚? <span onclick="showLogin()">Đ’ĐľĐąŃ‚Đ¸</span>';
-  btn.textContent = 'ĐˇĐľĐ·Đ´Đ°Ń‚ŃŚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚';
+  f.innerHTML = 'Already have an account? <span onclick="showLogin()">Sign In</span>';
+  btn.textContent = 'Create Account';
   btn.onclick = doRegister;
 }
 function showLogin() {
   const f = document.getElementById('auth-switch-txt');
   const btn = document.getElementById('auth-btn');
-  f.innerHTML = 'ĐťĐµŃ‚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚Đ°? <span onclick="showRegister()">Đ—Đ°Ń€ĐµĐłĐ¸ŃŃ‚Ń€Đ¸Ń€ĐľĐ˛Đ°Ń‚ŃŚŃŃŹ</span>';
-  btn.textContent = 'Đ’ĐľĐąŃ‚Đ¸ â†’ ĐˇĐľĐ˛ĐµŃ‚ Đ´Đ¸Ń€ĐµĐşŃ‚ĐľŃ€ĐľĐ˛';
+  f.innerHTML = 'No account? <span onclick="showRegister()">Register</span>';
+  btn.textContent = 'Sign In → Board of Directors';
   btn.onclick = doLogin;
 }
 
@@ -1074,8 +1074,8 @@ async function doRegister() {
   const err   = document.getElementById('auth-err');
   const btn   = document.getElementById('auth-btn');
 
-  if (!email || !pass) { err.textContent = 'Đ—Đ°ĐżĐľĐ»Đ˝Đ¸Ń‚Đµ Đ˛ŃĐµ ĐżĐľĐ»ŃŹ'; return; }
-  btn.disabled = true; btn.textContent = 'ĐˇĐľĐ·Đ´Đ°Ń‘ĐĽ...';
+  if (!email || !pass) { err.textContent = 'Fill in all fields'; return; }
+  btn.disabled = true; btn.textContent = 'Creating...';
 
   const ctrl2 = new AbortController();
   const timer2 = setTimeout(() => ctrl2.abort(), 15000);
@@ -1087,21 +1087,21 @@ async function doRegister() {
       signal: ctrl2.signal,
     });
     clearTimeout(timer2);
-    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail||'ĐžŃĐ¸Đ±ĐşĐ°'); }
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail||'Ошибка'); }
     const data = await res.json();
     S.token = data.token || data.access_token;
     localStorage.setItem('consilium_token', S.token);
     await loadUser();
     hideAuth();
-    toast('âś…', 'ĐĐşĐşĐ°ŃĐ˝Ń‚ ŃĐľĐ·Đ´Đ°Đ˝!');
+    toast('✅', 'Account created!');
   } catch(e) {
     clearTimeout(timer2);
     if (e.name === 'AbortError') {
-      err.textContent = 'ĐˇĐµŃ€Đ˛ĐµŃ€ ĐżŃ€ĐľŃŃ‹ĐżĐ°ĐµŃ‚ŃŃŹ (cold start) â€” ĐżĐľĐ´ĐľĐ¶Đ´Đ¸Ń‚Đµ 10 ŃĐµĐş Đ¸ ĐżĐľĐżŃ€ĐľĐ±ŃĐąŃ‚Đµ ŃĐ˝ĐľĐ˛Đ°';
+      err.textContent = 'Server is starting (cold start) — wait 10 sec and try again';
     } else {
       err.textContent = e.message;
     }
-    btn.disabled = false; btn.textContent = 'ĐˇĐľĐ·Đ´Đ°Ń‚ŃŚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚';
+    btn.disabled = false; btn.textContent = 'Create Account';
   }
 }
 
@@ -1110,9 +1110,9 @@ async function loadUser() {
     const res = await fetch(`${CFG.BASE_URL}/api/auth/me`, {
       headers: { Authorization: `Bearer ${S.token}` }
     });
-    if (!res.ok) throw new Error('ĐťĐµĐ˛ĐµŃ€Đ˝Ń‹Đą Ń‚ĐľĐşĐµĐ˝');
+    if (!res.ok) throw new Error('Invalid token');
     S.user = await res.json();
-    const name = S.user.email?.split('@')[0] || 'ĐźĐľĐ»ŃŚĐ·ĐľĐ˛Đ°Ń‚ĐµĐ»ŃŚ';
+    const name = S.user.email?.split('@')[0] || 'User';
     updateUserUI(name);
     loadCredits();
     loadKnowledgeCounts();
@@ -1133,7 +1133,7 @@ function updateUserUI(name) {
 }
 
 async function loadCredits() {
-  if (CFG.DEMO_MODE) { document.getElementById('credits-num').textContent = 'âž'; return; }
+  if (CFG.DEMO_MODE) { document.getElementById('credits-num').textContent = '∞'; return; }
   try {
     const res = await fetch(`${CFG.BASE_URL}/api/auth/credits`, {
       headers: { Authorization: `Bearer ${S.token}` }
@@ -1165,7 +1165,7 @@ async function loadKnowledgeCounts() {
 }
 
 function hideAuth() {
-  // Инлайновый style имеет приоритет над классом hidden — сбрасываем оба
+  //  style     hidden —  
   const overlay = document.getElementById('auth-overlay');
   overlay.style.display = 'none';
   overlay.classList.add('hidden');
@@ -1181,10 +1181,10 @@ function logout() {
   CFG.DEMO_MODE = false;
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• WEBSOCKET â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ WEBSOCKET ════════════════════
 function connectWS() {
   if (CFG.DEMO_MODE) { setConn('online','demo'); return; }
-  setConn('connecting','ĐżĐľĐ´ĐşĐ»ŃŽŃ‡ĐµĐ˝Đ¸Đµ...');
+  setConn('connecting','connecting...');
 
   const url = `${CFG.WS_URL}/ws/council`;
   S.ws = new WebSocket(url);
@@ -1193,7 +1193,7 @@ function connectWS() {
     // First message MUST contain token for backend auth
     S.ws.send(JSON.stringify({token: S.token, message: '__ping__', chat_id: S.chatId || 'init_'+Date.now()}));
     setConn('online','online');
-    toast('đź”—','WebSocket ĐżĐľĐ´ĐşĐ»ŃŽŃ‡Ń‘Đ˝');
+    toast('🔗','WebSocket connected');
   };
 
   S.ws.onclose = () => {
@@ -1202,7 +1202,7 @@ function connectWS() {
     setTimeout(() => { if (S.token && !CFG.DEMO_MODE) connectWS(); }, 3000);
   };
 
-  S.ws.onerror = () => setConn('offline','ĐľŃĐ¸Đ±ĐşĐ°');
+  S.ws.onerror = () => setConn('offline','error');
 
   S.ws.onmessage = (ev) => {
     try { handleWSMsg(JSON.parse(ev.data)); }
@@ -1218,7 +1218,7 @@ function sendWS(obj) {
   return false;
 }
 
-// â•â•â• WebSocket message handlers â•â•â•
+// ═══ WebSocket message handlers ═══
 function handleWSMsg(msg) {
   switch(msg.type) {
 
@@ -1245,8 +1245,8 @@ function handleWSMsg(msg) {
       removeThinkRow();
       break;
 
-    case 'phase_error':      // director failed — закрываем карточку с ошибкой
-      finalizePhaseCard(msg.phase, `⚠️ ${msg.error || 'провайдер недоступен'}`, 0, 0);
+    case 'phase_error':      // director failed —    
+      finalizePhaseCard(msg.phase, `⚠️ ${msg.error || 'provider unavailable'}`, 0, 0);
       completeCP(msg.phase, 0);
       removeThinkRow();
       break;
@@ -1265,13 +1265,13 @@ function handleWSMsg(msg) {
       break;
 
     case 'error':
-      toast('âťŚ', msg.message || 'ĐžŃĐ¸Đ±ĐşĐ° ŃĐµŃ€Đ˛ĐµŃ€Đ°');
+      toast('❌', msg.message || 'Server error');
       resetWorking();
       break;
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SEND MESSAGE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ SEND MESSAGE ════════════════════
 function sendQ(text) { document.getElementById('msg-in').value = text; doSend(); }
 
 function doSend() {
@@ -1324,16 +1324,16 @@ async function callChatREST(text) {
       body: JSON.stringify({ message: text, chat_id: S.chatId }),
     });
     const data = await res.json();
-    addSimpleResponse(data.response || 'ĐťĐµŃ‚ ĐľŃ‚Đ˛ĐµŃ‚Đ°', data.phases_used);
+    addSimpleResponse(data.response || 'No response', data.phases_used);
     updateCreditsUI(data.credits_left);
     resetWorking();
   } catch(e) {
-    toast('âťŚ','ĐžŃĐ¸Đ±ĐşĐ° Đ·Đ°ĐżŃ€ĐľŃĐ°: '+e.message);
+    toast('❌','Request error: '+e.message);
     resetWorking();
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• DEMO SIMULATION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ DEMO SIMULATION ════════════════════
 const DEMO_PHASES = [
   { id:'scout',    name:'Scout',           model:'perplexity/sonar',       ms:1700 },
   { id:'analyst',  name:'Analyst',         model:'deepseek/deepseek-chat', ms:2100 },
@@ -1345,18 +1345,18 @@ const DEMO_PHASES = [
 ];
 
 const DEMO_CONTENT = {
-  scout:    `ĐˇĐ±ĐľŃ€ Đ´Đ°Đ˝Đ˝Ń‹Ń… Đ·Đ°Đ˛ĐµŃ€ŃŃ‘Đ˝ Â· ĐŁŃ€ĐľĐ˛ĐµĐ˝ŃŚ ŃĐ˛ĐµŃ€ĐµĐ˝Đ˝ĐľŃŃ‚Đ¸: <span style="color:var(--green)">Đ’Đ«ĐˇĐžĐšĐĐ™</span><br><br>ĐťĐ°ĐąĐ´ĐµĐ˝Đľ 4 Ń€ĐµĐ»ĐµĐ˛Đ°Đ˝Ń‚Đ˝Ń‹Ń… Đ¸ŃŃ‚ĐľŃ‡Đ˝Đ¸ĐşĐ°. ĐšĐľĐ˝Ń‚ĐµĐşŃŃ‚ Đ¸Đ· Personal Vault ĐżĐľĐ´ĐłŃ€ŃĐ¶ĐµĐ˝: 2 ĐżŃ€Đ¸Đ˝Ń†Đ¸ĐżĐ°, 1 ĐżĐľŃ…ĐľĐ¶ĐµĐµ Ń€ĐµŃĐµĐ˝Đ¸Đµ.`,
-  analyst:  `CoT-Đ°Đ˝Đ°Đ»Đ¸Đ· Đ˛Ń‹ŃŹĐ˛Đ¸Đ» 3 ĐşĐ»ŃŽŃ‡ĐµĐ˛Ń‹Ń… ĐżĐ°Ń‚Ń‚ĐµŃ€Đ˝Đ°. Đ—Đ°Đ´Đ°Ń‡Đ° ĐşĐ»Đ°ŃŃĐ¸Ń„Đ¸Ń†Đ¸Ń€ĐľĐ˛Đ°Đ˝Đ° ĐşĐ°Đş <strong>COMPLEX + FUTURE</strong>. Đ”ĐµĐşĐľĐĽĐżĐľĐ·Đ¸Ń†Đ¸ŃŹ Đ˝Đ° 4 Đ˝ĐµĐ·Đ°Đ˛Đ¸ŃĐ¸ĐĽŃ‹Ń… ĐżĐľĐ´Đ·Đ°Đ´Đ°Ń‡Đ¸ Đ˛Ń‹ĐżĐľĐ»Đ˝ĐµĐ˝Đ°.`,
-  architect:`MVP-first Đ°Ń€Ń…Đ¸Ń‚ĐµĐşŃ‚ŃŃ€Đ° ĐżŃ€ĐµĐ´Đ»ĐľĐ¶ĐµĐ˝Đ°. 3 ĐĽĐľĐ´ŃĐ»ŃŚĐ˝Ń‹Ń… ĐşĐľĐĽĐżĐľĐ˝ĐµĐ˝Ń‚Đ°, ĐľĐ±Ń€Đ°Ń‚Đ˝Đ°ŃŹ ŃĐľĐ˛ĐĽĐµŃŃ‚Đ¸ĐĽĐľŃŃ‚ŃŚ ĐľĐ±ĐµŃĐżĐµŃ‡ĐµĐ˝Đ°. Đ”Đ˛Đ° Đ°Đ»ŃŚŃ‚ĐµŃ€Đ˝Đ°Ń‚Đ¸Đ˛Đ˝Ń‹Ń… ĐżĐľĐ´Ń…ĐľĐ´Đ° Đ˛Ń‹Đ´ĐµĐ»ĐµĐ˝Ń‹ Đ´Đ»ŃŹ ŃŃ€Đ°Đ˛Đ˝ĐµĐ˝Đ¸ŃŹ.`,
-  devil:    `<span style="color:var(--red)">âš  Đ Đ¸ŃĐşĐ¸ Đ˛Ń‹ŃŹĐ˛Đ»ĐµĐ˝Ń‹:</span><br>1. Single point of failure Đ˛ API-Đ·Đ°Đ˛Đ¸ŃĐ¸ĐĽĐľŃŃ‚Đ¸<br>2. Đ’Ń€ĐµĐĽĐµĐ˝Đ˝Ń‹Đµ ĐľŃ†ĐµĐ˝ĐşĐ¸ ĐĽĐľĐłŃŃ‚ Đ±Ń‹Ń‚ŃŚ Đ·Đ°Đ˝Đ¸Đ¶ĐµĐ˝Ń‹ Đ˝Đ° 30-40%`,
-  synth:    `ĐˇĐ¸Đ˝Ń‚ĐµĐ· Đ·Đ°Đ˛ĐµŃ€ŃŃ‘Đ˝. ĐšĐľĐłĐµŃ€ĐµĐ˝Ń‚Đ˝ĐľŃŃ‚ŃŚ: <span style="color:var(--green)">87%</span>. VETO Đ˝Đµ Đ°ĐşŃ‚Đ¸Đ˛Đ¸Ń€ĐľĐ˛Đ°Đ˝. ĐźĐľĐ·Đ¸Ń†Đ¸Đ¸ Scout Đ¸ Architect ŃĐľĐłĐ»Đ°ŃĐľĐ˛Đ°Đ˝Ń‹.`,
-  verifier: `<span style="color:var(--green)">âś“ Knowledge Gate: 7/7 ĐżŃ€ĐľĐ˛ĐµŃ€ĐľĐş ĐżŃ€ĐľĐąĐ´ĐµĐ˝Đľ</span><br>âś“ ĐźŃ€Đ¸Đ˝Ń†Đ¸ĐżŃ‹ Â· âś“ DRY Â· âś“ YAGNI Â· âś“ Evidence Â· âś“ Coherence â‰Ą 50% Â· âś“ Actionable`,
-  chairman: `<strong>Đ ĐµŃĐµĐ˝Đ¸Đµ ĐźŃ€ĐµĐ´ŃĐµĐ´Đ°Ń‚ĐµĐ»ŃŹ:</strong><br><br>Đ ĐµĐşĐľĐĽĐµĐ˝Đ´ŃŃŽ: MVP ĐşĐľĐĽĐżĐľĐ˝ĐµĐ˝Ń‚Đ° A Đ˛ Ń‚ĐµŃ‡ĐµĐ˝Đ¸Đµ 2 Đ˝ĐµĐ´ĐµĐ»ŃŚ. ĐŃŃĐ»ĐµĐ´ĐľĐ˛Đ°Đ˝Đ¸Đµ Đ°Đ»ŃŚŃ‚ĐµŃ€Đ˝Đ°Ń‚Đ¸Đ˛Ń‹ B ĐżĐ°Ń€Đ°Đ»Đ»ĐµĐ»ŃŚĐ˝Đľ. Đ Đ¸ŃĐşĐ¸ Advocate Đ˛ĐşĐ»ŃŽŃ‡ĐµĐ˝Ń‹ Đ˛ ĐżĐ»Đ°Đ˝ ĐĽĐ¸Ń‚Đ¸ĐłĐ°Ń†Đ¸Đ¸. ĐˇĐ»ĐµĐ´ŃŃŽŃ‰Đ¸Đą ŃĐ°Đł: ŃĐľĐłĐ»Đ°ŃĐľĐ˛Đ°Ń‚ŃŚ Ń€ĐµŃŃŃ€ŃŃ‹ Đ´Đľ ĐżŃŹŃ‚Đ˝Đ¸Ń†Ń‹.`,
+  scout:    `Data collection complete · Confidence: <span style="color:var(--green)">HIGH</span><br><br>4 relevant sources found. Context from Personal Vault loaded: 2 principles, 1 past decision.`,
+  analyst:  `CoT analysis identified 3 key patterns. Task classified as <strong>COMPLEX + FUTURE</strong>. Decomposed into 4 independent subtasks.`,
+  architect:`MVP-first architecture proposed. 3 modular components, backward compatibility ensured. Two alternative approaches highlighted.`,
+  devil:    `<span style="color:var(--red)">⚠ Risks detected:</span><br>1. Single point of failure in API dependency<br>2. Time estimates may be underestimated by 30-40%`,
+  synth:    `Synthesis complete. Coherence: <span style="color:var(--green)">87%</span>. VETO not activated. Scout and Architect positions aligned.`,
+  verifier: `<span style="color:var(--green)">✓ Knowledge Gate: 7/7 checks passed</span><br>✓ Principles · ✓ DRY · ✓ YAGNI · ✓ Evidence · ✓ Coherence ≥ 50% · ✓ Actionable`,
+  chairman: `<strong>Chairman's Decision:</strong><br><br>Recommendation: MVP component A within 2 weeks. Research alternative B in parallel. Advocate risks included in mitigation plan. Next step: coordinate resources by Friday.`,
 };
 
 async function runDemo(query) {
   simulateClassifier();
-  // S.currentBlock ŃĐ¶Đµ ŃĐľĐ·Đ´Đ°Đ˝ Đ˛ doSend() â€” Đ˝Đµ ŃĐľĐ·Đ´Đ°Ń‘ĐĽ Đ´ŃĐ±Đ»ŃŚ
+  // S.currentBlock    doSend() —   
 
   for (const p of DEMO_PHASES) {
     activatePS(p.id); activateCP(p.id);
@@ -1391,7 +1391,7 @@ function startPhaseCard(phaseId, name, model) {
       <span class="pname">${name}</span>
       <span class="pmodel">${model}</span>
       <span class="pdur" id="dur-${sid}-${phaseId}">...</span>
-      <span class="ptoks" id="tok-${sid}-${phaseId}">â€”</span>
+      <span class="ptoks" id="tok-${sid}-${phaseId}">—</span>
     </div>
     <div class="pcard-body" id="body-${sid}-${phaseId}">
       <div class="stream-text" id="st-${sid}-${phaseId}"></div>
@@ -1427,7 +1427,7 @@ function finalizePhaseCard(phaseId, content, tokens, ms) {
   const d  = document.getElementById(`dur-${sid}-${phaseId}`);
   const t  = document.getElementById(`tok-${sid}-${phaseId}`);
   const st = document.getElementById(`st-${sid}-${phaseId}`);
-  if (d) d.textContent = ms ? ms + 'ms' : 'â€”';
+  if (d) d.textContent = ms ? ms + 'ms' : '—';
   if (t) t.textContent = tokens + ' tok';
   if (st && content && !st.textContent.trim()) st.textContent = content;
   _streamTarget = null;
@@ -1441,12 +1441,12 @@ function addThinkRow(name, model) {
   }
   const el = document.createElement('div');
   el.className = 'think-row'; el.id = 'think-row';
-  el.innerHTML = `<div class="think-spin"></div><span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${name} Đ´ŃĐĽĐ°ĐµŃ‚... <span style="color:var(--border-light)">[${model}]</span></span>`;
+  el.innerHTML = `<div class="think-spin"></div><span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${name} thinking... <span style="color:var(--border-light)">[${model}]</span></span>`;
   S.currentBlock.appendChild(el);
   scrollChat(); return el;
 }
 function removeThinkRow() {
-  // Убираем ВСЕ think-row — иначе при нескольких фазах первый id забивает последующие
+  //   think-row —      id  
   document.querySelectorAll('.think-row').forEach(el => el.remove());
 }
 
@@ -1454,7 +1454,7 @@ function addVetoBanner(coherence, reason) {
   if (!S.currentBlock) return;
   const el = document.createElement('div');
   el.className = 'veto-banner';
-  el.innerHTML = `âš  VETO: ĐşĐľĐłĐµŃ€ĐµĐ˝Ń‚Đ˝ĐľŃŃ‚ŃŚ ${coherence}% Â· ${reason}`;
+  el.innerHTML = `\u26a0 VETO: coherence ${coherence}% · ${reason}`;
   S.currentBlock.appendChild(el);
   updateCoherence(coherence, true);
 }
@@ -1476,15 +1476,15 @@ function onFinalResponse(msg) {
   }
   const used = msg.credits_used || 0;
   const ms = msg.total_ms || 0;
-  toast('âś…', `Đ”ĐµĐ»Đ¸Đ±ĐµŃ€Đ°Ń†Đ¸ŃŹ Đ·Đ°Đ˛ĐµŃ€ŃĐµĐ˝Đ° Â· ${used} ĐşŃ€ĐµĐ´ Â· ${(ms/1000).toFixed(1)}Ń`);
-  // coherence выставляется из msg.coherence_score в handleWSMsg
+  toast('✅', `Deliberation complete · ${used} credits · ${(ms/1000).toFixed(1)}s`);
+  // coherence   msg.coherence_score  handleWSMsg
   updateActionBoard();
   loadCredits();
   S.currentBlock = null;
   S.chatId = crypto.randomUUID(); // new chat for next message
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MONITOR UPDATE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ MONITOR UPDATE ════════════════════
 function simulateClassifier() {
   const depth   = 6 + Math.floor(Math.random()*3);
   const urgency = Math.floor(20+Math.random()*40);
@@ -1522,8 +1522,8 @@ function updateCoherence(score, isVeto) {
     const st  = document.getElementById('coh-status');
     const dsc = document.getElementById('coh-desc');
     if (pct) pct.textContent = '—';
-    if (st)  st.textContent  = 'Нет данных';
-    if (dsc) dsc.textContent = 'Synthesizer не запущен';
+    if (st)  st.textContent  = 'No data';
+    if (dsc) dsc.textContent = 'Synthesizer not running';
     return;
   }
   const circ = 131.95;
@@ -1536,21 +1536,21 @@ function updateCoherence(score, isVeto) {
   ring.style.strokeDashoffset = offset;
   if(score>=70){
     ring.style.stroke='var(--green)'; pct.style.color='var(--green)';
-    st.textContent='Đ’Ń‹ŃĐľĐşĐ°ŃŹ ĐşĐľĐłĐµŃ€ĐµĐ˝Ń‚Đ˝ĐľŃŃ‚ŃŚ'; desc.textContent='Đ”Đ¸Ń€ĐµĐşŃ‚ĐľŃ€Đ° ŃĐľĐłĐ»Đ°ŃĐľĐ˛Đ°Đ˝Ń‹';
+    st.textContent='High coherence'; desc.textContent='Directors aligned';
   } else if(score>=50){
     ring.style.stroke='var(--orange)'; pct.style.color='var(--orange)';
-    st.textContent='ĐˇŃ€ĐµĐ´Đ˝ŃŹŃŹ'; desc.textContent='Đ•ŃŃ‚ŃŚ Ń€Đ°ŃŃ…ĐľĐ¶Đ´ĐµĐ˝Đ¸ŃŹ';
+    st.textContent='Average'; desc.textContent='Discrepancies found';
   } else {
     ring.style.stroke='var(--red)'; pct.style.color='var(--red)';
-    st.textContent='âš  VETO Đ°ĐşŃ‚Đ¸Đ˛Đ¸Ń€ĐľĐ˛Đ°Đ˝'; desc.textContent='Đ˘Ń€ĐµĐ±ŃĐµŃ‚ ĐżĐµŃ€ĐµŃ€Đ°Đ±ĐľŃ‚ĐşĐ¸';
+    st.textContent='\u26a0 VETO activated'; desc.textContent='Requires revision';
   }
 }
 
 function updateActionBoard() {
   document.getElementById('action-board').innerHTML = `
-    <div class="aitem"><span class="atype decision">DECISION</span>MVP ĐşĐľĐĽĐżĐľĐ˝ĐµĐ˝Ń‚Đ° A Â· ŃŃ€ĐľĐş 2 Đ˝ĐµĐ´.</div>
-    <div class="aitem"><span class="atype task">TASK</span>ĐˇĐľĐłĐ»Đ°ŃĐľĐ˛Đ°Ń‚ŃŚ Ń€ĐµŃŃŃ€ŃŃ‹ Đ´Đľ ĐżŃŹŃ‚Đ˝Đ¸Ń†Ń‹</div>
-    <div class="aitem"><span class="atype risk">RISK</span>Đ”ĐľĐ±Đ°Đ˛Đ¸Ń‚ŃŚ fallback-ĐĽĐµŃ…Đ°Đ˝Đ¸Đ·ĐĽ API</div>
+    <div class="aitem"><span class="atype decision">DECISION</span>MVP component A · deadline 2w</div>
+    <div class="aitem"><span class="atype task">TASK</span>Coordinate resources by Friday</div>
+    <div class="aitem"><span class="atype risk">RISK</span>Add API fallback mechanism</div>
   `;
 }
 
@@ -1558,7 +1558,7 @@ function updateCreditsUI(n) {
   if (n !== undefined) document.getElementById('credits-num').textContent = n;
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• PHASE STEPS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ PHASE STEPS ════════════════════
 function activatePS(id) {
   document.querySelectorAll('.pstep').forEach(s => {
     if (s.id===`ps-${id}`) s.className='pstep active';
@@ -1577,7 +1577,7 @@ function completeCP(id, ms) {
   const el=document.getElementById(`cp-${id}`);
   if(el){
     el.className='cp done';
-    el.querySelector('.cp-ico').textContent='âś“';
+    el.querySelector('.cp-ico').textContent='âś"';
     const m=el.querySelector('.cp-model');
     if(m && ms) m.textContent=`${ms}ms`;
   }
@@ -1590,7 +1590,7 @@ function resetCPhases() {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• WORKING STATE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ WORKING STATE ════════════════════
 function startWorking() {
   S.isWorking = true;
   document.getElementById('send-btn').disabled = true;
@@ -1603,7 +1603,7 @@ function resetWorking() {
   resetPhaseSteps();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• UI HELPERS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ UI HELPERS ════════════════════
 function addUserMsg(text) {
   const el=document.createElement('div');
   el.className='umsg'; el.textContent=text;
@@ -1645,7 +1645,7 @@ function pickProto(el, name, tag) {
   el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(i=>i.classList.remove('active'));
   el.classList.add('active'); toggleDD('');
   S.currentProto=name.toLowerCase();
-  toast('âšˇ',`ĐźŃ€ĐľŃ‚ĐľĐşĐľĐ»: ${name}`);
+  toast('⚡',`Protocol: ${name}`);
 }
 function pickProtoInp(name) {
   document.getElementById('inp-proto-lbl').textContent=name;
@@ -1663,7 +1663,7 @@ function toast(icon, text) {
   area.appendChild(el); setTimeout(()=>el.remove(),2800);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• INIT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════ INIT ════════════════════
 (async function init() {
   if (S.token) {
     try { await loadUser(); hideAuth(); }
@@ -1692,10 +1692,10 @@ function toggleTheme() {
   const label = document.getElementById('theme-label');
   if (next === 'light') {
     icon && (icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
-    label && (label.textContent = 'ĐˇĐ˛ĐµŃ‚Đ»Đ°ŃŹ');
+    label && (label.textContent = 'Light');
   } else {
     icon && (icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>');
-    label && (label.textContent = 'Đ˘Ń‘ĐĽĐ˝Đ°ŃŹ');
+    label && (label.textContent = 'Dark');
   }
 }
 (function() {
@@ -1706,7 +1706,7 @@ function toggleTheme() {
       const i = document.getElementById('theme-icon');
       const l = document.getElementById('theme-label');
       i && (i.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
-      l && (l.textContent = 'ĐˇĐ˛ĐµŃ‚Đ»Đ°ŃŹ');
+      l && (l.textContent = 'Light');
       updateLogoForTheme('light');
     }
   });
@@ -1726,23 +1726,23 @@ async function doRegister() {
   const pwd2 = document.getElementById('reg-password2').value;
   const err = document.getElementById('reg-err');
   err.style.color = ''; err.textContent = '';
-  if (!email || !pwd) { err.textContent = 'Đ—Đ°ĐżĐľĐ»Đ˝Đ¸Ń‚Đµ Đ˛ŃĐµ ĐżĐľĐ»ŃŹ'; return; }
-  if (pwd.length < 6) { err.textContent = 'ĐźĐ°Ń€ĐľĐ»ŃŚ ĐĽĐ¸Đ˝Đ¸ĐĽŃĐĽ 6 ŃĐ¸ĐĽĐ˛ĐľĐ»ĐľĐ˛'; return; }
-  if (pwd !== pwd2) { err.textContent = 'ĐźĐ°Ń€ĐľĐ»Đ¸ Đ˝Đµ ŃĐľĐ˛ĐżĐ°Đ´Đ°ŃŽŃ‚'; return; }
+  if (!email || !pwd) { err.textContent = 'Fill in all fields'; return; }
+  if (pwd.length < 6) { err.textContent = 'Password must be at least 6 chars'; return; }
+  if (pwd !== pwd2) { err.textContent = 'Passwords do not match'; return; }
   try {
     const r = await fetch(CFG.BASE_URL + '/register', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password: pwd})
     });
     const d = await r.json();
-    if (!r.ok) { err.textContent = d.detail || 'ĐžŃĐ¸Đ±ĐşĐ° Ń€ĐµĐłĐ¸ŃŃ‚Ń€Đ°Ń†Đ¸Đ¸'; return; }
-    err.style.color = '#22c55e'; err.textContent = 'ĐĐşĐşĐ°ŃĐ˝Ń‚ ŃĐľĐ·Đ´Đ°Đ˝! Đ’Ń…ĐľĐ´Đ¸ĐĽ...';
+    if (!r.ok) { err.textContent = d.detail || 'Registration error'; return; }
+    err.style.color = '#22c55e'; err.textContent = 'Account created! Signing in...';
     setTimeout(showLogin, 1200);
-  } catch(e) { err.textContent = 'ĐˇĐµŃ€Đ˛ĐµŃ€ Đ˝ĐµĐ´ĐľŃŃ‚ŃĐżĐµĐ˝. ĐźĐľĐżŃ€ĐľĐ±ŃĐąŃ‚Đµ Đ´ĐµĐĽĐľ-Ń€ĐµĐ¶Đ¸ĐĽ.'; }
+  } catch(e) { err.textContent = 'Server unavailable. Try demo mode.'; }
 }
 
 
-// Approval States — кнопки под Chairman-карточкой
+// Approval States —   Chairman-
 function setApproval(journalId, state, btn) {
   if (!S.token || CFG.DEMO_MODE) return;
   fetch(`${CFG.BASE_URL}/api/knowledge/journal/${journalId}/approve`, {
@@ -1751,13 +1751,13 @@ function setApproval(journalId, state, btn) {
     body: JSON.stringify({ state })
   }).then(r => {
     if (r.ok) {
-      // Подсветить активную кнопку
+      //   
       btn.closest('div').querySelectorAll('button').forEach(b => b.style.fontWeight = 'normal');
       btn.style.fontWeight = '700';
-      const labels = { draft: '📝 Черновик', verified: '✓ Верифицирован', approved: '✅ Утверждён' };
-      toast('📋', `Решение: ${labels[state]}`);
+      const labels = { draft: '📝 Черновик', verified: '✓ Verified', approved: '✅ Approved' };
+      toast('📋', `Decision: ${labels[state]}`);
     }
-  }).catch(() => toast('❌', 'Ошибка сохранения статуса'));
+  }).catch(() => toast('❌', 'Status save error'));
 }
 </script>
 
@@ -1767,18 +1767,18 @@ function setApproval(journalId, state, btn) {
       <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
     </div>
     <div style="display:flex;gap:4px;margin-bottom:16px;">
-      <button onclick="showLogin()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Đ’ĐľĐąŃ‚Đ¸</button>
-      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Đ ĐµĐłĐ¸ŃŃ‚Ń€Đ°Ń†Đ¸ŃŹ</button>
+      <button onclick="showLogin()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Sign In</button>
+      <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Sign Up</button>
     </div>
     <div class="auth-fields">
       <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"/></div>
-      <div class="auth-field"><label>ĐźĐ°Ń€ĐľĐ»ŃŚ</label><input type="password" id="reg-password" placeholder="â€˘â€˘â€˘â€˘â€˘â€˘â€˘â€˘"/></div>
-      <div class="auth-field"><label>ĐźĐľĐ˛Ń‚ĐľŃ€Đ¸Ń‚Đµ ĐżĐ°Ń€ĐľĐ»ŃŚ</label><input type="password" id="reg-password2" placeholder="â€˘â€˘â€˘â€˘â€˘â€˘â€˘â€˘"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••"/></div>
+      <div class="auth-field"><label>Confirm Password</label><input type="password" id="reg-password2" placeholder="••••••••"/></div>
       <div class="auth-err" id="reg-err"></div>
     </div>
-    <button class="auth-btn" onclick="doRegister()">ĐˇĐľĐ·Đ´Đ°Ń‚ŃŚ Đ°ĐşĐşĐ°ŃĐ˝Ń‚</button>
-    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">âšˇ Đ”ĐµĐĽĐľ-Ń€ĐµĐ¶Đ¸ĐĽ (Đ±ĐµĐ· ŃĐµŃ€Đ˛ĐµŃ€Đ°)</button></div>
-    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">ĐˇĐµŃ€Đ˛ĐµŃ€: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
+    <button class="auth-btn" onclick="doRegister()">Create Account</button>
+    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">⚡ Demo mode (no server)</button></div>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Server: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
   </div>
 </div>
 </body>

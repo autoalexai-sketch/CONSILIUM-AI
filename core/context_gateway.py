@@ -1,11 +1,11 @@
-﻿"""
-core/context_gateway.py — Context Gateway для CONSILIUM AI v3.0
+"""
+core/context_gateway.py — Context Gateway  CONSILIUM AI v3.0
 
-Перед каждой делиберацией подтягивает релевантный контекст:
-  1. Принципы пользователя (user_principles)
-  2. Похожие прошлые решения (decision_journal)
+     :
+  1.   (user_principles)
+  2.    (decision_journal)
 
-Контекст инжектируется в промпты Scout и Chairman.
+    Scout  Chairman.
 """
 
 from typing import Optional
@@ -19,8 +19,8 @@ class ContextGateway:
 
     def get_context(self, query: str, user_id: int) -> dict:
         """
-        Возвращает dict с принципами, похожими решениями и готовым context_block.
-        Если user_id=0 или нет данных — возвращает пустой контекст без ошибки.
+         dict  ,     context_block.
+         user_id=0    —     .
         """
         if not user_id:
             return {"principles": [], "past_decisions": [], "context_block": ""}
@@ -33,7 +33,7 @@ class ContextGateway:
             past_decisions = []
 
             with engine.connect() as conn:
-                # 1. Принципы пользователя
+                # 1.  
                 rows = conn.execute(
                     select(user_principles)
                     .where(
@@ -48,7 +48,7 @@ class ContextGateway:
                     for r in rows
                 ]
 
-                # 2. Похожие прошлые решения — простой скоринг по пересечению слов
+                # 2.    —     
                 query_words = set(query.lower().split())
                 candidates = conn.execute(
                     select(decision_journal)
@@ -122,5 +122,5 @@ class ContextGateway:
         )
 
 
-# Глобальный синглтон
+#  
 context_gateway = ContextGateway()

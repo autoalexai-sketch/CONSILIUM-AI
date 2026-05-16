@@ -1,6 +1,6 @@
-﻿"""
-main.py â€” Đ˘ĐľŃ‡ĐşĐ° Đ˛Ń…ĐľĐ´Đ° CONSILIUM AI v3.0
-Đ—Đ°ĐżŃŃĐş: uvicorn main:app --reload --port 8000
+"""
+main.py — Точка входа CONSILIUM AI v3.0
+Запуск: uvicorn main:app --reload --port 8000
 """
 
 from fastapi import FastAPI
@@ -25,14 +25,14 @@ try:
 except ImportError:
     _PROMETHEUS_AVAILABLE = False
 
-# â”€â”€ ĐźŃ€Đ¸Đ»ĐľĐ¶ĐµĐ˝Đ¸Đµ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Приложение ────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Consilium AI v3.0",
     description="Multi-agent Intellectual Work Environment",
     version="3.0.0",
 )
 
-# â”€â”€ CORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── CORS ─────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -41,10 +41,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# â”€â”€ Đ ĐľŃŃ‚ĐµŃ€Ń‹ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Auth ĐĽĐľĐ˝Ń‚Đ¸Ń€ŃĐµĐĽ Đ´Đ˛Đ°Đ¶Đ´Ń‹:
-#   /register  /login  /verify       â† Đ¸ŃĐżĐľĐ»ŃŚĐ·ŃĐµŃ‚ŃŃŹ ĐżŃ€Đ¸ Ń€ĐµĐłĐ¸ŃŃ‚Ń€Đ°Ń†Đ¸Đ¸
-#   /api/auth/register  /api/auth/login  /api/auth/verify  â† Đ¸ŃĐżĐľĐ»ŃŚĐ·ŃĐµŃ‚ŃŃŹ ĐżŃ€Đ¸ Đ»ĐľĐłĐ¸Đ˝Đµ
+# ── Роутеры ───────────────────────────────────────────────────────────────
+# Auth монтируем дважды:
+#   /register  /login  /verify       ← используется при регистрации
+#   /api/auth/register  /api/auth/login  /api/auth/verify  ← используется при логине
 app.include_router(auth_router,       prefix="",          tags=["auth"])
 app.include_router(auth_router,       prefix="/api/auth",  tags=["auth-compat"])
 app.include_router(chat_router,       prefix="",           tags=["chat"])
@@ -53,10 +53,10 @@ app.include_router(ws_router,         prefix="",           tags=["websocket"])
 app.include_router(experience_router, tags=["experience"])
 app.include_router(knowledge_router, tags=["knowledge"])
 
-# â”€â”€ Security headers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Security headers ──────────────────────────────────────────────────────
 add_security_headers(app)
 
-# â”€â”€ ĐˇŃ‚Đ°Ń‚Đ¸Ń‡ĐµŃĐşĐ¸Đµ Ń„Đ°ĐąĐ»Ń‹ (frontend) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Статические файлы (frontend) ──────────────────────────────────────────
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 
 if os.path.exists(FRONTEND_DIR):
@@ -74,7 +74,7 @@ if os.path.exists(FRONTEND_DIR):
             return FileResponse(index)
         return {"status": "ok", "message": "Consilium AI v3.0"}
 
-# â”€â”€ Health & Version â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Health & Version ──────────────────────────────────────────────────────
 @app.get("/health")
 async def health():
     return {
@@ -86,22 +86,22 @@ async def health():
 
 @app.head("/health")
 async def health_head():
-    """Render Đ¸ŃĐżĐľĐ»ŃŚĐ·ŃĐµŃ‚ HEAD Đ´Đ»ŃŹ healthcheck Đ˝Đ° cold-start."""
+    """Render использует HEAD для healthcheck на cold-start."""
     return Response(status_code=200)
 
 @app.get("/version")
 async def version():
     return {"version": "3.0.0", "service": "consilium-ai"}
 
-# â”€â”€ Startup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Startup ───────────────────────────────────────────────────────────────
 @app.on_event("startup")
 async def startup_event():
-    logger.info("đźš€ Starting Consilium AI v3.0...")
+    logger.info("🚀 Starting Consilium AI v3.0...")
     init_database()
     logger.info(f"âś… Database initialized: {settings.DATABASE_URL}")
     logger.info(f"âś… CORS origins: {settings.CORS_ORIGINS}")
     logger.info(f"âś… Frontend: {FRONTEND_DIR}")
-    logger.info("đźŽŻ Consilium AI v3.0 is ready!")
+    logger.info("🎯 Consilium AI v3.0 is ready!")
     logger.info("   UI:      http://localhost:8000/")
     logger.info("   Docs:    http://localhost:8000/docs")
     logger.info("   Health:  http://localhost:8000/health")
