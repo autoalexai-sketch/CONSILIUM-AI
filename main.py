@@ -1,6 +1,6 @@
 """
-main.py — Точка входа CONSILIUM AI v3.0
-Запуск: uvicorn main:app --reload --port 8000
+main.py -- Entry point for CONSILIUM AI v3.0
+Start: uvicorn main:app --reload --port 8000
 """
 
 from fastapi import FastAPI
@@ -86,7 +86,7 @@ async def health():
 
 @app.head("/health")
 async def health_head():
-    """Render использует HEAD для healthcheck на cold-start."""
+    """Render uses HEAD for cold-start healthcheck."""
     return Response(status_code=200)
 
 @app.get("/version")
@@ -98,9 +98,9 @@ async def version():
 async def startup_event():
     logger.info("🚀 Starting Consilium AI v3.0...")
     init_database()
-    logger.info(f"âś… Database initialized: {settings.DATABASE_URL}")
-    logger.info(f"âś… CORS origins: {settings.CORS_ORIGINS}")
-    logger.info(f"âś… Frontend: {FRONTEND_DIR}")
+    logger.info(f"Database initialized: {settings.DATABASE_URL}")
+    logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
+    logger.info(f"Frontend: {FRONTEND_DIR}")
     logger.info("🎯 Consilium AI v3.0 is ready!")
     logger.info("   UI:      http://localhost:8000/")
     logger.info("   Docs:    http://localhost:8000/docs")

@@ -1155,12 +1155,18 @@ async function loadKnowledgeCounts() {
     return;
   }
   try {
-    const res = await fetch(`${CFG.BASE_URL}/api/knowledge/items`, {
-      headers: { Authorization: `Bearer ${S.token}` }
-    });
-    const d = await res.json();
-    const cnt = Array.isArray(d) ? d.length : (d.total ?? 0);
-    document.getElementById('kp-decisions').textContent = cnt;
+    const [jRes, pRes] = await Promise.all([
+      fetch(`${CFG.BASE_URL}/api/knowledge/journal/count`, { headers: { Authorization: `Bearer ${S.token}` } }),
+      fetch(`${CFG.BASE_URL}/api/knowledge/principles/count`, { headers: { Authorization: `Bearer ${S.token}` } }),
+    ]);
+    const jd = await jRes.json().catch(() => ({}));
+    const pd = await pRes.json().catch(() => ({}));
+    const jCnt = jd.count ?? 0;
+    const pCnt = pd.count ?? 0;
+    document.getElementById('kp-decisions').textContent = jCnt;
+    document.getElementById('dec-cnt').textContent = jCnt;
+    document.getElementById('kp-principles').textContent = pCnt;
+    document.getElementById('prin-cnt').textContent = pCnt;
   } catch{}
 }
 
