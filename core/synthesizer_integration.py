@@ -1,6 +1,6 @@
 """
-Synthesizer Phase — Фаза 4 делиберации.
-Анализирует противоречия совета, проверяет логическую согласованность.
+Synthesizer Phase -- Phase 4 of deliberation.
+Analyzes council contradictions, checks logical consistency.
 """
 
 import json
@@ -13,7 +13,7 @@ from core.cognitive_classifier import TaskProfile
 
 
 class SynthesizerPhase:
-    """ФАЗА 4: Synthesizer анализирует противоречия совета"""
+    """PHASE 4: Synthesizer analyzes council contradictions"""
 
     SYSTEM_PROMPT = """You are Claude Synthesizer - Meta-Cognitive Council Member in Consilium AI.
 
@@ -29,7 +29,7 @@ RESPONSE FORMAT (STRICT JSON):
   "logical_gaps": ["gap1", "gap2"],
   "risks": [{"risk": "...", "probability": "high|medium|low", "impact": "high|medium|low"}],
   "clarifying_questions": ["Q1", "Q2"],
-  "meta_recommendation": "Финальный вердикт и рекомендации"
+  "meta_recommendation": "Final verdict and recommendations"
 }"""
 
     @staticmethod
@@ -39,14 +39,14 @@ RESPONSE FORMAT (STRICT JSON):
         council_context = SynthesizerPhase._prepare_context(phase_results)
         user_prompt = SynthesizerPhase._build_user_prompt(query, council_context, task_profile, language)
 
-        print("🧠 [SYNTHESIZER] Анализирую противоречия совета...")
+        print("🧠 [SYNTHESIZER] Analyzing council contradictions...")
         result = await fallback_manager.call_claude_for_synthesis(
             SynthesizerPhase.SYSTEM_PROMPT, user_prompt)
         elapsed = time.time() - start_time
 
         if not result["success"]:
             print("   ⚠️ Synthesizer failed, using empty analysis")
-            return {"success": False, "content": "[Синтез недоступен]",
+            return {"success": False, "content": "[Synthesis unavailable]",
                     "provider": result.get("provider", "error"),
                     "tokens": 0, "cost_usd": 0.0, "processing_time_ms": elapsed * 1000}
 
@@ -56,7 +56,7 @@ RESPONSE FORMAT (STRICT JSON):
         except Exception:
             analysis_data = {}
 
-        print(f"   ✅ Синтез готов ({result.get('tokens', 0)} токенов, {result.get('provider')})")
+        print(f"   ✅ Synthesis ready ({result.get('tokens', 0)} tokens, {result.get('provider')})")
         print(f"      Coherence: {analysis_data.get('coherence_score', 0)}")
         print(f"      Contradictions: {len(analysis_data.get('contradictions', []))}")
 
