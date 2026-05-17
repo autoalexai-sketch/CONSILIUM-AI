@@ -650,7 +650,7 @@ body {
     <button class="auth-btn" id="auth-btn" onclick="doLogin()">Sign In → Board of Directors</button>
 
     <div class="auth-demo">
-      <button class="demo-btn" onclick="doDemo()">Sign In в демо-режим (без сервера)</button>
+      <button class="demo-btn" onclick="doDemo()">Demo Mode (no server)</button>
     </div>
 
     <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Server: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
@@ -1483,7 +1483,10 @@ function onFinalResponse(msg) {
   const used = msg.credits_used || 0;
   const ms = msg.total_ms || 0;
   toast('✅', `Deliberation complete · ${used} credits · ${(ms/1000).toFixed(1)}s`);
-  // coherence   msg.coherence_score  handleWSMsg
+  // update coherence score from synthesis_report
+  const cohScore = msg.coherence_score || (msg.synthesis_report && msg.synthesis_report.coherence_score);
+  if (cohScore) updateCoherence(cohScore, false);
+  else updateCoherence(0, false);
   updateActionBoard();
   loadCredits();
   S.currentBlock = null;
@@ -1577,13 +1580,13 @@ function resetPhaseSteps() {
 
 function activateCP(id) {
   const el=document.getElementById(`cp-${id}`);
-  if(el){ el.className='cp active'; el.querySelector('.cp-ico').textContent='â—Ź'; }
+  if(el){ el.className='cp active'; el.querySelector('.cp-ico').textContent='●'; }
 }
 function completeCP(id, ms) {
   const el=document.getElementById(`cp-${id}`);
   if(el){
     el.className='cp done';
-    el.querySelector('.cp-ico').textContent='âś"';
+    el.querySelector('.cp-ico').textContent='✔';
     const m=el.querySelector('.cp-model');
     if(m && ms) m.textContent=`${ms}ms`;
   }
@@ -1591,7 +1594,7 @@ function completeCP(id, ms) {
 function resetCPhases() {
   document.querySelectorAll('.cp').forEach(c=>{
     c.className='cp pending';
-    c.querySelector('.cp-ico').textContent='â—‹';
+    c.querySelector('.cp-ico').textContent='○';
     // restore model label colors
   });
 }
