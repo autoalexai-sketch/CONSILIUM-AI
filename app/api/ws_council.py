@@ -30,6 +30,18 @@ from core.experience.experience_service import experience_service
 router = APIRouter()
 
 
+def _calc_fallback_coherence(result: dict) -> int:
+    """Estimate coherence from director success rate when Synthesizer didn't run."""
+    delib = result.get("deliberation") or {}
+    if not delib:
+        return 0
+    total = len(delib)
+    ok = sum(1 for v in delib.values() if v.get("success"))
+    if total == 0:
+        return 0
+    return int((ok / total) * 85)  # max 85 -- real synthesizer can go higher
+
+
 @router.websocket("/ws/council")
 async def ws_council(websocket: WebSocket):
     await websocket.accept()
@@ -163,7 +175,12 @@ async def ws_council(websocket: WebSocket):
                 "deliberation":    result.get("deliberation", {}),
                 "credits_left":    new_credits,
                 "chat_id":         chat_id,
-                "coherence_score": (result.get("synthesis_report") or {}).get("coherence_score") or result.get("coherence_score"),
+                "coherence_score": (
+                    (result.get("synthesis_report") or {}).get("coherence_score")
+                    or result.get("coherence_score")
+                    or _calc_fallback_coherence(result)
+                ),
+                "synthesis_report": result.get("synthesis_report"),
                 "journal_id":      result.get("journal_id"),
             })
 
