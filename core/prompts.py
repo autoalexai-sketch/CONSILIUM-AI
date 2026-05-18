@@ -424,14 +424,16 @@ class PromptUtils:
     """Utility functions for prompt building."""
 
     @staticmethod
-    def add_language_context(prompt: str, lang: str) -> str:
+    def add_language_context(prompt: str, lang: str, geo_context: str = 'Poland') -> str:
         lang_names = {
             'ru': 'Russian', 'en': 'English', 'pl': 'Polish',
             'uk': 'Ukrainian', 'ua': 'Ukrainian', 'de': 'German',
             'fr': 'French', 'es': 'Spanish', 'it': 'Italian',
         }
         lang_name = lang_names.get(lang, 'English')
-        return f"[LANGUAGE: respond in {lang_name}]\n\n{prompt}"
+        geo_line = f'[GEOGRAPHIC CONTEXT: {geo_context} — all facts, laws, prices, and examples must be specific to {geo_context}]'
+        lang_line = f'[LANGUAGE: respond in {lang_name}]'
+        return f"{lang_line}\n{geo_line}\n\n{prompt}"
 
     @staticmethod
     def add_cio_note(prompt: str, note: str) -> str:

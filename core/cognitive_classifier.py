@@ -34,6 +34,7 @@ class TaskProfile:
     ambiguity_score: float = 0.0
     domain_hints: Dict[str, float] = field(default_factory=dict)
     suggested_language: str = "pl"
+    geo_context: str = "Poland"  # Detected country context for prompts
     processing_time_ms: float = 0.0
     confidence_score: float = 0.0
 
@@ -162,6 +163,7 @@ class CognitiveClassifier:
             dimensions=dimensions, required_depth=depth, emotional_load=emotional,
             urgency=urgency, ambiguity_score=ambiguity, domain_hints=domains,
             suggested_language=language,
+            geo_context=self._detect_geo_context(query),
             processing_time_ms=(time.perf_counter() - start_time) * 1000,
             confidence_score=confidence)
         self._update_cache(cache_key, profile)
@@ -194,6 +196,41 @@ class CognitiveClassifier:
         if words & english_common:
             return "en"
         return "pl"
+
+    def _detect_geo_context(self, query: str) -> str:
+        """Detect geographic context from query to anchor director responses."""
+        q = query.lower()
+        # Poland indicators
+        poland = [
+            'польш', 'польща', 'польщі', 'polska', 'polsk', 'poland',
+            'warszaw', 'krakow', 'kraków', 'варшав', 'краків', 'краков',
+            'злотий', 'злотих', 'pln', 'zł', 'złoty', 'złotych',
+            'польський', 'польское', 'польска',
+        ]
+        # Ukraine indicators
+        ukraine = [
+            'украін', 'украин', 'україн', 'ukraine', 'київ', 'киев', 'kyiv',
+            'гривн', 'hryvnia', 'uah', 'одес', 'харків', 'харьков', 'дніпр',
+        ]
+        # Germany indicators
+        germany = ['германи', 'германія', 'deutsch', 'german', 'берлін', 'берлин', 'münchen', 'euro', '€']
+        # UK/US
+        english_countries = ['united kingdom', 'uk ', 'england', 'usa', 'united states', 'america', 'london', 'new york']
+
+        poland_score   = sum(1 for k in poland   if k in q)
+        ukraine_score  = sum(1 for k in ukraine  if k in q)
+        germany_score  = sum(1 for k in germany  if k in q)
+        english_score  = sum(1 for k in english_countries if k in q)
+
+        scores = {
+            'Poland':  poland_score,
+            'Ukraine': ukraine_score,
+            'Germany': germany_score,
+            'UK/US':   english_score,
+        }
+        best = max(scores, key=scores.get)
+        # Default to Poland (our primary market) if no clear signal
+        return best if scores[best] > 0 else 'Poland'
 
     def _detect_temporal_orientation(self, query: str, words: Set[str]) -> CognitiveDimension:
         past_score = sum(1 for m in self.ALL_PAST if m in query)

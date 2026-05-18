@@ -184,7 +184,7 @@ async def run_council_deliberation(
                                "text": "Evidence: scanning sources..."})
         prompt = (_build_free_prompt("scout", query, profile.suggested_language) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_scout_prompt(query, profile) + (context_block if context_block else ''), profile.suggested_language))
+                      PromptBuilder.build_scout_prompt(query, profile) + (context_block if context_block else ''), profile.suggested_language, profile.geo_context))
         res = await _call_director("scout", prompt, directors["scout"], is_free)
         results["scout"] = res
         if not res.get("error"):
@@ -205,7 +205,7 @@ async def run_council_deliberation(
                                "text": "Analysis: detecting patterns and structure..."})
         prompt = (_build_free_prompt("analyst", query, profile.suggested_language, facts) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_analyst_prompt(query, profile, [facts]), profile.suggested_language))
+                      PromptBuilder.build_analyst_prompt(query, profile, [facts]), profile.suggested_language, profile.geo_context))
         res = await _call_director("analyst", prompt, directors["analyst"], is_free)
         results["analyst"] = res
         if not res.get("error"):
@@ -226,7 +226,7 @@ async def run_council_deliberation(
                                "text": "Architecture: designing solution..."})
         prompt = (_build_free_prompt("architect", query, profile.suggested_language, analysis) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_architect_prompt(query, profile, analysis), profile.suggested_language))
+                      PromptBuilder.build_architect_prompt(query, profile, analysis), profile.suggested_language, profile.geo_context))
         res = await _call_director("architect", prompt, directors["architect"], is_free)
         results["architect"] = res
         if not res.get("error"):
@@ -248,7 +248,7 @@ async def run_council_deliberation(
                                "text": "Red Teaming: identifying risks and weak points..."})
         prompt = PromptUtils.add_language_context(
             PromptBuilder.build_devil_advocate_prompt(query, profile, facts, analysis, solutions),
-            profile.suggested_language)
+            profile.suggested_language, profile.geo_context)
         res = await _call_director("devil", prompt, directors["devil"], is_free)
         results["devil"] = res
         if not res.get("error"):
@@ -291,7 +291,7 @@ async def run_council_deliberation(
                   else PromptUtils.add_language_context(
                       PromptBuilder.build_chairman_prompt(
                           query, profile, facts, analysis, solutions, criticism),
-                      profile.suggested_language))
+                      profile.suggested_language, profile.geo_context))
         chairman_result = await _call_director("chairman", prompt, directors["chairman"], is_free)
         results["chairman"] = chairman_result
         if not chairman_result.get("error"):
