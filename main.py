@@ -68,11 +68,29 @@ if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
     @app.get("/")
-    async def serve_frontend():
+    async def serve_root():
+        """Public landing page for non-authenticated visitors."""
+        landing = os.path.join(FRONTEND_DIR, "landing.html")
+        if os.path.exists(landing):
+            return FileResponse(landing)
+        index = os.path.join(FRONTEND_DIR, "index.html")
+        return FileResponse(index) if os.path.exists(index) else {"status": "ok"}
+
+    @app.get("/app")
+    async def serve_app():
+        """Main application (requires login)."""
         index = os.path.join(FRONTEND_DIR, "index.html")
         if os.path.exists(index):
             return FileResponse(index)
         return {"status": "ok", "message": "Consilium AI v3.0"}
+
+    @app.get("/landing")
+    async def serve_landing():
+        """Landing page explicit route."""
+        landing = os.path.join(FRONTEND_DIR, "landing.html")
+        if os.path.exists(landing):
+            return FileResponse(landing)
+        return {"error": "landing not found"}
 
 # ── Health & Version ──────────────────────────────────────────────────────
 @app.get("/health")
