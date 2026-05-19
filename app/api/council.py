@@ -16,6 +16,11 @@ from core.council_selector import CouncilSelector
 from core.prompts import PromptBuilder, PromptUtils
 from core.synthesizer_integration import SynthesizerPhase
 from core.context_gateway import context_gateway
+from core.structured_handoff import (
+    extract_scout_json,
+    format_handoff_for_director,
+    build_insufficiency_response,
+)
 from app.dependencies import save_classification_log
 from app.middleware.rate_limiter import rate_limiter
 from app.services import classifier, openrouter
@@ -199,13 +204,48 @@ async def run_council_deliberation(
     facts = (results.get("scout", {}).get("content", "")
              if not results.get("scout", {}).get("error") else "")
 
+    # Parse Scout JSON handoff
+    scout_json = extract_scout_json(facts) if facts else None
+    logger.debug(f"Scout JSON: {'parsed' if scout_json else 'not found — using raw text'}")
+
+    # Two-stage controller: check for HIGH-impact missing data
+    if scout_json and not is_free:
+        high_missing = [
+            m for m in scout_json.get("missing_data", [])
+            if m.get("impact") == "HIGH"
+        ]
+        # Only block if 3+ HIGH-impact fields missing (strict threshold)
+        if len(high_missing) >= 3:
+            clarify = build_insufficiency_response(
+                missing_data=high_missing,
+                domain=scout_json.get("domain", "general"),
+                geo_context=profile.geo_context,
+                language=profile.suggested_language,
+            )
+            await _emit(on_phase, {"type": "final", "response": clarify,
+                                   "council_used": ["scout"], "cost_usd": total_cost,
+                                   "deliberation": {}, "credits_left": user_credits,
+                                   "coherence_score": None, "journal_id": None})
+            return {
+                "success": True, "query": query,
+                "profile": {"language": profile.suggested_language,
+                             "dimensions": [d.name for d in profile.dimensions],
+                             "urgency": profile.urgency, "depth": profile.required_depth},
+                "council": {"selected": ["scout"], "directors": {}},
+                "deliberation": {}, "final_decision": clarify,
+                "total_cost_usd": round(total_cost, 4),
+                "credits_needed": 1, "errors": None, "synthesis_report": None,
+            }
+
     # ── 4. ANALYST ───────────────────────────────────────────────────────
     if "analyst" in directors:
         await _emit(on_phase, {"type": "phase_start", "phase": "analyst",
                                "text": "Analysis: detecting patterns and structure..."})
         prompt = (_build_free_prompt("analyst", query, profile.suggested_language, facts) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_analyst_prompt(query, profile, [facts]), profile.suggested_language, profile.geo_context))
+                      PromptBuilder.build_analyst_prompt(query, profile, [facts])
+                      + "\n\n" + format_handoff_for_director(scout_json, "analyst"),
+                      profile.suggested_language, profile.geo_context))
         res = await _call_director("analyst", prompt, directors["analyst"], is_free)
         results["analyst"] = res
         if not res.get("error"):
@@ -226,7 +266,9 @@ async def run_council_deliberation(
                                "text": "Architecture: designing solution..."})
         prompt = (_build_free_prompt("architect", query, profile.suggested_language, analysis) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_architect_prompt(query, profile, analysis), profile.suggested_language, profile.geo_context))
+                      PromptBuilder.build_architect_prompt(query, profile, analysis)
+                      + "\n\n" + format_handoff_for_director(scout_json, "architect"),
+                      profile.suggested_language, profile.geo_context))
         res = await _call_director("architect", prompt, directors["architect"], is_free)
         results["architect"] = res
         if not res.get("error"):
@@ -247,7 +289,8 @@ async def run_council_deliberation(
         await _emit(on_phase, {"type": "phase_start", "phase": "devil",
                                "text": "Red Teaming: identifying risks and weak points..."})
         prompt = PromptUtils.add_language_context(
-            PromptBuilder.build_devil_advocate_prompt(query, profile, facts, analysis, solutions),
+            PromptBuilder.build_devil_advocate_prompt(query, profile, facts, analysis, solutions)
+            + "\n\n" + format_handoff_for_director(scout_json, "devil"),
             profile.suggested_language, profile.geo_context)
         res = await _call_director("devil", prompt, directors["devil"], is_free)
         results["devil"] = res
@@ -290,7 +333,8 @@ async def run_council_deliberation(
                                      f"{analysis}\n{solutions}") if is_free
                   else PromptUtils.add_language_context(
                       PromptBuilder.build_chairman_prompt(
-                          query, profile, facts, analysis, solutions, criticism),
+                          query, profile, facts, analysis, solutions, criticism)
+                      + "\n\n" + format_handoff_for_director(scout_json, "chairman"),
                       profile.suggested_language, profile.geo_context))
         chairman_result = await _call_director("chairman", prompt, directors["chairman"], is_free)
         results["chairman"] = chairman_result

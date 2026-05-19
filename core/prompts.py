@@ -5,6 +5,7 @@ All prompts in English; language instruction injected via add_language_context()
 
 from typing import Dict, List, Optional, Any
 from core.cognitive_classifier import TaskProfile, CognitiveDimension
+from core.structured_handoff import SCOUT_JSON_PROMPT_SUFFIX
 
 
 class PromptBuilder:
@@ -69,7 +70,8 @@ Principles: source transparency, confidence labeling (Perplexity style).
 - DO NOT give recommendations or advice
 - DO NOT make predictions without confidence marker
 - DO NOT hide uncertainty
-</absolute_prohibitions>"""
+</absolute_prohibitions>
+{SCOUT_JSON_PROMPT_SUFFIX}"""
 
     # === ANALYST ===
     @staticmethod
