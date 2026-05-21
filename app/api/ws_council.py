@@ -49,6 +49,7 @@ async def ws_council(websocket: WebSocket):
 
     user_id: int | None = None
     chat_id: str = ""
+    session_history: list = []  # last N user queries for follow-up context
 
     try:
         while True:
@@ -72,6 +73,15 @@ async def ws_council(websocket: WebSocket):
             if not message:
                 await websocket.send_json({"type": "error", "message": "Empty message"})
                 continue
+
+            # --- Enrich short follow-up queries with conversation context ---
+            # e.g. "предложи варианты моделей" after discussing laptops
+            enriched_message = message
+            if len(message.split()) <= 6 and session_history:
+                # Short message — prepend last user query as context
+                last_q = session_history[-1] if session_history else ""
+                enriched_message = f"{message} (context: {last_q[:200]})"
+            session_history.append(message)
 
             # --- Verify JWT ---
             payload = verify_jwt_token(token)
@@ -121,11 +131,11 @@ async def ws_council(websocket: WebSocket):
 
             # --- Run deliberation ---
             result = await run_council_deliberation(
-                query=message,
-                user_credits=user_credits,
-                history_count=0,
-                on_phase=on_phase,
-                user_id=user_id,
+            query=enriched_message,
+            user_credits=user_credits,
+            history_count=len(session_history),
+            on_phase=on_phase,
+            user_id=user_id,
             )
 
             # --- Deduct credits ---

@@ -73,6 +73,23 @@ def _is_simple_query(query: str) -> bool:
 
 async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -> dict:
     """Single director call with fallback chain."""
+    # Chairman gets special treatment: direct Groq with system prompt
+    # This ensures Chairman always responds with actionable advice
+    if role == "chairman" and fallback_manager.groq_available:
+        try:
+            result = await fallback_manager._call_groq_with_system(
+                system="You are the Chairman — final decision maker. "
+                       "RULES: 1) Give CONCRETE actionable steps, not analysis. "
+                       "2) Use specific numbers from context. "
+                       "3) No phrases like 'it is recommended to analyze' or 'consider'. "
+                       "4) Every step must be: WHAT exactly + HOW + WHEN. "
+                       "5) If you don't know specific data — say so and give best estimate with caveat.",
+                user_prompt=prompt,
+            )
+            if result.get("success"):
+                return result
+        except Exception:
+            pass
     return await fallback_manager.call_with_backup(
         openrouter.call_director,
         director_spec,

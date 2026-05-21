@@ -149,7 +149,37 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"Groq exception: {str(e)[:100]}"}
 
-    # ── Главная цепочка ───────────────────────────────────────────────────
+    async def _call_groq_with_system(self, system: str, user_prompt: str, model: str = None) -> dict:
+        """Groq call with explicit system + user messages. Used for Chairman."""
+        target = model or self.groq_model
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                response = await client.post(
+                    self.groq_url,
+                    headers={"Authorization": f"Bearer {self.groq_key}",
+                             "Content-Type": "application/json"},
+                    json={
+                        "model": target,
+                        "messages": [
+                            {"role": "system", "content": system},
+                            {"role": "user",   "content": user_prompt},
+                        ],
+                        "max_tokens": 2500,
+                        "temperature": 0.5,
+                    },
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"]
+                    tokens = data.get("usage", {}).get("total_tokens", 0)
+                    return {"success": True, "content": content,
+                            "provider": "groq", "model": target,
+                            "tokens": tokens, "cost_usd": 0.0}
+                return {"success": False, "error": f"Groq HTTP {response.status_code}"}
+        except Exception as e:
+            return {"success": False, "error": f"Groq system call error: {str(e)[:100]}"}
+
+    # ── Main fallback chain ───────────────────────────────────────────────────
     async def call_with_backup(self, primary_func: Callable, *args, **kwargs) -> Dict[str, Any]:
         """Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama"""
 
