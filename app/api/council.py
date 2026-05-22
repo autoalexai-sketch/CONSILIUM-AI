@@ -73,23 +73,61 @@ def _is_simple_query(query: str) -> bool:
 
 async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -> dict:
     """Single director call with fallback chain."""
-    # Chairman gets special treatment: direct Groq with system prompt
-    # This ensures Chairman always responds with actionable advice
-    if role == "chairman" and fallback_manager.groq_available:
-        try:
-            result = await fallback_manager._call_groq_with_system(
-                system="You are the Chairman — final decision maker. "
-                       "RULES: 1) Give CONCRETE actionable steps, not analysis. "
-                       "2) Use specific numbers from context. "
-                       "3) No phrases like 'it is recommended to analyze' or 'consider'. "
-                       "4) Every step must be: WHAT exactly + HOW + WHEN. "
-                       "5) If you don't know specific data — say so and give best estimate with caveat.",
-                user_prompt=prompt,
-            )
-            if result.get("success"):
-                return result
-        except Exception:
-            pass
+
+    CHAIRMAN_SYSTEM = (
+        "You are the Chairman — final decision maker of Consilium AI council. "
+        "STRICT RULES: "
+        "1) Give CONCRETE actionable steps, NOT analysis or recommendations to 'consider'. "
+        "2) Use specific numbers from the context (amounts, %, dates, names). "
+        "3) FORBIDDEN phrases: 'it is recommended', 'consider', 'it is worth studying', 'analyze'. "
+        "4) Every step: WHAT exactly + HOW specifically + WHEN (deadline). "
+        "5) If data is missing — give best estimate with explicit caveat. "
+        "6) Be direct, like a senior advisor talking to a friend."
+    )
+
+    if role == "chairman":
+        # Level 1: Groq with system prompt (most reliable)
+        if fallback_manager.groq_available:
+            try:
+                result = await fallback_manager._call_groq_with_system(
+                    system=CHAIRMAN_SYSTEM,
+                    user_prompt=prompt,
+                )
+                if result.get("success") and result.get("content"):
+                    logger.info("Chairman: Groq OK")
+                    return result
+                logger.warning(f"Chairman Groq failed: {result.get('error', 'no content')}")
+            except Exception as e:
+                logger.warning(f"Chairman Groq exception: {e}")
+
+        # Level 2: DeepSeek direct
+        if fallback_manager.deepseek_available:
+            try:
+                result = await fallback_manager._call_deepseek(
+                    prompt=CHAIRMAN_SYSTEM + "\n\n" + prompt
+                )
+                if result.get("success") and result.get("content"):
+                    logger.info("Chairman: DeepSeek OK")
+                    return result
+            except Exception as e:
+                logger.warning(f"Chairman DeepSeek exception: {e}")
+
+        # Level 3: Claude (Anthropic) direct
+        if fallback_manager.claude_available:
+            try:
+                result = await fallback_manager.call_claude_for_synthesis(
+                    system_prompt=CHAIRMAN_SYSTEM,
+                    user_prompt=prompt,
+                )
+                if result.get("success") and result.get("content"):
+                    logger.info("Chairman: Claude OK")
+                    return result
+            except Exception as e:
+                logger.warning(f"Chairman Claude exception: {e}")
+
+        logger.error("Chairman: ALL providers failed")
+
+    # Non-chairman directors: standard fallback chain
     return await fallback_manager.call_with_backup(
         openrouter.call_director,
         director_spec,
