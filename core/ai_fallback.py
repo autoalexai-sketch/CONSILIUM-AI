@@ -149,7 +149,7 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"Groq exception: {str(e)[:100]}"}
 
-    async def _call_groq_with_system(self, system: str, user_prompt: str, model: str = None) -> dict:
+    async def _call_groq_with_system(self, system: str, user_prompt: str, model: str = None, temperature: float = 0.35) -> dict:
         """Groq call with explicit system + user messages. Used for Chairman."""
         target = model or self.groq_model
         try:
@@ -165,7 +165,7 @@ class AIFallbackManager:
                             {"role": "user",   "content": user_prompt},
                         ],
                         "max_tokens": 2500,
-                        "temperature": 0.5,
+                        "temperature": temperature,
                     },
                 )
                 if response.status_code == 200:

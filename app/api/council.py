@@ -92,6 +92,7 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
                 result = await fallback_manager._call_groq_with_system(
                     system=CHAIRMAN_SYSTEM,
                     user_prompt=prompt,
+                    temperature=0.35,
                 )
                 if result.get("success") and result.get("content"):
                     logger.info("Chairman: Groq OK")
@@ -224,6 +225,11 @@ async def run_council_deliberation(
         if profile.required_depth >= 6 or CognitiveDimension.COMPLEX in profile.dimensions:
             if "devil" not in selected_ids and len(selected_ids) < 6:
                 selected_ids.append("devil")
+        # Auto-activate Critic for financial/risky queries
+        if ctx.get("is_high_stakes") or context_gateway.is_financial_or_risky(query):
+            if "devil" not in selected_ids:
+                selected_ids.append("devil")
+                logger.info("Critic activated: financial/risky query detected")
 
     directors = {}
     for did in selected_ids:
