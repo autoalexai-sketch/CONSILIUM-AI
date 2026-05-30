@@ -346,7 +346,8 @@ class PromptUtils:
     """Utility functions for prompt building."""
 
     @staticmethod
-    def add_language_context(prompt: str, lang: str, geo_context: str = "Poland") -> str:
+    def add_language_context(prompt: str, lang: str, geo_context: str = "Poland",
+                             current_datetime: str = "") -> str:
         lang_names = {
             "ru": "Russian", "en": "English", "pl": "Polish",
             "uk": "Ukrainian", "ua": "Ukrainian", "de": "German",
@@ -358,7 +359,9 @@ class PromptUtils:
             f"all facts, laws, prices, and examples must be specific to {geo_context}]"
         )
         lang_line = f"[LANGUAGE: respond in {lang_name}]"
-        return f"{lang_line}\n{geo_line}\n\n{prompt}"
+        dt_line   = f"[CURRENT DATE AND TIME: {current_datetime}]" if current_datetime else ""
+        header    = "\n".join(filter(None, [lang_line, geo_line, dt_line]))
+        return f"{header}\n\n{prompt}"
 
     @staticmethod
     def truncate_for_context(text: str, max_chars: int = 500, suffix: str = "...") -> str:
