@@ -149,6 +149,17 @@ async def run_council_deliberation(
     logger.info(f"{'='*60}")
     logger.info(f"📝 QUERY: {query[:70]}...")
 
+    # Real server-side datetime (Warsaw/CET timezone) -- injected into all prompts
+    try:
+        import pytz as _pytz
+        from datetime import datetime as _dt
+        _now = _dt.now(_pytz.timezone("Europe/Warsaw"))
+        current_datetime_str = _now.strftime("%A, %d %B %Y, %H:%M %Z")
+    except Exception:
+        from datetime import datetime as _dt
+        current_datetime_str = _dt.utcnow().strftime("%A, %d %B %Y, %H:%M UTC")
+    logger.debug(f"Datetime injected: {current_datetime_str}")
+
     # ── FAST-TRACK: simple factual questions ────────────────────────────
     if _is_simple_query(query):
         logger.info("⚡ Fast-track: simple question, skipping council")
@@ -250,7 +261,7 @@ async def run_council_deliberation(
                                "text": "Evidence: scanning sources..."})
         prompt = (_build_free_prompt("scout", query, profile.suggested_language) if is_free
                   else PromptUtils.add_language_context(
-                      PromptBuilder.build_scout_prompt(query, profile) + (context_block if context_block else ''), profile.suggested_language, profile.geo_context))
+                      PromptBuilder.build_scout_prompt(query, profile) + (context_block if context_block else ''), profile.suggested_language, profile.geo_context, current_datetime_str))
         res = await _call_director("scout", prompt, directors["scout"], is_free)
         results["scout"] = res
         if not res.get("error"):
@@ -306,7 +317,7 @@ async def run_council_deliberation(
                   else PromptUtils.add_language_context(
                       PromptBuilder.build_analyst_prompt(query, profile, [facts])
                       + "\n\n" + format_handoff_for_director(scout_json, "analyst"),
-                      profile.suggested_language, profile.geo_context))
+                      profile.suggested_language, profile.geo_context, current_datetime_str))
         res = await _call_director("analyst", prompt, directors["analyst"], is_free)
         results["analyst"] = res
         if not res.get("error"):
@@ -329,7 +340,7 @@ async def run_council_deliberation(
                   else PromptUtils.add_language_context(
                       PromptBuilder.build_architect_prompt(query, profile, analysis)
                       + "\n\n" + format_handoff_for_director(scout_json, "architect"),
-                      profile.suggested_language, profile.geo_context))
+                      profile.suggested_language, profile.geo_context, current_datetime_str))
         res = await _call_director("architect", prompt, directors["architect"], is_free)
         results["architect"] = res
         if not res.get("error"):
@@ -352,7 +363,7 @@ async def run_council_deliberation(
         prompt = PromptUtils.add_language_context(
             PromptBuilder.build_devil_advocate_prompt(query, profile, facts, analysis, solutions)
             + "\n\n" + format_handoff_for_director(scout_json, "devil"),
-            profile.suggested_language, profile.geo_context)
+            profile.suggested_language, profile.geo_context, current_datetime_str)
         res = await _call_director("devil", prompt, directors["devil"], is_free)
         results["devil"] = res
         if not res.get("error"):
@@ -396,7 +407,7 @@ async def run_council_deliberation(
                       PromptBuilder.build_chairman_prompt(
                           query, profile, facts, analysis, solutions, criticism)
                       + "\n\n" + format_handoff_for_director(scout_json, "chairman"),
-                      profile.suggested_language, profile.geo_context))
+                      profile.suggested_language, profile.geo_context, current_datetime_str))
         chairman_result = await _call_director("chairman", prompt, directors["chairman"], is_free)
         results["chairman"] = chairman_result
         if not chairman_result.get("error"):
