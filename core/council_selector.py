@@ -43,7 +43,7 @@ class CouncilSelector:
             emotional_profile="curious", priority=1,
             description="Ищет актуальные факты и данные"),
         "analyst": DirectorSpec(
-            id="analyst", model="google/gemini-2.0-flash-001",
+            id="analyst", model="deepseek/deepseek-chat",
             cost_per_1k_in=0.0001, cost_per_1k_out=0.0001,
             avg_tokens_in=800, avg_tokens_out=1200, latency_ms=2000,
             strengths=["анализ", "структура", "риски"],
