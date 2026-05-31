@@ -1476,21 +1476,42 @@ function addSimpleResponse(text, phases) {
 
 function onFinalResponse(msg) {
   resetWorking();
-  if (msg.response) {
+  const response = msg.response || '';
+
+  // Error boundary: detect provider failure
+  const isProviderFail = response.includes('All providers failed') ||
+                         response.includes('providers failed') ||
+                         response === '';
+
+  if (response) {
     const st = document.getElementById(`st-${S.sid}-chairman`);
-    if (st) st.textContent = msg.response;
+    if (st) {
+      if (isProviderFail) {
+        st.innerHTML = `<div style="color:var(--orange);padding:12px;border:1px solid var(--orange);border-radius:6px;font-size:13px;">
+          <strong>⚠️ Council is temporarily unavailable</strong><br><br>
+          All AI providers are rate-limited or out of credits.<br>
+          <strong>Solutions:</strong><br>
+          &bull; Wait 60 seconds and try again (Groq resets)<br>
+          &bull; Try a shorter/simpler question<br>
+          &bull; The system will auto-recover shortly
+        </div>`;
+        toast('⚠️', 'Providers rate-limited — please wait 60s');
+      } else {
+        st.textContent = response;
+        toast('✅', `Deliberation complete · ${msg.credits_used||0} credits · ${((msg.total_ms||0)/1000).toFixed(1)}s`);
+      }
+    }
+  } else {
+    toast('⚠️', 'Empty response — providers may be rate-limited');
   }
-  const used = msg.credits_used || 0;
-  const ms = msg.total_ms || 0;
-  toast('✅', `Deliberation complete · ${used} credits · ${(ms/1000).toFixed(1)}s`);
-  // update coherence score from synthesis_report
+
   const cohScore = msg.coherence_score || (msg.synthesis_report && msg.synthesis_report.coherence_score);
   if (cohScore) updateCoherence(cohScore, false);
   else updateCoherence(0, false);
   updateActionBoard();
   loadCredits();
   S.currentBlock = null;
-  S.chatId = crypto.randomUUID(); // new chat for next message
+  S.chatId = crypto.randomUUID();
 }
 
 // ════════════════════ MONITOR UPDATE ════════════════════

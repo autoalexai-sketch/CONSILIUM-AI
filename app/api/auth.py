@@ -5,7 +5,8 @@ app/api/auth.py — Аутентификация: /register, /login, /verify, /m
 import asyncio
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, HTTPException, Depends, Request, Header
+from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy.sql import select
 from loguru import logger
@@ -87,14 +88,36 @@ async def verify_token_endpoint(current_user=Depends(get_current_user)):
 
 
 @router.get("/me")
-async def get_me(current_user=Depends(get_current_user)):
-    """Alias /me → same as /verify. Used by frontend after login."""
-    return {
-        "status": "valid",
-        "user_id": current_user.id,
-        "email": current_user.email,
-        "credits": current_user.credits,
-    }
+async def get_me(authorization: Optional[str] = Header(None)):
+    """Returns user info if token valid, or 401 without raising exception noise."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    from app.dependencies import verify_jwt_token
+    token = authorization.split(" ")[1]
+    payload = verify_jwt_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token invalid or expired")
+    user_id_str = payload.get("sub")
+    if not user_id_str:
+        raise HTTPException(status_code=401, detail="Malformed token")
+    try:
+        user_id = int(user_id_str)
+        with engine.connect() as conn:
+            row = conn.execute(
+                select(users).where(users.c.id == user_id)
+            ).fetchone()
+        if not row:
+            raise HTTPException(status_code=401, detail="User not found")
+        return {
+            "status": "valid",
+            "user_id": row.id,
+            "email": row.email,
+            "credits": row.credits,
+        }
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=401, detail="Auth error")
 
 
 @router.get("/credits")
