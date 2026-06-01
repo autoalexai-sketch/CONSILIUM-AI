@@ -13,6 +13,7 @@ python-jose[cryptography]>=3.3.0
 loguru>=0.7.0
 aiosmtplib>=3.0.2
 pytz>=2024.1
+psycopg2-binary>=2.9.9
 
 # ── Testing ──────────────────────────────────────────────────────────────
 pytest>=8.0.0
