@@ -61,7 +61,6 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
 
-/* ─── Layout ─── */
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr var(--monitor-w);
@@ -70,7 +69,6 @@ body {
   overflow: hidden;
 }
 
-/* ════════════════ HEADER ════════════════ */
 .header {
   grid-column: 1 / -1;
   display: flex; align-items: center;
@@ -79,26 +77,18 @@ body {
   background: var(--bg);
   z-index: 100; gap: 10px;
 }
-
 .header-logo {
   width: var(--sidebar-w); height: var(--header-h);
   display: flex; align-items: center; justify-content: center;
   border-right: 1px solid var(--border); flex-shrink: 0;
 }
-
-.logo-svg { width: 28px; height: 28px; }
-
 .header-brand {
   font-family: var(--font-mono); font-size: 11px;
   font-weight: 600; letter-spacing: 0.14em;
-  color: var(--text-muted); text-transform: uppercase;
-  white-space: nowrap;
+  color: var(--text-muted); text-transform: uppercase; white-space: nowrap;
 }
 .header-brand em { color: var(--accent); font-style: normal; }
-
 .sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
-
-/* pill buttons */
 .hpill {
   display: flex; align-items: center; gap: 6px;
   padding: 4px 10px; border: 1px solid var(--border);
@@ -109,46 +99,20 @@ body {
 }
 .hpill:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
 .hpill svg { width: 10px; height: 10px; flex-shrink: 0; }
-
 .ws-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.proto-tag {
-  font-size: 9px; padding: 1px 5px; border-radius: 2px;
-  background: var(--accent-glow); color: var(--accent); font-weight: 700;
-}
-
+.proto-tag { font-size: 9px; padding: 1px 5px; border-radius: 2px; background: var(--accent-glow); color: var(--accent); font-weight: 700; }
 .h-space { flex: 1; }
-
-.conn-badge {
-  display: flex; align-items: center; gap: 5px;
-  font-family: var(--font-mono); font-size: 10px;
-}
-.conn-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  transition: background 0.4s;
-}
+.conn-badge { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; }
+.conn-dot { width: 6px; height: 6px; border-radius: 50%; transition: background 0.4s; }
 .conn-dot.online  { background: var(--green); animation: pulse-dot 2s infinite; }
 .conn-dot.offline { background: var(--red); }
 .conn-dot.connecting { background: var(--orange); animation: pulse-dot 0.8s infinite; }
 @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.35} }
 #conn-text { color: var(--text-muted); }
-
-.credits-pill {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
-}
+.credits-pill { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
 .credits-num { color: var(--green); font-weight: 700; }
+.avatar { width: 27px; height: 27px; border-radius: 50%; background: linear-gradient(135deg, #1e3a5f, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
 
-.avatar {
-  width: 27px; height: 27px; border-radius: 50%;
-  background: linear-gradient(135deg, #1e3a5f, #3b82f6);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700; color: #fff;
-  border: 1px solid var(--border); cursor: pointer; flex-shrink: 0;
-}
-
-/* ════════════════ SIDEBAR ════════════════ */
 .sidebar {
   grid-column: 1; grid-row: 2;
   width: var(--sidebar-w); border-right: 1px solid var(--border);
@@ -156,171 +120,67 @@ body {
   overflow: hidden; position: relative; z-index: 50;
   transition: width var(--t) var(--ease);
 }
-.sidebar:hover {
-  width: var(--sidebar-exp);
-  box-shadow: 6px 0 24px rgba(0,0,0,.5);
-}
-
+.sidebar:hover { width: var(--sidebar-exp); box-shadow: 6px 0 24px rgba(0,0,0,.5); }
 .sb-section { padding: 6px 0; }
 .sb-section + .sb-section { border-top: 1px solid var(--border); }
-
-.sb-label {
-  padding: 5px 14px 3px;
-  font-family: var(--font-mono); font-size: 9px;
-  font-weight: 600; letter-spacing: .1em;
-  color: var(--text-dim); text-transform: uppercase;
-  white-space: nowrap; overflow: hidden;
-  opacity: 0; transition: opacity var(--t);
-}
+.sb-label { padding: 5px 14px 3px; font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; overflow: hidden; opacity: 0; transition: opacity var(--t); }
 .sidebar:hover .sb-label { opacity: 1; }
-
-.nav {
-  display: flex; align-items: center; gap: 0;
-  padding: 7px 0 7px 14px; cursor: pointer;
-  color: var(--text-muted); white-space: nowrap;
-  transition: all var(--t) var(--ease); position: relative;
-  text-decoration: none;
-}
+.nav { display: flex; align-items: center; gap: 0; padding: 7px 0 7px 14px; cursor: pointer; color: var(--text-muted); white-space: nowrap; transition: all var(--t) var(--ease); position: relative; text-decoration: none; }
 .nav:hover { background: var(--bg-hover); color: var(--text); }
 .nav.active { color: var(--accent); background: var(--accent-glow2); }
-.nav.active::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 2px; background: var(--accent);
-}
-
-.nav-ico {
-  width: 24px; height: 24px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.nav.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+.nav-ico { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .nav-ico svg { width: 15px; height: 15px; }
-
-.nav-txt {
-  flex: 1; font-size: 12px; font-weight: 500; margin-left: 10px;
-  opacity: 0; transform: translateX(-6px);
-  transition: opacity var(--t), transform var(--t);
-}
+.nav-txt { flex: 1; font-size: 12px; font-weight: 500; margin-left: 10px; opacity: 0; transform: translateX(-6px); transition: opacity var(--t), transform var(--t); }
 .sidebar:hover .nav-txt { opacity: 1; transform: translateX(0); }
-
-.nav-cnt {
-  margin-right: 12px; font-family: var(--font-mono); font-size: 9px;
-  padding: 1px 5px; background: var(--bg-active);
-  color: var(--accent); border-radius: 2px;
-  opacity: 0; transition: opacity var(--t);
-}
+.nav-cnt { margin-right: 12px; font-family: var(--font-mono); font-size: 9px; padding: 1px 5px; background: var(--bg-active); color: var(--accent); border-radius: 2px; opacity: 0; transition: opacity var(--t); }
 .sidebar:hover .nav-cnt { opacity: 1; }
-
 .sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 6px 0; }
 
-/* ════════════════ MAIN ════════════════ */
-.main {
-  grid-column: 2; grid-row: 2;
-  display: flex; flex-direction: column; overflow: hidden;
-}
-
-/* phase progress strip */
-.phase-strip {
-  height: 0; overflow: hidden; background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 20px; gap: 0;
-  transition: height .2s var(--ease);
-}
+.main { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; overflow: hidden; }
+.phase-strip { height: 0; overflow: hidden; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 0; transition: height .2s var(--ease); }
 .phase-strip.on { height: 34px; }
-
-.pstep {
-  display: flex; align-items: center; gap: 5px;
-  font-family: var(--font-mono); font-size: 9px;
-  color: var(--text-dim); padding: 0 7px;
-  transition: all var(--t);
-}
+.pstep { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); padding: 0 7px; transition: all var(--t); }
 .pstep .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .pstep.done   { color: var(--text-muted); }
 .pstep.active { color: var(--accent); }
 .pstep.active .dot { animation: pulse-dot 1s infinite; }
 .parrow { color: var(--text-dim); font-size: 9px; }
-
-/* chat */
-.chat-area {
-  flex: 1; overflow-y: auto; padding: 20px 28px; gap: 16px;
-  display: flex; flex-direction: column;
-}
-
-/* greeting */
-.greeting {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 18px; padding: 32px;
-}
-
-.g-logo { width: 60px; height: 60px; }
-
-.g-title {
-  font-family: var(--font-ui); font-size: 30px; font-weight: 800;
-  letter-spacing: -.035em; text-align: center; line-height: 1.15;
-}
+.chat-area { flex: 1; overflow-y: auto; padding: 20px 28px; gap: 16px; display: flex; flex-direction: column; }
+.greeting { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px; }
+.g-title { font-family: var(--font-ui); font-size: 30px; font-weight: 800; letter-spacing: -.035em; text-align: center; line-height: 1.15; }
 .g-title .hi { color: var(--text-muted); font-weight: 500; }
-.g-title .name {
-  background: linear-gradient(130deg, #60a5fa, #06b6d4);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-.g-sub {
-  font-family: var(--font-mono); font-size: 10px;
-  color: var(--text-dim); letter-spacing: .06em; text-align: center;
-}
-
+.g-title .name { background: linear-gradient(130deg, #60a5fa, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.g-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: .06em; text-align: center; }
 .chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; max-width: 500px; margin-top: 6px; }
-.chip {
-  display: flex; align-items: center; gap: 7px; padding: 7px 13px;
-  border: 1px solid var(--border); border-radius: var(--radius);
-  cursor: pointer; font-size: 12px; color: var(--text-muted);
-  background: transparent; font-family: var(--font-ui);
-  transition: all var(--t) var(--ease);
-}
+.chip { display: flex; align-items: center; gap: 7px; padding: 7px 13px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 12px; color: var(--text-muted); background: transparent; font-family: var(--font-ui); transition: all var(--t) var(--ease); }
 .chip:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
 .chip svg { width: 12px; height: 12px; flex-shrink: 0; }
 
-/* user bubble */
-.umsg {
-  align-self: flex-end; max-width: 68%;
-  background: var(--bg-active); border: 1px solid var(--border-light);
-  border-radius: var(--radius-md) var(--radius-md) var(--radius) var(--radius-md);
-  padding: 10px 14px; font-size: 13px; line-height: 1.6;
-  animation: fadeup .25s ease;
-}
+/* ── MESSAGE ACTION BARS ── */
+.umsg-wrap { align-self: flex-end; max-width: 68%; display: flex; flex-direction: column; gap: 4px; }
+.umsg { background: var(--bg-active); border: 1px solid var(--border-light); border-radius: var(--radius-md) var(--radius-md) var(--radius) var(--radius-md); padding: 10px 14px; font-size: 13px; line-height: 1.6; animation: fadeup .25s ease; }
+.msg-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; justify-content: flex-end; }
+.umsg-wrap:hover .msg-actions { opacity: 1; }
+.ai-actions-bar { opacity: 1 !important; justify-content: flex-start !important; }
+.mact { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text-dim); font-family: var(--font-mono); font-size: 9px; cursor: pointer; transition: all var(--t); user-select: none; }
+.mact:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
+.mact svg { width: 9px; height: 9px; flex-shrink: 0; }
+.mact.good:hover  { border-color: rgba(34,197,94,.4); color: #22c55e; }
+.mact.bad:hover   { border-color: rgba(239,68,68,.4);  color: #ef4444; }
+.mact.good.active { border-color: rgba(34,197,94,.4); color: #22c55e; background: rgba(34,197,94,.08); }
+.mact.bad.active  { border-color: rgba(239,68,68,.4);  color: #ef4444; background: rgba(239,68,68,.08); }
+.mact.copied { color: #22c55e !important; border-color: rgba(34,197,94,.4) !important; }
 
-/* deliberation block */
 .d-block { display: flex; flex-direction: column; gap: 5px; animation: fadeup .3s ease; }
 @keyframes fadeup { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-/* thinking row */
-.think-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 13px; border: 1px solid var(--border);
-  border-radius: var(--radius); background: var(--bg-card);
-  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
-  animation: fadeup .2s ease;
-}
-.think-spin {
-  width: 13px; height: 13px; border: 2px solid var(--border);
-  border-top-color: var(--accent); border-radius: 50%;
-  animation: spin .65s linear infinite; flex-shrink: 0;
-}
+.think-row { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); animation: fadeup .2s ease; }
+.think-spin { width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .65s linear infinite; flex-shrink: 0; }
 @keyframes spin { to{transform:rotate(360deg)} }
-
-/* phase card */
-.pcard {
-  border: 1px solid var(--border); border-radius: var(--radius);
-  background: var(--bg-card); overflow: hidden;
-}
+.pcard { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); overflow: hidden; }
 .pcard.chairman-card { border-color: rgba(59,130,246,.35); background: linear-gradient(135deg, rgba(59,130,246,.04), transparent); }
-
-.pcard-head {
-  display: flex; align-items: center; gap: 9px;
-  padding: 7px 13px; border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,.015); cursor: pointer;
-  user-select: none;
-}
+.pcard-head { display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.015); cursor: pointer; user-select: none; }
 .chairman-card .pcard-head { background: rgba(59,130,246,.07); }
-
 .pd { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .pd.scout    { background: var(--cyan); }
 .pd.analyst  { background: var(--accent); }
@@ -329,112 +189,41 @@ body {
 .pd.synth    { background: var(--orange); }
 .pd.verifier { background: var(--green); }
 .pd.chairman { background: #c8d8e8; }
-
 .pname { font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
 .pmodel { margin-left: auto; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
 .pdur  { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
 .ptoks { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); padding: 1px 5px; background: var(--bg-hover); border-radius: 2px; }
-
-.pcard-body {
-  padding: 12px 15px; font-size: 13px; color: var(--text);
-  line-height: 1.7; overflow: hidden;
-  transition: max-height .25s var(--ease);
-}
+.pcard-body { padding: 12px 15px; font-size: 13px; color: var(--text); line-height: 1.7; overflow: hidden; transition: max-height .25s var(--ease); }
 .pcard-body.collapsed { max-height: 0; padding-top: 0; padding-bottom: 0; }
-
-/* live stream text in card */
 .stream-text { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.8; }
-.cursor { display: inline-block; width: 6px; height: 13px; background: var(--accent); margin-left: 2px; animation: blink 1s step-end infinite; vertical-align: middle; }
-@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
-
-/* veto */
-.veto-banner {
-  margin: 3px 0; padding: 8px 13px;
-  background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.2);
-  border-radius: var(--radius); display: flex; align-items: center; gap: 9px;
-  font-family: var(--font-mono); font-size: 10px; color: var(--red);
-}
-
-/* ─── INPUT ─── */
-.input-area {
-  border-top: 1px solid var(--border);
-  padding: 12px 18px 14px; background: var(--bg); flex-shrink: 0;
-}
-.input-box {
-  border: 1px solid var(--border); border-radius: var(--radius-md);
-  background: var(--bg-card); overflow: hidden;
-  transition: border-color var(--t), box-shadow var(--t);
-}
-.input-box:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59,130,246,.07);
-}
-.input-ta {
-  width: 100%; min-height: 52px; max-height: 160px;
-  padding: 13px 15px 0; background: transparent; border: none; outline: none;
-  color: var(--text); font-family: var(--font-ui); font-size: 13px;
-  line-height: 1.6; resize: none;
-}
+.veto-banner { margin: 3px 0; padding: 8px 13px; background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.2); border-radius: var(--radius); display: flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 10px; color: var(--red); }
+.input-area { border-top: 1px solid var(--border); padding: 12px 18px 14px; background: var(--bg); flex-shrink: 0; }
+.input-box { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); overflow: hidden; transition: border-color var(--t), box-shadow var(--t); }
+.input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,.07); }
+.input-ta { width: 100%; min-height: 52px; max-height: 160px; padding: 13px 15px 0; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-ui); font-size: 13px; line-height: 1.6; resize: none; }
 .input-ta::placeholder { color: var(--text-dim); }
-
-.input-bar {
-  display: flex; align-items: center; gap: 7px; padding: 7px 10px;
-}
-.tbtn {
-  display: flex; align-items: center; gap: 5px; padding: 4px 8px;
-  background: transparent; border: 1px solid var(--border);
-  border-radius: var(--radius); cursor: pointer;
-  color: var(--text-muted); font-size: 11px; font-family: var(--font-ui);
-  transition: all var(--t);
-}
+.input-bar { display: flex; align-items: center; gap: 7px; padding: 7px 10px; }
+.tbtn { display: flex; align-items: center; gap: 5px; padding: 4px 8px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; color: var(--text-muted); font-size: 11px; font-family: var(--font-ui); transition: all var(--t); }
 .tbtn:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
 .tbtn svg { width: 11px; height: 11px; }
 .ispace { flex: 1; }
-
-.pselector {
-  display: flex; align-items: center; gap: 5px; padding: 4px 9px;
-  background: var(--bg-hover); border: 1px solid var(--border);
-  border-radius: var(--radius); cursor: pointer;
-  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
-  transition: all var(--t);
-}
+.pselector { display: flex; align-items: center; gap: 5px; padding: 4px 9px; background: var(--bg-hover); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); transition: all var(--t); }
 .pselector:hover { color: var(--text); border-color: var(--border-light); }
-
-.send {
-  width: 33px; height: 33px; border-radius: var(--radius);
-  background: var(--accent); border: none; cursor: pointer;
-  color: #fff; display: flex; align-items: center; justify-content: center;
-  transition: all var(--t); flex-shrink: 0;
-}
+.send { width: 33px; height: 33px; border-radius: var(--radius); background: var(--accent); border: none; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; transition: all var(--t); flex-shrink: 0; }
 .send:hover { background: #2563eb; transform: scale(1.05); }
 .send:active { transform: scale(.96); }
 .send:disabled { background: var(--bg-hover); color: var(--text-dim); cursor: not-allowed; transform: none; }
 .send svg { width: 13px; height: 13px; }
-
 .input-hint { margin-top: 6px; text-align: center; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
 .input-hint kbd { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 2px; padding: 0 4px; font-size: 9px; margin: 0 2px; }
 
-/* ════════════════ MONITOR ════════════════ */
-.monitor {
-  grid-column: 3; grid-row: 2;
-  border-left: 1px solid var(--border); background: var(--bg);
-  overflow-y: auto; overflow-x: hidden; min-height: 0;
-  height: calc(100vh - var(--header-h));
-}
-.mon-head {
-  padding: 11px 15px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-  position: sticky; top: 0; z-index: 2; background: var(--bg);
-}
+.monitor { grid-column: 3; grid-row: 2; border-left: 1px solid var(--border); background: var(--bg); overflow-y: auto; overflow-x: hidden; min-height: 0; height: calc(100vh - var(--header-h)); }
+.mon-head { padding: 11px 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: 2; background: var(--bg); }
 .mon-title { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
-
 .mon-scroll { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-
 .mcard { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .mcard-head { padding: 6px 11px; background: var(--bg-card); font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); border-bottom: 1px solid var(--border); }
 .mcard-body { padding: 9px 11px; display: flex; flex-direction: column; gap: 8px; }
-
-/* metrics */
 .mrow { display: flex; flex-direction: column; gap: 4px; }
 .mrow-top { display: flex; justify-content: space-between; align-items: center; }
 .mlabel { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
@@ -443,15 +232,12 @@ body {
 .mval.green { color: var(--green); }
 .mval.orange{ color: var(--orange); }
 .mval.red   { color: var(--red); }
-
 .mtrack { height: 3px; background: var(--bg-hover); border-radius: 2px; overflow: hidden; }
 .mfill { height: 100%; border-radius: 2px; transition: width .8s var(--ease); }
 .mfill.blue   { background: var(--accent); }
 .mfill.green  { background: var(--green); }
 .mfill.orange { background: var(--orange); }
 .mfill.red    { background: var(--red); }
-
-/* coherence ring */
 .coh-wrap { display: flex; align-items: center; gap: 11px; padding: 2px 0; }
 .coh-ring { position: relative; width: 54px; height: 54px; flex-shrink: 0; }
 .coh-ring svg { transform: rotate(-90deg); }
@@ -462,30 +248,20 @@ body {
 .rsub { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: .05em; }
 .coh-info .coh-status { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 .coh-info .coh-desc { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); line-height: 1.5; }
-
-/* council phases */
 .cphases { display: flex; flex-direction: column; gap: 3px; }
-.cp {
-  display: flex; align-items: center; gap: 8px; padding: 5px 8px;
-  border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px;
-  transition: all var(--t);
-}
+.cp { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px; transition: all var(--t); }
 .cp.pending { color: var(--text-dim); }
 .cp.active  { color: var(--accent); background: var(--accent-glow); }
 .cp.done    { color: var(--text-muted); }
 .cp-ico { width: 14px; text-align: center; }
 .cp-name { flex: 1; }
 .cp-model { font-size: 8px; }
-
-/* dims */
 .dims { display: flex; flex-direction: column; gap: 5px; }
 .dim { display: flex; align-items: center; gap: 7px; }
 .dlabel { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); width: 52px; flex-shrink: 0; }
 .dbar { flex: 1; height: 2px; background: var(--bg-hover); border-radius: 1px; overflow: hidden; }
 .dfill { height: 100%; border-radius: 1px; background: var(--accent); transition: width .6s ease; }
 .dval { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); width: 24px; text-align: right; }
-
-/* action board */
 .aboard { display: flex; flex-direction: column; gap: 5px; }
 .aitem { display: flex; align-items: flex-start; gap: 7px; padding: 6px 9px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; line-height: 1.5; background: var(--bg-card); }
 .atype { font-family: var(--font-mono); font-size: 8px; padding: 1px 5px; border-radius: 2px; flex-shrink: 0; margin-top: 1px; font-weight: 600; }
@@ -493,186 +269,132 @@ body {
 .atype.task    { background: rgba(34,197,94,.1);  color: var(--green); }
 .atype.risk    { background: rgba(239,68,68,.1);  color: var(--red); }
 .aboard-empty  { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); padding: 12px; text-align: center; }
-
-/* knowledge pills */
 .kpill { display: flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; color: var(--text-muted); background: var(--bg-card); cursor: pointer; transition: all var(--t); }
 .kpill:hover { border-color: var(--border-light); color: var(--text); }
 .kp-cnt { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-left: auto; }
 
-/* ════ AUTH OVERLAY ════ */
-.auth-overlay {
-  position: fixed; inset: 0; background: rgba(10,12,16,.95);
-  display: flex; align-items: center; justify-content: center; z-index: 9999;
-  backdrop-filter: blur(4px);
-}
+.auth-overlay { position: fixed; inset: 0; background: rgba(10,12,16,.95); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px); }
 .auth-overlay.hidden { display: none; }
-
-.auth-box {
-  width: 380px; background: var(--bg-card);
-  border: 1px solid var(--border); border-radius: var(--radius-md);
-  padding: 36px 32px; display: flex; flex-direction: column; gap: 24px;
-}
-.auth-logo { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.auth-title { font-family: var(--font-mono); font-size: 18px; font-weight: 700; letter-spacing: .05em; }
-.auth-title em { color: var(--accent); font-style: normal; }
-.auth-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: .04em; }
-
+.auth-box { width: 380px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 36px 32px; display: flex; flex-direction: column; gap: 24px; }
 .auth-fields { display: flex; flex-direction: column; gap: 10px; }
-.auth-field {
-  display: flex; flex-direction: column; gap: 5px;
-}
+.auth-field { display: flex; flex-direction: column; gap: 5px; }
 .auth-field label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
-.auth-field input {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 9px 12px;
-  color: var(--text); font-family: var(--font-mono); font-size: 12px;
-  outline: none; transition: border-color var(--t);
-}
+.auth-field input { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; color: var(--text); font-family: var(--font-mono); font-size: 12px; outline: none; transition: border-color var(--t); }
 .auth-field input:focus { border-color: var(--accent); }
 .auth-field input::placeholder { color: var(--text-dim); }
-
 .auth-err { font-family: var(--font-mono); font-size: 10px; color: var(--red); min-height: 14px; }
-
-.auth-btn {
-  padding: 10px; background: var(--accent); border: none;
-  border-radius: var(--radius); color: #fff; font-family: var(--font-mono);
-  font-size: 12px; font-weight: 600; letter-spacing: .06em;
-  cursor: pointer; transition: all var(--t);
-}
+.auth-btn { padding: 10px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; cursor: pointer; transition: all var(--t); }
 .auth-btn:hover { background: #2563eb; }
 .auth-btn:disabled { background: var(--bg-hover); color: var(--text-dim); cursor: not-allowed; }
-
 .auth-switch { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
 .auth-switch span { color: var(--accent); cursor: pointer; }
-.auth-switch span:hover { text-decoration: underline; }
-
 .auth-demo { text-align: center; }
 .demo-btn { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 16px; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; cursor: pointer; transition: all var(--t); }
 .demo-btn:hover { border-color: var(--border-light); color: var(--text); background: var(--bg-hover); }
 
-/* ════ DROPDOWN ════ */
 .dd { position: relative; }
-.dd-menu {
-  position: absolute; top: calc(100% + 6px); left: 0;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 4px; min-width: 190px;
-  z-index: 1000; box-shadow: 0 8px 28px rgba(0,0,0,.5); display: none;
-}
+.dd-menu { position: absolute; top: calc(100% + 6px); left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 4px; min-width: 190px; z-index: 1000; box-shadow: 0 8px 28px rgba(0,0,0,.5); display: none; }
 .dd-menu.open { display: block; animation: fadeup .14s ease; }
-/* inp-proto opens upward to avoid off-screen */
 #inp-proto { top: auto; bottom: calc(100% + 6px); left: auto; right: 0; }
-
 .dd-item { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: var(--radius); cursor: pointer; font-size: 12px; color: var(--text-muted); transition: all var(--t); }
 .dd-item:hover { background: var(--bg-hover); color: var(--text); }
 .dd-item.active { color: var(--accent); background: var(--accent-glow); }
 .dd-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
-/* ════ TOAST ════ */
 .toasts { position: fixed; bottom: 18px; right: calc(var(--monitor-w) + 14px); display: flex; flex-direction: column; gap: 7px; z-index: 9000; }
-.toast {
-  padding: 9px 13px; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 11px;
-  color: var(--text); box-shadow: 0 4px 18px rgba(0,0,0,.5);
-  animation: slide-in .2s ease; display: flex; align-items: center; gap: 8px;
-}
+.toast { padding: 9px 13px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 11px; color: var(--text); box-shadow: 0 4px 18px rgba(0,0,0,.5); animation: slide-in .2s ease; display: flex; align-items: center; gap: 8px; }
 @keyframes slide-in { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
 
-/* ═══ LIGHT THEME ══════════════════════════════════════ */
-[data-theme="light"] {
-  --bg: #f0f4f9; --bg2: #e8edf5; --bg3: #dce3ed;
-  --bg-card: #ffffff; --bg-hover: #e4eaf4; --bg-active: #dde5f0;
-  --border: #c8d0de; --border-light: #d8e0ec;
-  --text: #1a2235; --text-muted: #5a6880; --text-dim: #8090aa;
-  --accent: #2563eb; --accent-glow: rgba(37,99,235,.12);
-  --scrollbar: #aab4c8; --card-bg: rgba(255,255,255,.92);
-}
+[data-theme="light"] { --bg: #f0f4f9; --bg-card: #ffffff; --bg-hover: #e4eaf4; --bg-active: #dde5f0; --border: #c8d0de; --border-light: #d8e0ec; --text: #1a2235; --text-muted: #5a6880; --text-dim: #8090aa; --accent: #2563eb; --accent-glow: rgba(37,99,235,.12); }
 [data-theme="light"] .header { background:#fff; border-bottom-color: #c8d0de; }
-[data-theme="light"] .sidebar { background: #eef2f8; border-right-color: #c8d0de; }
-[data-theme="light"] .im-panel { background: #f0f4f9; border-left-color: #c8d0de; }
-[data-theme="light"] .im-section-title { color: #94a3b8; }
-[data-theme="light"] .im-label { color: #5a6880; }
-[data-theme="light"] .auth-box { background: #fff; border-color: #c8d0de; }
-[data-theme="light"] .director-card { background: rgba(255,255,255,.9); border-color: #c8d0de; }
-[data-theme="light"] .chat-input-wrap { background: rgba(255,255,255,.96); border-color: #c8d0de; }
-[data-theme="light"] .input-field { background: #eef2f8; border-color: #c8d0de; color: #1a2235; }
-[data-theme="light"] .chip { background: rgba(37,99,235,.07); border-color: rgba(37,99,235,.2); color: #1e40af; }
-[data-theme="light"] .chip:hover { background: rgba(37,99,235,.14); }
-[data-theme="light"] .hpill { background: rgba(37,99,235,.07); }
-[data-theme="light"] .dd-menu { background: #fff; border-color: #c8d0de; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-[data-theme="light"] .dd-item:hover { background: #eef2f8; }
-[data-theme="light"] .nav-item:hover  { background: rgba(37,99,235,.07); }
-[data-theme="light"] .nav-item.active { background: rgba(37,99,235,.12); }
-[data-theme="light"] .credits-pill { background: rgba(37,99,235,.07); }
-[data-theme="light"] .conn-badge { background: rgba(37,99,235,.07); }
-[data-theme="light"] .g-title .hi { color: #5a6880; }
+[data-theme="light"] .sidebar { background: #eef2f8; }
 [data-theme="light"] .monitor { background: #f0f4f9; }
-[data-theme="light"] .mcard { border-color: #d0d8e8; }
-[data-theme="light"] .mcard-head { background: #e8edf5; color: #1a2235; }
-[data-theme="light"] .pcard { background: #ffffff; border-color: #d0d8e8; }
-[data-theme="light"] .pcard-head { background: rgba(0,0,0,.02); }
-[data-theme="light"] .think-row { background: #f5f8fc; border-color: #d0d8e8; }
-[data-theme="light"] .msg-user .bubble { background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.2); }
-[data-theme="light"] .phase-card,
-[data-theme="light"] .phase-wrap { background: #ffffff; border-color: #d0d8e8; }
 [data-theme="light"] .chat-area { background: #f5f8fc; }
-[data-theme="light"] .chat-input-area { background: #f0f4f9; border-top-color: #c8d0de; }
-/* ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════ */
+[data-theme="light"] .dd-menu { background: #fff; border-color: #c8d0de; }
+[data-theme="light"] .dd-item:hover { background: #eef2f8; }
+[data-theme="light"] .auth-box { background: #fff; border-color: #c8d0de; }
+[data-theme="light"] .g-title .hi { color: #5a6880; }
+
+/* ── VIEW PANELS ── */
+.view-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.vp-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--bg); flex-shrink: 0; }
+.vp-title { font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+.vp-back { display: flex; align-items: center; gap: 4px; padding: 4px 9px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); font-size: 11px; cursor: pointer; font-family: var(--font-mono); transition: all var(--t); }
+.vp-back:hover { border-color: var(--border-light); color: var(--text); }
+.vp-body { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.vp-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-dim); font-family: var(--font-mono); font-size: 10px; text-align: center; padding: 40px; gap: 8px; }
+.vp-search { padding: 8px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.vp-add { padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.hist-item { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); padding: 10px 13px; cursor: pointer; transition: all var(--t); }
+.hist-item:hover { border-color: var(--border-light); background: var(--bg-hover); }
+.hist-title { font-size: 12px; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+.hist-meta { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); display: flex; gap: 10px; }
+.hist-status { padding: 1px 6px; border-radius: 2px; font-size: 9px; font-weight: 600; }
+.hist-status.success { background: rgba(34,197,94,.1); color: var(--green); }
+.hist-status.partial { background: rgba(245,158,11,.1); color: var(--orange); }
+.dec-item { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); overflow: hidden; }
+.dec-head { display: flex; align-items: center; gap: 8px; padding: 9px 13px; cursor: pointer; border-bottom: 1px solid transparent; transition: all var(--t); }
+.dec-head:hover { background: var(--bg-hover); }
+.dec-head.open { border-bottom-color: var(--border); }
+.dec-title-text { flex: 1; font-size: 12px; color: var(--text); line-height: 1.4; }
+.dec-date { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+.dec-body { padding: 12px 13px; font-size: 12px; color: var(--text-muted); line-height: 1.7; display: none; }
+.dec-body.open { display: block; }
+.dec-approval { display: flex; gap: 5px; margin-top: 8px; }
+.dec-approval button { padding: 3px 9px; border-radius: 2px; font-size: 10px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: var(--font-mono); transition: all var(--t); }
+.dec-approval button:hover { border-color: var(--border-light); color: var(--text); }
+.dec-approval button.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+.prin-item { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); padding: 10px 13px; display: flex; align-items: flex-start; gap: 10px; }
+.prin-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.prin-content { flex: 1; }
+.prin-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.prin-body { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+.prin-del { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; padding: 2px; }
+.prin-del:hover { color: var(--red); }
+.refl-prompt { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-md); padding: 16px 18px; }
+.refl-q { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 12px; }
+.refl-next { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); padding: 5px 12px; color: var(--text-muted); font-size: 11px; cursor: pointer; font-family: var(--font-mono); transition: all var(--t); }
+.refl-next:hover { border-color: var(--border-light); color: var(--text); }
+.settings-block { display: flex; flex-direction: column; gap: 8px; }
+.settings-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+.settings-key { font-size: 12px; color: var(--text-muted); }
+.settings-val { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+.dash-stat { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); padding: 14px 16px; }
+.dash-stat-num { font-family: var(--font-ui); font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
+.dash-stat-num span { color: var(--accent); font-size: 16px; }
+.dash-stat-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-top: 5px; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 </style>
 </head>
 <body>
 
-<!-- ══════ AUTH OVERLAY ══════ -->
 <div class="auth-overlay" id="auth-overlay">
   <div class="auth-box">
-    <div class="auth-logo">
-      <!-- Logo SVG — 7 nodes, no background -->
+    <div style="text-align:center;margin-bottom:8px;">
       <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
     </div>
-
     <div style="display:flex;gap:4px;margin-bottom:16px;">
       <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Sign In</button>
       <button onclick="showRegister()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Sign Up</button>
     </div>
     <div class="auth-fields">
-      <div class="auth-field">
-        <label>Email</label>
-        <input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email"/>
-      </div>
-      <div class="auth-field">
-        <label>Password</label>
-        <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password"
-               onkeydown="if(event.key==='Enter') doLogin()"/>
-      </div>
+      <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()"/></div>
       <div class="auth-err" id="auth-err"></div>
     </div>
-
-    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Sign In → Board of Directors</button>
-
-    <div class="auth-demo">
-      <button class="demo-btn" onclick="doDemo()">Demo Mode (no server)</button>
-    </div>
-
+    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Sign In &rarr; Board of Directors</button>
+    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">Demo Mode (no server)</button></div>
     <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Server: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
-    <div class="auth-switch" id="auth-switch-txt">
-      No account? <span onclick="showRegister()">Register</span>
-    </div>
+    <div class="auth-switch" id="auth-switch-txt">No account? <span onclick="showRegister()">Register</span></div>
   </div>
 </div>
 
-<!-- ══════ APP ══════ -->
 <div class="app">
-
-  <!-- HEADER -->
   <header class="header">
-    <div class="header-logo">
-      <!-- Icon — no bg, just nodes+lines -->
-      <img src="img/icon.png" id="header-icon" style="width:30px;height:30px;object-fit:contain;border-radius:4px;" alt="icon">
-    </div>
-
-    <span class="header-brand"><em>CONSILIUM</em> AI · v3.0</span>
+    <div class="header-logo"><img src="img/icon.png" id="header-icon" style="width:30px;height:30px;object-fit:contain;border-radius:4px;" alt="icon"></div>
+    <span class="header-brand"><em>CONSILIUM</em> AI &middot; v3.0</span>
     <div class="sep"></div>
-
     <div class="dd">
       <button class="hpill" onclick="toggleDD('ws-dd')">
         <span class="ws-dot" style="background:var(--accent)"></span>
@@ -680,13 +402,12 @@ body {
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
       </button>
       <div class="dd-menu" id="ws-dd">
-        <div class="dd-item active" onclick="pickWS(this,'Strategy','var(--accent)')"><span class="dd-dot" style="background:var(--accent)"></span>Strategy</div>
-        <div class="dd-item" onclick="pickWS(this,'Project A','var(--green)')"><span class="dd-dot" style="background:var(--green)"></span>Project A</div>
-        <div class="dd-item" onclick="pickWS(this,'Personal','var(--purple)')"><span class="dd-dot" style="background:var(--purple)"></span>Personal</div>
-        <div class="dd-item" onclick="pickWS(this,'R&D','var(--orange)')"><span class="dd-dot" style="background:var(--orange)"></span>R&D</div>
+        <div class="dd-item active" onclick="pickWS(this,'Strategy')"><span class="dd-dot" style="background:var(--accent)"></span>Strategy</div>
+        <div class="dd-item" onclick="pickWS(this,'Project A')"><span class="dd-dot" style="background:var(--green)"></span>Project A</div>
+        <div class="dd-item" onclick="pickWS(this,'Personal')"><span class="dd-dot" style="background:var(--purple)"></span>Personal</div>
+        <div class="dd-item" onclick="pickWS(this,'R&amp;D')"><span class="dd-dot" style="background:var(--orange)"></span>R&amp;D</div>
       </div>
     </div>
-
     <div class="dd">
       <button class="hpill" onclick="toggleDD('proto-dd')">
         <span class="proto-tag" id="h-proto-tag">STD</span>
@@ -694,65 +415,58 @@ body {
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg>
       </button>
       <div class="dd-menu" id="proto-dd">
-        <div class="dd-item active" onclick="pickProto(this,'Standard','STD')">Standard — 6 phases</div>
-        <div class="dd-item" onclick="pickProto(this,'Strategy','STR')">Strategy — SWOT + scenarios</div>
-        <div class="dd-item" onclick="pickProto(this,'Crisis','CRS')">Crisis — fast</div>
-        <div class="dd-item" onclick="pickProto(this,'Reflection','RFL')">Reflection — retro</div>
-        <div class="dd-item" onclick="pickProto(this,'Planning','PLN')">Planning — goals + plan</div>
-        <div class="dd-item" onclick="pickProto(this,'Deep','DPA')">Deep Analysis — extended</div>
+        <div class="dd-item active" onclick="pickProto(this,'Standard','STD')">Standard &mdash; 6 phases</div>
+        <div class="dd-item" onclick="pickProto(this,'Strategy','STR')">Strategy</div>
+        <div class="dd-item" onclick="pickProto(this,'Crisis','CRS')">Crisis</div>
+        <div class="dd-item" onclick="pickProto(this,'Reflection','RFL')">Reflection</div>
+        <div class="dd-item" onclick="pickProto(this,'Planning','PLN')">Planning</div>
+        <div class="dd-item" onclick="pickProto(this,'Deep','DPA')">Deep Analysis</div>
       </div>
     </div>
-
     <div class="h-space"></div>
-
-    <!-- Connection status -->
-    <div class="conn-badge">
-      <div class="conn-dot offline" id="conn-dot"></div>
-      <span id="conn-text">offline</span>
-    </div>
+    <div class="conn-badge"><div class="conn-dot offline" id="conn-dot"></div><span id="conn-text">offline</span></div>
     <div class="sep"></div>
     <div class="credits-pill">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      Credits: <span class="credits-num" id="credits-num">—</span>
+      Credits: <span class="credits-num" id="credits-num">&mdash;</span>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme" style="display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.06em;transition:all .2s;margin-right:2px;">
+    <button id="theme-toggle" onclick="toggleTheme()" style="display:flex;align-items:center;gap:5px;background:var(--bg-hover);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.06em;transition:all .2s;margin-right:2px;">
       <svg id="theme-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       <span id="theme-label">Dark</span>
     </button>
     <div class="avatar" id="user-avatar">?</div>
   </header>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-section">
       <div class="sb-label">Navigation</div>
-      <div class="nav active">
+      <div class="nav active" id="nav-chat" onclick="showView('chat')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <span class="nav-txt">Chat / Deliberation</span>
       </div>
-      <div class="nav" onclick="toast('🕐','History — coming soon')">
+      <div class="nav" id="nav-history" onclick="showView('history')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
         <span class="nav-txt">Session History</span>
         <span class="nav-cnt" id="history-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('📊','Dashboard — coming soon')">
+      <div class="nav" id="nav-dashboard" onclick="showView('dashboard')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
         <span class="nav-txt">Dashboard</span>
       </div>
     </div>
     <div class="sb-section">
       <div class="sb-label">Knowledge Base</div>
-      <div class="nav" onclick="toast('📋','Decisions — coming soon')">
+      <div class="nav" id="nav-decisions" onclick="showView('decisions')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <span class="nav-txt">Decisions</span>
         <span class="nav-cnt" id="dec-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('⭐','Principles — coming soon')">
+      <div class="nav" id="nav-principles" onclick="showView('principles')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
         <span class="nav-txt">Principles</span>
         <span class="nav-cnt" id="prin-cnt">0</span>
       </div>
-      <div class="nav" onclick="toast('📚','Wiki — coming soon')">
+      <div class="nav" id="nav-wiki" onclick="showView('wiki')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="nav-txt">LLM Wiki</span>
         <span class="nav-cnt" id="wiki-cnt">0</span>
@@ -760,210 +474,202 @@ body {
     </div>
     <div class="sb-section">
       <div class="sb-label">Tools</div>
-      <div class="nav" onclick="toast('đź§ ','Reflective Pause')">
+      <div class="nav" id="nav-reflective" onclick="showView('reflective')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
         <span class="nav-txt">Reflective Pause</span>
       </div>
     </div>
     <div class="sb-bottom">
-      <div class="nav" onclick="toast('⚙️','Settings')">
+      <div class="nav" id="nav-settings" onclick="showView('settings')">
         <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
         <span class="nav-txt">Settings</span>
       </div>
       <div class="nav" onclick="logout()">
-        <div class="nav-ico" id="sb-avatar">
-          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;" id="sb-av-text">?</div>
-        </div>
+        <div class="nav-ico"><div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;" id="sb-av-text">?</div></div>
         <span class="nav-txt" id="sb-user-name">Not authorized</span>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-    <!-- Phase strip -->
-    <div class="phase-strip" id="phase-strip">
-      <div class="pstep pending" id="ps-scout"><span class="dot"></span>Scout</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-analyst"><span class="dot"></span>Analyst</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-architect"><span class="dot"></span>Architect</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-devil"><span class="dot"></span>Devil</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-synth"><span class="dot"></span>Synth</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-verifier"><span class="dot"></span>Verifier</div>
-      <span class="parrow">›</span>
-      <div class="pstep pending" id="ps-chairman"><span class="dot"></span>Chairman</div>
-    </div>
-
-    <!-- Chat -->
-    <div class="chat-area" id="chat-area">
-      <div class="greeting" id="greeting">
-        <!-- Logo large -->
-        <img src="img/logo.jpg" id="greeting-logo" style="width:150px;height:auto;border-radius:16px;box-shadow:0 6px 32px rgba(37,99,246,.35);display:block;margin:0 auto 12px;" alt="Consilium AI">
-
-        <div class="g-title">
-          <span class="hi">Good day, </span>
-          <span class="name" id="g-name">...</span>
-        </div>
-        <div class="g-sub">CONSILIUM · 9 directors · Knowledge Gate · IWE v3.0</div>
-
-        <div class="chips">
-          <button class="chip" onclick="sendQ('Run a strategic analysis of the current project')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Strategic analysis
-          </button>
-          <button class="chip" onclick="sendQ('Help make an architecture decision')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-            Architecture decision
-          </button>
-          <button class="chip" onclick="sendQ('Run last week's retrospective')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            Retrospective
-          </button>
-          <button class="chip" onclick="sendQ('Assess risks and create action plan')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Risk assessment
-          </button>
-        </div>
+    <div id="view-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="phase-strip" id="phase-strip">
+        <div class="pstep pending" id="ps-scout"><span class="dot"></span>Scout</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-analyst"><span class="dot"></span>Analyst</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-architect"><span class="dot"></span>Architect</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-devil"><span class="dot"></span>Devil</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-synth"><span class="dot"></span>Synth</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-verifier"><span class="dot"></span>Verifier</div><span class="parrow">&rsaquo;</span>
+        <div class="pstep pending" id="ps-chairman"><span class="dot"></span>Chairman</div>
       </div>
-    </div>
-
-    <!-- Input -->
-    <div class="input-area">
-      <div class="input-box">
-        <textarea class="input-ta" id="msg-in"
-          placeholder="Ask the Board of Directors..."
-          rows="2"
-          onkeydown="onKey(event)"
-          oninput="autoH(this)"></textarea>
-        <div class="input-bar">
-          <button class="tbtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            File
-          </button>
-          <button class="tbtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            Wiki
-          </button>
-          <div class="ispace"></div>
-          <div class="dd">
-            <button class="pselector" onclick="toggleDD('inp-proto')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-              <span id="inp-proto-lbl">Standard</span>
-              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="9" height="9"><path d="M2 4l4 4 4-4"/></svg>
-            </button>
-            <div class="dd-menu" id="inp-proto">
-              <div class="dd-item" onclick="pickProtoInp('Standard')">Standard</div>
-              <div class="dd-item" onclick="pickProtoInp('Strategy')">Strategy</div>
-              <div class="dd-item" onclick="pickProtoInp('Crisis')">Crisis</div>
-              <div class="dd-item" onclick="pickProtoInp('Reflection')">Reflection</div>
-              <div class="dd-item" onclick="pickProtoInp('Planning')">Planning</div>
-              <div class="dd-item" onclick="pickProtoInp('Deep')">Deep Analysis</div>
-            </div>
+      <div class="chat-area" id="chat-area">
+        <div class="greeting" id="greeting">
+          <img src="img/logo.jpg" id="greeting-logo" style="width:150px;height:auto;border-radius:16px;box-shadow:0 6px 32px rgba(37,99,246,.35);display:block;margin:0 auto 12px;" alt="Consilium AI">
+          <div class="g-title"><span class="hi">Good day, </span><span class="name" id="g-name">...</span></div>
+          <div class="g-sub">CONSILIUM &middot; 7 directors &middot; Knowledge Gate &middot; IWE v3.0</div>
+          <div class="chips">
+            <button class="chip" onclick="sendQ('Run a strategic analysis of the current project')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Strategic analysis</button>
+            <button class="chip" onclick="sendQ('Help make an architecture decision')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Architecture decision</button>
+            <button class="chip" onclick="sendQ('Run last weeks retrospective')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Retrospective</button>
+            <button class="chip" onclick="sendQ('Assess risks and create action plan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Risk assessment</button>
           </div>
-          <button class="send" id="send-btn" onclick="doSend()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
-            </svg>
-          </button>
         </div>
       </div>
-      <div class="input-hint"><kbd>Enter</kbd> send · <kbd>Shift+Enter</kbd> new line</div>
+      <div class="input-area">
+        <div class="input-box">
+          <textarea class="input-ta" id="msg-in" placeholder="Ask the Board of Directors..." rows="2" onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+          <div class="input-bar">
+            <button class="tbtn" onclick="openFileAttach()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>File</button>
+            <button class="tbtn" onclick="openWikiInsert()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Wiki</button>
+            <div class="ispace"></div>
+            <div class="dd">
+              <button class="pselector" onclick="toggleDD('inp-proto')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <span id="inp-proto-lbl">Standard</span>
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="9" height="9"><path d="M2 4l4 4 4-4"/></svg>
+              </button>
+              <div class="dd-menu" id="inp-proto">
+                <div class="dd-item" onclick="pickProtoInp('Standard')">Standard</div>
+                <div class="dd-item" onclick="pickProtoInp('Strategy')">Strategy</div>
+                <div class="dd-item" onclick="pickProtoInp('Crisis')">Crisis</div>
+                <div class="dd-item" onclick="pickProtoInp('Reflection')">Reflection</div>
+                <div class="dd-item" onclick="pickProtoInp('Planning')">Planning</div>
+                <div class="dd-item" onclick="pickProtoInp('Deep')">Deep Analysis</div>
+              </div>
+            </div>
+            <button class="send" id="send-btn" onclick="doSend()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="input-hint"><kbd>Enter</kbd> send &middot; <kbd>Shift+Enter</kbd> new line</div>
+      </div>
+    </div>
+
+    <div id="view-history" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">Session History</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-body" id="history-list"><div class="vp-empty">Loading sessions...</div></div>
+    </div>
+
+    <div id="view-decisions" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">Decision Journal</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-search"><input type="text" id="dec-search" placeholder="Search decisions..." oninput="filterDecisions(this.value)" style="width:100%;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-mono);font-size:11px;outline:none;"></div>
+      <div class="vp-body" id="decisions-list"><div class="vp-empty">Loading decisions...</div></div>
+    </div>
+
+    <div id="view-principles" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">My Principles</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-add">
+        <input type="text" id="prin-title" placeholder="Principle title..." style="width:100%;padding:7px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-mono);font-size:11px;outline:none;margin-bottom:6px;">
+        <textarea id="prin-body" placeholder="Describe your principle..." rows="2" style="width:100%;padding:7px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-mono);font-size:11px;outline:none;resize:none;"></textarea>
+        <button onclick="addPrinciple()" style="margin-top:6px;padding:7px 16px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11px;cursor:pointer;">+ Add Principle</button>
+      </div>
+      <div class="vp-body" id="principles-list"><div class="vp-empty">Loading principles...</div></div>
+    </div>
+
+    <div id="view-wiki" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">LLM Wiki</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-body"><div class="vp-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5" style="margin-bottom:12px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">LLM Wiki &mdash; v3.1</div><div style="color:var(--text-dim);font-size:11px;">Personal knowledge base with semantic search.</div></div></div>
+    </div>
+
+    <div id="view-dashboard" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">Dashboard</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-body" id="dashboard-body"><div class="vp-empty">Loading...</div></div>
+    </div>
+
+    <div id="view-reflective" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">Reflective Pause</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-body" style="padding:24px;">
+        <div class="refl-prompt" id="refl-prompt">
+          <div class="refl-q" id="refl-q">Loading...</div>
+          <button onclick="nextReflection()" class="refl-next">Next prompt</button>
+        </div>
+        <div style="margin-top:24px;">
+          <textarea id="refl-notes" placeholder="Your thoughts..." rows="5" style="width:100%;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.6;resize:none;outline:none;"></textarea>
+          <button onclick="saveReflection()" style="margin-top:8px;padding:8px 18px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:12px;cursor:pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-settings" class="view-panel" style="display:none;">
+      <div class="vp-head"><span class="vp-title">Settings</span><button class="vp-back" onclick="showView('chat')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+      <div class="vp-body" style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div class="settings-block">
+          <div class="settings-label">Account</div>
+          <div class="settings-row"><span class="settings-key">Email</span><span class="settings-val" id="s-email">&mdash;</span></div>
+          <div class="settings-row"><span class="settings-key">Credits</span><span class="settings-val" id="s-credits" style="color:var(--green);">&mdash;</span></div>
+          <div class="settings-row"><span class="settings-key">Plan</span><span class="settings-val">Free tier</span></div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-label">Appearance</div>
+          <div class="settings-row"><span class="settings-key">Theme</span><button onclick="toggleTheme()" style="padding:4px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:11px;cursor:pointer;">Toggle</button></div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-label">Danger zone</div>
+          <button onclick="logout()" style="padding:8px 16px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius);color:var(--red);font-size:12px;cursor:pointer;">Sign out</button>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- MONITOR -->
   <aside class="monitor">
-    <div class="mon-head">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span class="mon-title">Intelligence Monitor</span>
-    </div>
+    <div class="mon-head"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span class="mon-title">Intelligence Monitor</span></div>
     <div class="mon-scroll">
-
       <div class="mcard">
         <div class="mcard-head">Task analysis</div>
         <div class="mcard-body">
-          <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">Depth</span><span class="mval blue" id="m-depth">—</span></div>
-            <div class="mtrack"><div class="mfill blue" id="b-depth" style="width:0%"></div></div>
-          </div>
-          <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">Urgency</span><span class="mval green" id="m-urgency">—</span></div>
-            <div class="mtrack"><div class="mfill green" id="b-urgency" style="width:0%"></div></div>
-          </div>
-          <div class="mrow">
-            <div class="mrow-top"><span class="mlabel">Emotional load</span><span class="mval green" id="m-emotion">—</span></div>
-            <div class="mtrack"><div class="mfill green" id="b-emotion" style="width:0%"></div></div>
-          </div>
+          <div class="mrow"><div class="mrow-top"><span class="mlabel">Depth</span><span class="mval blue" id="m-depth">&mdash;</span></div><div class="mtrack"><div class="mfill blue" id="b-depth" style="width:0%"></div></div></div>
+          <div class="mrow"><div class="mrow-top"><span class="mlabel">Urgency</span><span class="mval green" id="m-urgency">&mdash;</span></div><div class="mtrack"><div class="mfill green" id="b-urgency" style="width:0%"></div></div></div>
+          <div class="mrow"><div class="mrow-top"><span class="mlabel">Emotional load</span><span class="mval green" id="m-emotion">&mdash;</span></div><div class="mtrack"><div class="mfill green" id="b-emotion" style="width:0%"></div></div></div>
         </div>
       </div>
-
       <div class="mcard">
         <div class="mcard-head">Coherence</div>
         <div class="mcard-body">
           <div class="coh-wrap">
-            <div class="coh-ring">
-              <svg viewBox="0 0 54 54" width="54" height="54">
-                <circle class="rbg" cx="27" cy="27" r="21"/>
-                <circle class="rfill" id="r-fill" cx="27" cy="27" r="21"/>
-              </svg>
-              <div class="rlabel"><span class="rpct" id="r-pct">—</span><span class="rsub">SCORE</span></div>
-            </div>
-            <div class="coh-info">
-              <div class="coh-status" id="coh-status">Waiting...</div>
-              <div class="coh-desc" id="coh-desc">Start deliberation</div>
-            </div>
+            <div class="coh-ring"><svg viewBox="0 0 54 54" width="54" height="54"><circle class="rbg" cx="27" cy="27" r="21"/><circle class="rfill" id="r-fill" cx="27" cy="27" r="21"/></svg><div class="rlabel"><span class="rpct" id="r-pct">&mdash;</span><span class="rsub">SCORE</span></div></div>
+            <div class="coh-info"><div class="coh-status" id="coh-status">Waiting...</div><div class="coh-desc" id="coh-desc">Start deliberation</div></div>
           </div>
         </div>
       </div>
-
       <div class="mcard">
         <div class="mcard-head">Board of Directors</div>
         <div class="mcard-body" style="padding:6px;">
           <div class="cphases" id="cphases">
-            <div class="cp pending" id="cp-scout"><span class="cp-ico">○</span><span class="cp-name">Scout</span><span class="cp-model" style="color:var(--cyan)">perplexity</span></div>
-            <div class="cp pending" id="cp-analyst"><span class="cp-ico">○</span><span class="cp-name">Analyst</span><span class="cp-model" style="color:var(--accent)">deepseek</span></div>
-            <div class="cp pending" id="cp-architect"><span class="cp-ico">○</span><span class="cp-name">Architect</span><span class="cp-model" style="color:var(--purple)">claude-3.5</span></div>
-            <div class="cp pending" id="cp-devil"><span class="cp-ico">○</span><span class="cp-name">Devil's Advocate</span><span class="cp-model" style="color:var(--red)">deepseek-r1</span></div>
-            <div class="cp pending" id="cp-synth"><span class="cp-ico">○</span><span class="cp-name">Synthesizer</span><span class="cp-model" style="color:var(--orange)">claude-3.5</span></div>
-            <div class="cp pending" id="cp-verifier"><span class="cp-ico">○</span><span class="cp-name">Verifier</span><span class="cp-model" style="color:var(--green)">haiku</span></div>
-            <div class="cp pending" id="cp-chairman"><span class="cp-ico">○</span><span class="cp-name">Chairman</span><span class="cp-model" style="color:var(--text-muted)">gpt-4o</span></div>
+            <div class="cp pending" id="cp-scout"><span class="cp-ico">&#9675;</span><span class="cp-name">Scout</span><span class="cp-model" style="color:var(--cyan)">perplexity</span></div>
+            <div class="cp pending" id="cp-analyst"><span class="cp-ico">&#9675;</span><span class="cp-name">Analyst</span><span class="cp-model" style="color:var(--accent)">deepseek</span></div>
+            <div class="cp pending" id="cp-architect"><span class="cp-ico">&#9675;</span><span class="cp-name">Architect</span><span class="cp-model" style="color:var(--purple)">claude-3.5</span></div>
+            <div class="cp pending" id="cp-devil"><span class="cp-ico">&#9675;</span><span class="cp-name">Devil's Advocate</span><span class="cp-model" style="color:var(--red)">deepseek-r1</span></div>
+            <div class="cp pending" id="cp-synth"><span class="cp-ico">&#9675;</span><span class="cp-name">Synthesizer</span><span class="cp-model" style="color:var(--orange)">claude-3.5</span></div>
+            <div class="cp pending" id="cp-verifier"><span class="cp-ico">&#9675;</span><span class="cp-name">Verifier</span><span class="cp-model" style="color:var(--green)">haiku</span></div>
+            <div class="cp pending" id="cp-chairman"><span class="cp-ico">&#9675;</span><span class="cp-name">Chairman</span><span class="cp-model" style="color:var(--text-muted)">groq</span></div>
           </div>
         </div>
       </div>
-
       <div class="mcard">
         <div class="mcard-head">Cognitive dimensions</div>
         <div class="mcard-body">
           <div class="dims" id="dims">
-            <div class="dim"><span class="dlabel">FUTURE</span><div class="dbar"><div class="dfill" id="d-future" style="width:0%"></div></div><span class="dval" id="dv-future">—</span></div>
-            <div class="dim"><span class="dlabel">COMPLEX</span><div class="dbar"><div class="dfill" id="d-complex" style="width:0%"></div></div><span class="dval" id="dv-complex">—</span></div>
-            <div class="dim"><span class="dlabel">FACTUAL</span><div class="dbar"><div class="dfill" id="d-factual" style="width:0%"></div></div><span class="dval" id="dv-factual">—</span></div>
-            <div class="dim"><span class="dlabel">CREATIVE</span><div class="dbar"><div class="dfill" id="d-creative" style="width:0%"></div></div><span class="dval" id="dv-creative">—</span></div>
-            <div class="dim"><span class="dlabel">ETHICAL</span><div class="dbar"><div class="dfill" id="d-ethical" style="width:0%"></div></div><span class="dval" id="dv-ethical">—</span></div>
+            <div class="dim"><span class="dlabel">FUTURE</span><div class="dbar"><div class="dfill" id="d-future" style="width:0%"></div></div><span class="dval" id="dv-future">&mdash;</span></div>
+            <div class="dim"><span class="dlabel">COMPLEX</span><div class="dbar"><div class="dfill" id="d-complex" style="width:0%"></div></div><span class="dval" id="dv-complex">&mdash;</span></div>
+            <div class="dim"><span class="dlabel">FACTUAL</span><div class="dbar"><div class="dfill" id="d-factual" style="width:0%"></div></div><span class="dval" id="dv-factual">&mdash;</span></div>
+            <div class="dim"><span class="dlabel">CREATIVE</span><div class="dbar"><div class="dfill" id="d-creative" style="width:0%"></div></div><span class="dval" id="dv-creative">&mdash;</span></div>
+            <div class="dim"><span class="dlabel">ETHICAL</span><div class="dbar"><div class="dfill" id="d-ethical" style="width:0%"></div></div><span class="dval" id="dv-ethical">&mdash;</span></div>
           </div>
         </div>
       </div>
-
       <div class="mcard">
         <div class="mcard-head">Action Board</div>
-        <div class="mcard-body" style="padding:6px;" id="action-board">
-          <div class="aboard-empty">Decisions will appear after deliberation</div>
-        </div>
+        <div class="mcard-body" style="padding:6px;" id="action-board"><div class="aboard-empty">Decisions will appear after deliberation</div></div>
       </div>
-
       <div class="mcard">
         <div class="mcard-head">Personal Vault</div>
         <div class="mcard-body" style="padding:6px;gap:5px;">
-          <div class="kpill"><span>📋</span><span class="kp-lbl">Decisions</span><span class="kp-cnt" id="kp-decisions">0</span></div>
-          <div class="kpill"><span>⭐</span><span class="kp-lbl">Principles</span><span class="kp-cnt" id="kp-principles">0</span></div>
-          <div class="kpill"><span>📚</span><span class="kp-lbl">Wiki pages</span><span class="kp-cnt" id="kp-wiki">0</span></div>
+          <div class="kpill" onclick="showView('decisions')" style="cursor:pointer;"><span>&#128203;</span><span class="kp-lbl">Decisions</span><span class="kp-cnt" id="kp-decisions">0</span></div>
+          <div class="kpill" onclick="showView('principles')" style="cursor:pointer;"><span>&#11088;</span><span class="kp-lbl">Principles</span><span class="kp-cnt" id="kp-principles">0</span></div>
+          <div class="kpill" onclick="showView('wiki')" style="cursor:pointer;"><span>&#128218;</span><span class="kp-lbl">Wiki pages</span><span class="kp-cnt" id="kp-wiki">0</span></div>
         </div>
       </div>
-
     </div>
   </aside>
 </div>
@@ -971,159 +677,50 @@ body {
 <div class="toasts" id="toasts"></div>
 
 <script>
-/* ══════════════════════════════════════════════
-   CONSILIUM AI v3.0 — JS Core
-   ══════════════════════════════════════════════
-   Backend: FastAPI at http://localhost:8000
-   WebSocket: ws://localhost:8000/ws/council
-   ══════════════════════════════════════════════ */
-
-// ── CONFIG ──  BASE_URL    
 const CFG = {
-  BASE_URL: window.location.origin.includes('localhost') || window.location.origin.includes('127.0')
-    ? 'http://localhost:8000'
-    : window.location.origin,
-  WS_URL:   window.location.origin.includes('localhost') || window.location.origin.includes('127.0')
-    ? 'ws://localhost:8000'
-    : `wss://${window.location.host}`,
+  BASE_URL: window.location.origin.includes('localhost') || window.location.origin.includes('127.0') ? 'http://localhost:8000' : window.location.origin,
+  WS_URL: window.location.origin.includes('localhost') || window.location.origin.includes('127.0') ? 'ws://localhost:8000' : ('wss://' + window.location.host),
   DEMO_MODE: false,
 };
+const S = { token: localStorage.getItem('consilium_token') || null, user: null, isWorking: false, ws: null, currentProto: 'standard', chatId: crypto.randomUUID(), currentBlock: null, sid: 0, lastUserMsg: '' };
 
-// ── STATE ──
-const S = {
-  token:       localStorage.getItem('consilium_token') || null,
-  user:        null,
-  isWorking:   false,
-  ws:          null,
-  currentProto:'standard',
-  chatId:      crypto.randomUUID(),
-  currentBlock: null,
-  currentCard:  null,
-  sid:         0,
-};
-
-// ════════════════════ AUTH ════════════════════
 async function doLogin() {
   const email = document.getElementById('auth-email').value.trim();
   const pass  = document.getElementById('auth-password').value;
   const err   = document.getElementById('auth-err');
   const btn   = document.getElementById('auth-btn');
-
   if (!email || !pass) { err.textContent = 'Enter email and password'; return; }
   btn.disabled = true; btn.textContent = 'Signing in...'; err.textContent = '';
-
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 15000);
+  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 15000);
   try {
-    const res = await fetch(`${CFG.BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass }),
-      signal: ctrl.signal,
-    });
+    const res = await fetch(CFG.BASE_URL + '/api/auth/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password: pass}), signal: ctrl.signal });
     clearTimeout(timer);
-    if (!res.ok) {
-      const d = await res.json().catch(() => ({}));
-      throw new Error(d.detail || 'Invalid credentials');
-    }
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail || 'Invalid credentials'); }
     const data = await res.json();
     S.token = data.token || data.access_token;
     localStorage.setItem('consilium_token', S.token);
-    await loadUser();
-    hideAuth();
+    await loadUser(); hideAuth();
   } catch(e) {
     clearTimeout(timer);
-    if (e.name === 'AbortError') {
-      err.textContent = 'Server is starting (cold start) — wait 10 sec and try again';
-    } else {
-      err.textContent = e.message;
-    }
-    btn.disabled = false; btn.textContent = 'Sign In → Board of Directors';
+    err.textContent = e.name === 'AbortError' ? 'Server starting — wait 10s' : e.message;
+    btn.disabled = false; btn.textContent = 'Sign In \u2192 Board of Directors';
   }
 }
-
 async function doDemo() {
-  CFG.DEMO_MODE = true;
-  S.user = { email: 'demo@consilium.ai', role: 'demo' };
-  S.token = 'demo';
-  hideAuth();
-  updateUserUI('Demo');
-  setConn('demo', 'demo-mode');
-  toast('🚀', 'Demo mode activated');
+  CFG.DEMO_MODE = true; S.user = {email:'demo@consilium.ai'}; S.token = 'demo';
+  hideAuth(); updateUserUI('Demo'); setConn('demo','demo-mode'); toast('Demo','Demo mode activated');
 }
-
-function showRegister() {
-  const f = document.getElementById('auth-switch-txt');
-  const btn = document.getElementById('auth-btn');
-  const emailF = document.getElementById('auth-email');
-  f.innerHTML = 'Already have an account? <span onclick="showLogin()">Sign In</span>';
-  btn.textContent = 'Create Account';
-  btn.onclick = doRegister;
-}
-function showLogin() {
-  const f = document.getElementById('auth-switch-txt');
-  const btn = document.getElementById('auth-btn');
-  f.innerHTML = 'No account? <span onclick="showRegister()">Register</span>';
-  btn.textContent = 'Sign In → Board of Directors';
-  btn.onclick = doLogin;
-}
-
-async function doRegister() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass  = document.getElementById('auth-password').value;
-  const err   = document.getElementById('auth-err');
-  const btn   = document.getElementById('auth-btn');
-
-  if (!email || !pass) { err.textContent = 'Fill in all fields'; return; }
-  btn.disabled = true; btn.textContent = 'Creating...';
-
-  const ctrl2 = new AbortController();
-  const timer2 = setTimeout(() => ctrl2.abort(), 15000);
-  try {
-    const res = await fetch(`${CFG.BASE_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass }),
-      signal: ctrl2.signal,
-    });
-    clearTimeout(timer2);
-    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail||'Ошибка'); }
-    const data = await res.json();
-    S.token = data.token || data.access_token;
-    localStorage.setItem('consilium_token', S.token);
-    await loadUser();
-    hideAuth();
-    toast('✅', 'Account created!');
-  } catch(e) {
-    clearTimeout(timer2);
-    if (e.name === 'AbortError') {
-      err.textContent = 'Server is starting (cold start) — wait 10 sec and try again';
-    } else {
-      err.textContent = e.message;
-    }
-    btn.disabled = false; btn.textContent = 'Create Account';
-  }
-}
-
+function showRegister() { document.getElementById('auth-overlay').style.display='none'; document.getElementById('register-overlay').style.display='flex'; }
+function showLogin() { document.getElementById('register-overlay').style.display='none'; document.getElementById('auth-overlay').style.display='flex'; }
 async function loadUser() {
   try {
-    const res = await fetch(`${CFG.BASE_URL}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${S.token}` }
-    });
+    const res = await fetch(CFG.BASE_URL + '/api/auth/me', {headers:{Authorization:'Bearer '+S.token}});
     if (!res.ok) throw new Error('Invalid token');
     S.user = await res.json();
-    const name = S.user.email?.split('@')[0] || 'User';
-    updateUserUI(name);
-    loadCredits();
-    loadKnowledgeCounts();
-    connectWS();
-  } catch(e) {
-    localStorage.removeItem('consilium_token');
-    S.token = null;
-    throw e;
-  }
+    const name = S.user.email ? S.user.email.split('@')[0] : 'User';
+    updateUserUI(name); loadCredits(); loadKnowledgeCounts(); connectWS();
+  } catch(e) { localStorage.removeItem('consilium_token'); S.token = null; throw e; }
 }
-
 function updateUserUI(name) {
   const cap = name.charAt(0).toUpperCase() + name.slice(1);
   document.getElementById('g-name').textContent = cap;
@@ -1131,671 +728,331 @@ function updateUserUI(name) {
   document.getElementById('sb-user-name').textContent = cap;
   document.getElementById('sb-av-text').textContent = cap.slice(0,2).toUpperCase();
 }
-
 async function loadCredits() {
-  if (CFG.DEMO_MODE) { document.getElementById('credits-num').textContent = '∞'; return; }
-  try {
-    const res = await fetch(`${CFG.BASE_URL}/api/auth/credits`, {
-      headers: { Authorization: `Bearer ${S.token}` }
-    });
-    const d = await res.json();
-    document.getElementById('credits-num').textContent = d.credits ?? d.balance ?? '?';
-  } catch{}
+  if (CFG.DEMO_MODE) { document.getElementById('credits-num').textContent = '\u221e'; return; }
+  try { const res = await fetch(CFG.BASE_URL+'/api/auth/credits',{headers:{Authorization:'Bearer '+S.token}}); const d=await res.json(); document.getElementById('credits-num').textContent = d.credits!==undefined?d.credits:'?'; } catch(e){}
 }
-
 async function loadKnowledgeCounts() {
   if (CFG.DEMO_MODE) {
-    document.getElementById('kp-decisions').textContent = '3';
-    document.getElementById('kp-principles').textContent = '5';
-    document.getElementById('kp-wiki').textContent = '7';
-    document.getElementById('dec-cnt').textContent = '3';
-    document.getElementById('prin-cnt').textContent = '5';
-    document.getElementById('wiki-cnt').textContent = '7';
-    document.getElementById('history-cnt').textContent = '12';
-    return;
+    ['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent='3');
+    ['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent='5');
+    document.getElementById('kp-wiki').textContent='7'; document.getElementById('wiki-cnt').textContent='7'; document.getElementById('history-cnt').textContent='12'; return;
   }
   try {
-    const [jRes, pRes] = await Promise.all([
-      fetch(`${CFG.BASE_URL}/api/knowledge/journal/count`, { headers: { Authorization: `Bearer ${S.token}` } }),
-      fetch(`${CFG.BASE_URL}/api/knowledge/principles/count`, { headers: { Authorization: `Bearer ${S.token}` } }),
-    ]);
-    const jd = await jRes.json().catch(() => ({}));
-    const pd = await pRes.json().catch(() => ({}));
-    const jCnt = jd.count ?? 0;
-    const pCnt = pd.count ?? 0;
-    document.getElementById('kp-decisions').textContent = jCnt;
-    document.getElementById('dec-cnt').textContent = jCnt;
-    document.getElementById('kp-principles').textContent = pCnt;
-    document.getElementById('prin-cnt').textContent = pCnt;
-  } catch{}
+    const [jRes,pRes] = await Promise.all([fetch(CFG.BASE_URL+'/api/knowledge/journal/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/principles/count',{headers:{Authorization:'Bearer '+S.token}})]);
+    const jd=await jRes.json().catch(()=>({})); const pd=await pRes.json().catch(()=>({}));
+    const jCnt=jd.count||0; const pCnt=pd.count||0;
+    ['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent=jCnt);
+    ['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent=pCnt);
+  } catch(e){}
 }
-
 function hideAuth() {
-  //  style     hidden —  
-  const overlay = document.getElementById('auth-overlay');
-  overlay.style.display = 'none';
-  overlay.classList.add('hidden');
-  const regOverlay = document.getElementById('register-overlay');
-  if (regOverlay) { regOverlay.style.display = 'none'; regOverlay.classList.add('hidden'); }
+  const o=document.getElementById('auth-overlay'); o.style.display='none'; o.classList.add('hidden');
+  const r=document.getElementById('register-overlay'); if(r){r.style.display='none';r.classList.add('hidden');}
 }
 function logout() {
-  localStorage.removeItem('consilium_token');
-  S.token = null; S.user = null;
-  if (S.ws) { S.ws.close(); S.ws = null; }
-  document.getElementById('auth-overlay').classList.remove('hidden');
-  setConn('offline','offline');
-  CFG.DEMO_MODE = false;
+  localStorage.removeItem('consilium_token'); S.token=null; S.user=null;
+  if(S.ws){S.ws.close();S.ws=null;}
+  document.getElementById('auth-overlay').classList.remove('hidden'); document.getElementById('auth-overlay').style.display='flex';
+  setConn('offline','offline'); CFG.DEMO_MODE=false;
 }
 
-// ════════════════════ WEBSOCKET ════════════════════
 function connectWS() {
-  if (CFG.DEMO_MODE) { setConn('online','demo'); return; }
+  if(CFG.DEMO_MODE){setConn('online','demo');return;}
   setConn('connecting','connecting...');
-
-  const url = `${CFG.WS_URL}/ws/council`;
-  S.ws = new WebSocket(url);
-
-  S.ws.onopen = () => {
-    // First message MUST contain token for backend auth
-    S.ws.send(JSON.stringify({token: S.token, message: '__ping__', chat_id: S.chatId || 'init_'+Date.now()}));
-    setConn('online','online');
-    toast('🔗','WebSocket connected');
-  };
-
-  S.ws.onclose = () => {
-    setConn('offline','offline');
-    // Reconnect after 3s
-    setTimeout(() => { if (S.token && !CFG.DEMO_MODE) connectWS(); }, 3000);
-  };
-
+  S.ws = new WebSocket(CFG.WS_URL+'/ws/council');
+  S.ws.onopen = () => { S.ws.send(JSON.stringify({token:S.token,message:'__ping__',chat_id:S.chatId||('init_'+Date.now())})); setConn('online','online'); toast('\uD83D\uDD17','WebSocket connected'); };
+  S.ws.onclose = () => { setConn('offline','offline'); setTimeout(()=>{if(S.token&&!CFG.DEMO_MODE)connectWS();},3000); };
   S.ws.onerror = () => setConn('offline','error');
-
-  S.ws.onmessage = (ev) => {
-    try { handleWSMsg(JSON.parse(ev.data)); }
-    catch(e) { console.warn('WS parse error', e); }
-  };
+  S.ws.onmessage = (ev) => { try{handleWSMsg(JSON.parse(ev.data));}catch(e){} };
 }
-
-function sendWS(obj) {
-  if (S.ws && S.ws.readyState === WebSocket.OPEN) {
-    S.ws.send(JSON.stringify(obj));
-    return true;
-  }
-  return false;
-}
-
-// ═══ WebSocket message handlers ═══
+function sendWS(obj) { if(S.ws&&S.ws.readyState===WebSocket.OPEN){S.ws.send(JSON.stringify(obj));return true;} return false; }
 function handleWSMsg(msg) {
   switch(msg.type) {
-
-    case 'phase_start':
-      activatePS(msg.phase);
-      activateCP(msg.phase);
-      if (msg.phase !== 'scout') addThinkRow(msg.director || msg.phase, msg.model || '');
-      startPhaseCard(msg.phase, msg.director || msg.phase, msg.model || '');
-      break;
-
-    case 'live_thought':
-      appendToken(msg.token || msg.content || '');
-      break;
-
-    case 'phase_done':       // backend sends this
-    case 'phase_complete':   // demo compatibility
-      finalizePhaseCard(
-        msg.phase,
-        msg.preview || msg.summary || '',
-        msg.tokens || 0,
-        msg.duration_ms || 0
-      );
-      completeCP(msg.phase, msg.duration_ms);
-      removeThinkRow();
-      break;
-
-    case 'phase_error':      // director failed —    
-      finalizePhaseCard(msg.phase, `⚠️ ${msg.error || 'provider unavailable'}`, 0, 0);
-      completeCP(msg.phase, 0);
-      removeThinkRow();
-      break;
-
-    case 'synthesizer_veto':
-      addVetoBanner(msg.coherence, msg.reason);
-      break;
-
-    case 'final':            // backend sends this
-    case 'final_response':   // demo compatibility
-      onFinalResponse(msg);
-      break;
-
-    case 'classification':
-      updateMonitorFromClassification(msg.task_profile || msg);
-      break;
-
-    case 'error':
-      toast('❌', msg.message || 'Server error');
-      resetWorking();
-      break;
+    case 'phase_start': activatePS(msg.phase); activateCP(msg.phase); if(msg.phase!=='scout') addThinkRow(msg.director||msg.phase,msg.model||''); startPhaseCard(msg.phase,msg.director||msg.phase,msg.model||''); break;
+    case 'live_thought': appendToken(msg.token||msg.content||''); break;
+    case 'phase_done': case 'phase_complete': finalizePhaseCard(msg.phase,msg.preview||msg.summary||'',msg.tokens||0,msg.duration_ms||0); completeCP(msg.phase,msg.duration_ms); removeThinkRow(); break;
+    case 'phase_error': finalizePhaseCard(msg.phase,'\u26a0\ufe0f '+(msg.error||'provider unavailable'),0,0); completeCP(msg.phase,0); removeThinkRow(); break;
+    case 'synthesizer_veto': addVetoBanner(msg.coherence,msg.reason); break;
+    case 'final': case 'final_response': onFinalResponse(msg); break;
+    case 'classification': updateMonitorFromClassification(msg.task_profile||msg); break;
+    case 'error': toast('\u274c',msg.message||'Server error'); resetWorking(); break;
   }
 }
 
-// ════════════════════ SEND MESSAGE ════════════════════
-function sendQ(text) { document.getElementById('msg-in').value = text; doSend(); }
-
+function sendQ(text) { document.getElementById('msg-in').value=text; doSend(); }
 function doSend() {
-  const inp = document.getElementById('msg-in');
-  const text = inp.value.trim();
-  if (!text || S.isWorking) return;
-
-  inp.value = ''; inp.style.height = 'auto';
-  const greet = document.getElementById('greeting');
-  if (greet) greet.remove();
-
+  const inp=document.getElementById('msg-in'); const text=inp.value.trim();
+  if(!text||S.isWorking) return;
+  inp.value=''; inp.style.height='auto';
+  const greet=document.getElementById('greeting'); if(greet) greet.remove();
+  showView('chat');
   addUserMsg(text);
-
   S.sid++;
-  S.currentBlock = document.createElement('div');
-  S.currentBlock.className = 'd-block';
+  S.currentBlock=document.createElement('div'); S.currentBlock.className='d-block';
   document.getElementById('chat-area').appendChild(S.currentBlock);
-
-  startWorking();
-  resetPhaseSteps();
-  resetCPhases();
-
-  if (CFG.DEMO_MODE) {
-    runDemo(text);
-    return;
-  }
-
-  // Real WebSocket deliberation
-  // Backend expects: {token, message, chat_id}
-  const sent = sendWS({
-    token: S.token,
-    message: text,
-    chat_id: S.chatId || ('chat_' + Date.now()),
-  });
-
-  if (!sent) {
-    // Fallback to REST /chat
-    callChatREST(text);
-  }
+  startWorking(); resetPhaseSteps(); resetCPhases();
+  if(CFG.DEMO_MODE){runDemo(text);return;}
+  const sent=sendWS({token:S.token,message:text,chat_id:S.chatId||('chat_'+Date.now())});
+  if(!sent) callChatREST(text);
 }
-
 async function callChatREST(text) {
   try {
-    const res = await fetch(`${CFG.BASE_URL}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${S.token}`,
-      },
-      body: JSON.stringify({ message: text, chat_id: S.chatId }),
-    });
-    const data = await res.json();
-    addSimpleResponse(data.response || 'No response', data.phases_used);
-    updateCreditsUI(data.credits_left);
-    resetWorking();
-  } catch(e) {
-    toast('❌','Request error: '+e.message);
-    resetWorking();
-  }
+    const res=await fetch(CFG.BASE_URL+'/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.token},body:JSON.stringify({message:text,chat_id:S.chatId})});
+    const data=await res.json(); addSimpleResponse(data.response||'No response'); updateCreditsUI(data.credits_left); resetWorking();
+  } catch(e){toast('\u274c','Error: '+e.message);resetWorking();}
 }
 
-// ════════════════════ DEMO SIMULATION ════════════════════
-const DEMO_PHASES = [
-  { id:'scout',    name:'Scout',           model:'perplexity/sonar',       ms:1700 },
-  { id:'analyst',  name:'Analyst',         model:'deepseek/deepseek-chat', ms:2100 },
-  { id:'architect',name:'Architect',       model:'claude-3.5-sonnet',      ms:1900 },
-  { id:'devil',    name:"Devil's Advocate",model:'deepseek-r1',            ms:1500 },
-  { id:'synth',    name:'Synthesizer',     model:'claude-3.5-sonnet',      ms:2400 },
-  { id:'verifier', name:'Verifier',        model:'claude-3.5-haiku',       ms:1100 },
-  { id:'chairman', name:'Chairman',        model:'openai/gpt-4o',          ms:2700 },
-];
-
-const DEMO_CONTENT = {
-  scout:    `Data collection complete · Confidence: <span style="color:var(--green)">HIGH</span><br><br>4 relevant sources found. Context from Personal Vault loaded: 2 principles, 1 past decision.`,
-  analyst:  `CoT analysis identified 3 key patterns. Task classified as <strong>COMPLEX + FUTURE</strong>. Decomposed into 4 independent subtasks.`,
-  architect:`MVP-first architecture proposed. 3 modular components, backward compatibility ensured. Two alternative approaches highlighted.`,
-  devil:    `<span style="color:var(--red)">⚠ Risks detected:</span><br>1. Single point of failure in API dependency<br>2. Time estimates may be underestimated by 30-40%`,
-  synth:    `Synthesis complete. Coherence: <span style="color:var(--green)">87%</span>. VETO not activated. Scout and Architect positions aligned.`,
-  verifier: `<span style="color:var(--green)">✓ Knowledge Gate: 7/7 checks passed</span><br>✓ Principles · ✓ DRY · ✓ YAGNI · ✓ Evidence · ✓ Coherence ≥ 50% · ✓ Actionable`,
-  chairman: `<strong>Chairman's Decision:</strong><br><br>Recommendation: MVP component A within 2 weeks. Research alternative B in parallel. Advocate risks included in mitigation plan. Next step: coordinate resources by Friday.`,
-};
+const DEMO_PHASES=[{id:'scout',name:'Scout',model:'perplexity/sonar',ms:1700},{id:'analyst',name:'Analyst',model:'deepseek-chat',ms:2100},{id:'architect',name:'Architect',model:'claude-3.5',ms:1900},{id:'devil',name:"Devil's Advocate",model:'deepseek-r1',ms:1500},{id:'synth',name:'Synthesizer',model:'claude-3.5',ms:2400},{id:'verifier',name:'Verifier',model:'haiku',ms:1100},{id:'chairman',name:'Chairman',model:'groq/llama-3.3',ms:2700}];
+const DEMO_CONTENT={scout:'Data collection complete. Confidence: HIGH. 4 sources found.',analyst:'CoT analysis: 3 patterns. COMPLEX + FUTURE. 4 subtasks.',architect:'MVP-first: 3 components. Two alternatives highlighted.',devil:'Risks: 1. API single point failure. 2. Timeline -30-40%.',synth:'Coherence: 87%. VETO not activated.',verifier:'7/7 checks passed.',chairman:'Recommendation: Ship MVP in 2 weeks. Coordinate resources by Friday. Research alternative B in parallel.'};
 
 async function runDemo(query) {
   simulateClassifier();
-  // S.currentBlock    doSend() —   
-
-  for (const p of DEMO_PHASES) {
+  for(const p of DEMO_PHASES){
     activatePS(p.id); activateCP(p.id);
-
-    // Thinking
-    const tr = addThinkRow(p.name, p.model);
-    await sleep(p.ms * 0.4);
-    if (tr) tr.remove();
-
-    // Card
-    startPhaseCard(p.id, p.name, p.model);
-    // Stream content
-    await streamContent(DEMO_CONTENT[p.id], p.ms * 0.6);
-    finalizePhaseCard(p.id, '', Math.floor(300+Math.random()*500), p.ms);
-    completeCP(p.id, p.ms);
-    scrollChat();
+    const tr=addThinkRow(p.name,p.model); await sleep(p.ms*0.4); if(tr)tr.remove();
+    startPhaseCard(p.id,p.name,p.model); await streamContent(DEMO_CONTENT[p.id],p.ms*0.6);
+    finalizePhaseCard(p.id,'',Math.floor(300+Math.random()*500),p.ms); completeCP(p.id,p.ms); scrollChat();
   }
-
-  onFinalResponse({ credits_used: 3, total_ms: 14500, content: '' });
+  onFinalResponse({credits_used:3,total_ms:14500,response:DEMO_CONTENT.chairman,coherence_score:87});
 }
-
-let _streamTarget = null;
-function startPhaseCard(phaseId, name, model) {
-  const sid = S.sid;
-  const isChairman = phaseId === 'chairman';
-  const card = document.createElement('div');
-  card.className = `pcard${isChairman?' chairman-card':''}`;
-  card.id = `card-${sid}-${phaseId}`;
-  card.innerHTML = `
-    <div class="pcard-head" onclick="toggleCard(this)">
-      <div class="pd ${phaseId}"></div>
-      <span class="pname">${name}</span>
-      <span class="pmodel">${model}</span>
-      <span class="pdur" id="dur-${sid}-${phaseId}">...</span>
-      <span class="ptoks" id="tok-${sid}-${phaseId}">—</span>
-    </div>
-    <div class="pcard-body" id="body-${sid}-${phaseId}">
-      <div class="stream-text" id="st-${sid}-${phaseId}"></div>
-    </div>`;
-  if (S.currentBlock) S.currentBlock.appendChild(card);
-  _streamTarget = document.getElementById(`st-${sid}-${phaseId}`);
-  scrollChat();
+let _streamTarget=null;
+function startPhaseCard(phaseId,name,model){
+  const sid=S.sid; const isChairman=phaseId==='chairman';
+  const card=document.createElement('div'); card.className='pcard'+(isChairman?' chairman-card':''); card.id='card-'+sid+'-'+phaseId;
+  card.innerHTML='<div class="pcard-head" onclick="toggleCard(this)"><div class="pd '+phaseId+'"></div><span class="pname">'+name+'</span><span class="pmodel">'+model+'</span><span class="pdur" id="dur-'+sid+'-'+phaseId+'">...</span><span class="ptoks" id="tok-'+sid+'-'+phaseId+'">&mdash;</span></div><div class="pcard-body" id="body-'+sid+'-'+phaseId+'"><div class="stream-text" id="st-'+sid+'-'+phaseId+'"></div></div>';
+  if(S.currentBlock) S.currentBlock.appendChild(card);
+  _streamTarget=document.getElementById('st-'+sid+'-'+phaseId); scrollChat();
 }
-
-async function streamContent(html, duration) {
-  if (!_streamTarget) return;
-  // For real WS this just appends tokens; for demo we do char-by-char on plain text
-  const plain = html.replace(/<[^>]+>/g, '');
-  const chars = plain.length;
-  const delay = duration / chars;
-  // Actually set HTML immediately but animate opacity for demo feel
-  _streamTarget.innerHTML = html;
-  _streamTarget.style.opacity = 0;
-  let t = 0;
-  while (t < 1) {
-    t += 0.06; _streamTarget.style.opacity = Math.min(t, 1);
-    await sleep(30);
-  }
+async function streamContent(html,duration){
+  if(!_streamTarget) return; _streamTarget.textContent=html; _streamTarget.style.opacity=0;
+  let t=0; while(t<1){t+=0.06;_streamTarget.style.opacity=Math.min(t,1);await sleep(30);}
 }
-
-function appendToken(token) {
-  if (_streamTarget) _streamTarget.textContent += token;
-  scrollChat();
+function appendToken(token){if(_streamTarget)_streamTarget.textContent+=token;scrollChat();}
+function finalizePhaseCard(phaseId,content,tokens,ms){
+  const sid=S.sid;
+  const d=document.getElementById('dur-'+sid+'-'+phaseId); const t=document.getElementById('tok-'+sid+'-'+phaseId); const st=document.getElementById('st-'+sid+'-'+phaseId);
+  if(d)d.textContent=ms?ms+'ms':'\u2014'; if(t)t.textContent=tokens+' tok';
+  if(st&&content&&!st.textContent.trim())st.textContent=content; _streamTarget=null;
 }
-
-function finalizePhaseCard(phaseId, content, tokens, ms) {
-  const sid = S.sid;
-  const d  = document.getElementById(`dur-${sid}-${phaseId}`);
-  const t  = document.getElementById(`tok-${sid}-${phaseId}`);
-  const st = document.getElementById(`st-${sid}-${phaseId}`);
-  if (d) d.textContent = ms ? ms + 'ms' : '—';
-  if (t) t.textContent = tokens + ' tok';
-  if (st && content && !st.textContent.trim()) st.textContent = content;
-  _streamTarget = null;
+function addThinkRow(name,model){
+  if(!S.currentBlock){S.currentBlock=document.createElement('div');S.currentBlock.className='d-block';document.getElementById('chat-area').appendChild(S.currentBlock);}
+  const el=document.createElement('div'); el.className='think-row'; el.id='think-row';
+  el.innerHTML='<div class="think-spin"></div><span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">'+name+' thinking... <span style="color:var(--border-light)">['+model+']</span></span>';
+  S.currentBlock.appendChild(el); scrollChat(); return el;
 }
-
-function addThinkRow(name, model) {
-  if (!S.currentBlock) {
-    S.currentBlock = document.createElement('div');
-    S.currentBlock.className = 'd-block';
-    document.getElementById('chat-area').appendChild(S.currentBlock);
-  }
-  const el = document.createElement('div');
-  el.className = 'think-row'; el.id = 'think-row';
-  el.innerHTML = `<div class="think-spin"></div><span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${name} thinking... <span style="color:var(--border-light)">[${model}]</span></span>`;
-  S.currentBlock.appendChild(el);
-  scrollChat(); return el;
-}
-function removeThinkRow() {
-  //   think-row —      id  
-  document.querySelectorAll('.think-row').forEach(el => el.remove());
-}
-
-function addVetoBanner(coherence, reason) {
-  if (!S.currentBlock) return;
-  const el = document.createElement('div');
-  el.className = 'veto-banner';
-  el.innerHTML = `\u26a0 VETO: coherence ${coherence}% · ${reason}`;
-  S.currentBlock.appendChild(el);
-  updateCoherence(coherence, true);
-}
-
-function addSimpleResponse(text, phases) {
-  const area = document.getElementById('chat-area');
-  const el = document.createElement('div');
-  el.style.cssText = 'padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);font-size:13px;line-height:1.7;animation:fadeup .3s ease';
-  el.textContent = text;
-  area.appendChild(el);
-  scrollChat();
-}
+function removeThinkRow(){document.querySelectorAll('.think-row').forEach(el=>el.remove());}
+function addVetoBanner(coherence,reason){if(!S.currentBlock)return;const el=document.createElement('div');el.className='veto-banner';el.innerHTML='\u26a0 VETO: coherence '+coherence+'% &middot; '+reason;S.currentBlock.appendChild(el);updateCoherence(coherence,true);}
+function addSimpleResponse(text){const el=document.createElement('div');el.style.cssText='padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);font-size:13px;line-height:1.7';el.textContent=text;document.getElementById('chat-area').appendChild(el);scrollChat();}
 
 function onFinalResponse(msg) {
   resetWorking();
-  const response = msg.response || '';
-
-  // Error boundary: detect provider failure
-  const isProviderFail = response.includes('All providers failed') ||
-                         response.includes('providers failed') ||
-                         response === '';
-
-  if (response) {
-    const st = document.getElementById(`st-${S.sid}-chairman`);
-    if (st) {
-      if (isProviderFail) {
-        st.innerHTML = `<div style="color:var(--orange);padding:12px;border:1px solid var(--orange);border-radius:6px;font-size:13px;">
-          <strong>⚠️ Council is temporarily unavailable</strong><br><br>
-          All AI providers are rate-limited or out of credits.<br>
-          <strong>Solutions:</strong><br>
-          &bull; Wait 60 seconds and try again (Groq resets)<br>
-          &bull; Try a shorter/simpler question<br>
-          &bull; The system will auto-recover shortly
-        </div>`;
-        toast('⚠️', 'Providers rate-limited — please wait 60s');
+  const response=msg.response||'';
+  const isProviderFail=response.includes('All providers failed')||response==='';
+  if(response){
+    const st=document.getElementById('st-'+S.sid+'-chairman');
+    if(st){
+      if(isProviderFail){
+        st.innerHTML='<div style="color:var(--orange);padding:12px;border:1px solid var(--orange);border-radius:6px;font-size:13px;"><strong>\u26a0\ufe0f Temporarily unavailable</strong><br><br>Wait 60s and retry.</div>';
+        toast('\u26a0\ufe0f','Providers rate-limited');
       } else {
-        st.textContent = response;
-        toast('✅', `Deliberation complete · ${msg.credits_used||0} credits · ${((msg.total_ms||0)/1000).toFixed(1)}s`);
+        st.textContent=response;
+        toast('\u2705','Done \u00b7 '+(msg.credits_used||0)+' cr \u00b7 '+((msg.total_ms||0)/1000).toFixed(1)+'s');
+        addAIActionBar(S.currentBlock||st.closest('.d-block'),response);
       }
     }
-  } else {
-    toast('⚠️', 'Empty response — providers may be rate-limited');
-  }
-
-  const cohScore = msg.coherence_score || (msg.synthesis_report && msg.synthesis_report.coherence_score);
-  if (cohScore) updateCoherence(cohScore, false);
-  else updateCoherence(0, false);
-  updateActionBoard();
+  } else { toast('\u26a0\ufe0f','Empty response'); }
+  const cohScore=msg.coherence_score||((msg.synthesis_report||{}).coherence_score);
+  updateCoherence(cohScore||0,false);
+  updateActionBoardReal(response);
   loadCredits();
-  S.currentBlock = null;
-  S.chatId = crypto.randomUUID();
+  S.currentBlock=null; S.chatId=crypto.randomUUID();
 }
 
-// ════════════════════ MONITOR UPDATE ════════════════════
-function simulateClassifier() {
-  const depth   = 6 + Math.floor(Math.random()*3);
-  const urgency = Math.floor(20+Math.random()*40);
-  const emotion = Math.floor(10+Math.random()*30);
-  setMetric('depth',  depth, `${depth}/10`, depth>=7?'blue':'blue', depth*10);
-  setMetric('urgency',urgency,`${urgency}%`, urgency>60?'red':urgency>40?'orange':'green', urgency);
-  setMetric('emotion',emotion,`${emotion}%`, emotion>60?'red':emotion>40?'orange':'green', emotion);
-  const dims = {future:75,complex:60,factual:45,creative:35,ethical:20};
-  Object.entries(dims).forEach(([k,v])=>{
-    const b=document.getElementById(`d-${k}`), vv=document.getElementById(`dv-${k}`);
-    if(b){b.style.width=v+'%'; b.style.background=v>60?'var(--accent)':'var(--border-light)';}
-    if(vv) vv.textContent=v+'%';
-  });
+function simulateClassifier(){
+  const depth=6+Math.floor(Math.random()*3); const urgency=Math.floor(20+Math.random()*40); const emotion=Math.floor(10+Math.random()*30);
+  setMetric('depth',depth,depth+'/10','blue',depth*10); setMetric('urgency',urgency,urgency+'%',urgency>60?'red':urgency>40?'orange':'green',urgency); setMetric('emotion',emotion,emotion+'%',emotion>60?'red':emotion>40?'orange':'green',emotion);
+  const dims={future:75,complex:60,factual:45,creative:35,ethical:20};
+  Object.entries(dims).forEach(function(kv){const k=kv[0],v=kv[1];const b=document.getElementById('d-'+k),vv=document.getElementById('dv-'+k);if(b){b.style.width=v+'%';b.style.background=v>60?'var(--accent)':'var(--border-light)';}if(vv)vv.textContent=v+'%';});
 }
-
-function updateMonitorFromClassification(tp) {
-  if (!tp) return;
-  const d = tp.required_depth || tp.depth || 6;
-  const u = Math.round((tp.urgency||0.3)*100);
-  const e = Math.round((tp.emotional_load||0.2)*100);
-  setMetric('depth',  d, `${d}/10`, 'blue', d*10);
-  setMetric('urgency',u, `${u}%`, u>60?'red':u>40?'orange':'green', u);
-  setMetric('emotion',e, `${e}%`, e>60?'red':e>40?'orange':'green', e);
+function updateMonitorFromClassification(tp){
+  if(!tp)return;
+  const d=tp.required_depth||tp.depth||6; const u=Math.round((tp.urgency||0.3)*100); const e=Math.round((tp.emotional_load||0.2)*100);
+  setMetric('depth',d,d+'/10','blue',d*10); setMetric('urgency',u,u+'%',u>60?'red':u>40?'orange':'green',u); setMetric('emotion',e,e+'%',e>60?'red':e>40?'orange':'green',e);
+  const dims=tp.dimensions||[];
+  const dimMap={future:(dims.indexOf('FUTURE')>=0)?75:20,complex:(dims.indexOf('COMPLEX')>=0)?80:30,factual:(dims.indexOf('FACTUAL')>=0)?70:25,creative:(dims.indexOf('CREATIVE')>=0)?55:20,ethical:(dims.indexOf('ETHICAL')>=0)?40:10};
+  Object.entries(dimMap).forEach(function(kv){const k=kv[0],v=kv[1];const b=document.getElementById('d-'+k);const vv=document.getElementById('dv-'+k);if(b){b.style.width=v+'%';b.style.background=v>60?'var(--accent)':v>40?'var(--orange)':'var(--border-light)';}if(vv)vv.textContent=v+'%';});
 }
-
-function setMetric(id, raw, lbl, cls, pct) {
-  const v=document.getElementById(`m-${id}`), b=document.getElementById(`b-${id}`);
-  if(v){v.textContent=lbl; v.className=`mval ${cls}`;}
-  if(b){b.style.width=pct+'%'; b.className=`mfill ${cls}`;}
+function setMetric(id,raw,lbl,cls,pct){const v=document.getElementById('m-'+id);const b=document.getElementById('b-'+id);if(v){v.textContent=lbl;v.className='mval '+cls;}if(b){b.style.width=pct+'%';b.className='mfill '+cls;}}
+function updateCoherence(score,isVeto){
+  if(!score||score===0){const pct=document.getElementById('r-pct');const st=document.getElementById('coh-status');const dsc=document.getElementById('coh-desc');if(pct)pct.textContent='\u2014';if(st)st.textContent='No data';if(dsc)dsc.textContent='Synthesizer not running';return;}
+  const circ=131.95; const ring=document.getElementById('r-fill'); const pct=document.getElementById('r-pct'); const st=document.getElementById('coh-status'); const desc=document.getElementById('coh-desc');
+  const offset=circ-(score/100)*circ; pct.textContent=score+'%'; ring.style.strokeDashoffset=offset;
+  if(score>=70){ring.style.stroke='var(--green)';pct.style.color='var(--green)';st.textContent='High coherence';desc.textContent='Directors aligned';}
+  else if(score>=50){ring.style.stroke='var(--orange)';pct.style.color='var(--orange)';st.textContent='Average';desc.textContent='Discrepancies found';}
+  else{ring.style.stroke='var(--red)';pct.style.color='var(--red)';st.textContent='\u26a0 VETO';desc.textContent='Requires revision';}
 }
-
-function updateCoherence(score, isVeto) {
-  if (!score || score === 0) {
-    const pct = document.getElementById('r-pct');
-    const st  = document.getElementById('coh-status');
-    const dsc = document.getElementById('coh-desc');
-    if (pct) pct.textContent = '—';
-    if (st)  st.textContent  = 'No data';
-    if (dsc) dsc.textContent = 'Synthesizer not running';
-    return;
-  }
-  const circ = 131.95;
-  const ring = document.getElementById('r-fill');
-  const pct  = document.getElementById('r-pct');
-  const st   = document.getElementById('coh-status');
-  const desc = document.getElementById('coh-desc');
-  const offset = circ - (score/100)*circ;
-  pct.textContent = score+'%';
-  ring.style.strokeDashoffset = offset;
-  if(score>=70){
-    ring.style.stroke='var(--green)'; pct.style.color='var(--green)';
-    st.textContent='High coherence'; desc.textContent='Directors aligned';
-  } else if(score>=50){
-    ring.style.stroke='var(--orange)'; pct.style.color='var(--orange)';
-    st.textContent='Average'; desc.textContent='Discrepancies found';
-  } else {
-    ring.style.stroke='var(--red)'; pct.style.color='var(--red)';
-    st.textContent='\u26a0 VETO activated'; desc.textContent='Requires revision';
-  }
-}
-
-function updateActionBoard() {
-  document.getElementById('action-board').innerHTML = `
-    <div class="aitem"><span class="atype decision">DECISION</span>MVP component A · deadline 2w</div>
-    <div class="aitem"><span class="atype task">TASK</span>Coordinate resources by Friday</div>
-    <div class="aitem"><span class="atype risk">RISK</span>Add API fallback mechanism</div>
-  `;
-}
-
-function updateCreditsUI(n) {
-  if (n !== undefined) document.getElementById('credits-num').textContent = n;
-}
-
-// ════════════════════ PHASE STEPS ════════════════════
-function activatePS(id) {
-  document.querySelectorAll('.pstep').forEach(s => {
-    if (s.id===`ps-${id}`) s.className='pstep active';
-    else if (s.className.includes('active')) s.className='pstep done';
-  });
-}
-function resetPhaseSteps() {
-  document.querySelectorAll('.pstep').forEach(s => s.className='pstep pending');
-}
-
-function activateCP(id) {
-  const el=document.getElementById(`cp-${id}`);
-  if(el){ el.className='cp active'; el.querySelector('.cp-ico').textContent='●'; }
-}
-function completeCP(id, ms) {
-  const el=document.getElementById(`cp-${id}`);
-  if(el){
-    el.className='cp done';
-    el.querySelector('.cp-ico').textContent='✔';
-    const m=el.querySelector('.cp-model');
-    if(m && ms) m.textContent=`${ms}ms`;
-  }
-}
-function resetCPhases() {
-  document.querySelectorAll('.cp').forEach(c=>{
-    c.className='cp pending';
-    c.querySelector('.cp-ico').textContent='○';
-    // restore model label colors
-  });
-}
-
-// ════════════════════ WORKING STATE ════════════════════
-function startWorking() {
-  S.isWorking = true;
-  document.getElementById('send-btn').disabled = true;
-  document.getElementById('phase-strip').classList.add('on');
-}
-function resetWorking() {
-  S.isWorking = false;
-  document.getElementById('send-btn').disabled = false;
-  document.getElementById('phase-strip').classList.remove('on');
-  resetPhaseSteps();
-}
-
-// ════════════════════ UI HELPERS ════════════════════
-function addUserMsg(text) {
-  const el=document.createElement('div');
-  el.className='umsg'; el.textContent=text;
-  document.getElementById('chat-area').appendChild(el);
-  scrollChat();
-}
-function toggleCard(hdr) {
-  const b=hdr.nextElementSibling;
-  b.classList.toggle('collapsed');
-}
-function scrollChat() {
-  const a=document.getElementById('chat-area'); a.scrollTop=a.scrollHeight;
-}
-function setConn(cls,text) {
-  document.getElementById('conn-dot').className=`conn-dot ${cls}`;
-  document.getElementById('conn-text').textContent=text;
-}
-function onKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();} }
-function autoH(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,150)+'px'; }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-// dropdowns
-function toggleDD(id) {
-  document.querySelectorAll('.dd-menu').forEach(m=>{ if(m.id!==id) m.classList.remove('open'); });
-  document.getElementById(id)?.classList.toggle('open');
-}
-document.addEventListener('click', e=>{ if(!e.target.closest('.dd')) document.querySelectorAll('.dd-menu').forEach(m=>m.classList.remove('open')); });
-
-function pickWS(el, name) {
-  document.getElementById('h-ws').textContent=name;
-  el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active'); toggleDD('');
-}
-const PROTO_TAGS = {Standard:'STD',Strategy:'STR',Crisis:'CRS',Reflection:'RFL',Planning:'PLN',Deep:'DPA'};
-function pickProto(el, name, tag) {
-  document.getElementById('h-proto').textContent=name;
-  document.getElementById('h-proto-tag').textContent=tag;
-  document.getElementById('inp-proto-lbl').textContent=name;
-  el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active'); toggleDD('');
-  S.currentProto=name.toLowerCase();
-  toast('⚡',`Protocol: ${name}`);
-}
-function pickProtoInp(name) {
-  document.getElementById('inp-proto-lbl').textContent=name;
-  document.getElementById('h-proto').textContent=name;
-  document.getElementById('h-proto-tag').textContent=PROTO_TAGS[name]||'?';
-  toggleDD('inp-proto');
-  S.currentProto=name.toLowerCase();
-}
-
-// toast
-function toast(icon, text) {
-  const area=document.getElementById('toasts');
-  const el=document.createElement('div');
-  el.className='toast'; el.innerHTML=`<span>${icon}</span>${text}`;
-  area.appendChild(el); setTimeout(()=>el.remove(),2800);
-}
-
-// ════════════════════ INIT ════════════════════
-(async function init() {
-  if (S.token) {
-    try { await loadUser(); hideAuth(); }
-    catch(e) { /* show auth */ }
-  }
-})();
-
-function updateLogoForTheme(theme) {
-  const greetingLogo = document.getElementById('greeting-logo');
-  if (greetingLogo) {
-    greetingLogo.src = (theme === 'light') ? 'img/logo1.png' : 'img/logo.jpg';
-  }
-  const headerIcon = document.getElementById('header-icon');
-  if (headerIcon) {
-    headerIcon.src = (theme === 'light') ? 'img/icon2.jpg' : 'img/icon.png';
-  }
-}
-
-function toggleTheme() {
-  const root = document.documentElement;
-  const next = (root.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('consilium-theme', next);
-  updateLogoForTheme(next);
-  const icon = document.getElementById('theme-icon');
-  const label = document.getElementById('theme-label');
-  if (next === 'light') {
-    icon && (icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
-    label && (label.textContent = 'Light');
-  } else {
-    icon && (icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>');
-    label && (label.textContent = 'Dark');
-  }
-}
-(function() {
-  const t = localStorage.getItem('consilium-theme');
-  if (t) { document.documentElement.setAttribute('data-theme', t); }
-  document.addEventListener('DOMContentLoaded', function() {
-    if (t === 'light') {
-      const i = document.getElementById('theme-icon');
-      const l = document.getElementById('theme-label');
-      i && (i.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');
-      l && (l.textContent = 'Light');
-      updateLogoForTheme('light');
+function updateActionBoardReal(finalDecision){
+  const el=document.getElementById('action-board'); if(!el||!finalDecision)return;
+  const lines=finalDecision.split(/[\n\r]+/).filter(function(l){return l.trim().length>10;});
+  const items=[];
+  for(var i=0;i<lines.length;i++){
+    const l=lines[i].trim();
+    if(/^[\d\u2022\-\*]\s/.test(l)||/step|action|task|next/i.test(l)){
+      const clean=l.replace(/^[\d\u2022\-\*\.]+\s*/,'').slice(0,90);
+      if(clean.length>8){const type=/risk|warn|danger/i.test(clean)?'risk':/decide|chose|use|implement/i.test(clean)?'decision':'task';items.push({type:type,text:clean});}
     }
-  });
-})();
-
-function showRegister() {
-  document.getElementById('auth-overlay').style.display = 'none';
-  document.getElementById('register-overlay').style.display = 'flex';
+    if(items.length>=4)break;
+  }
+  if(!items.length){el.innerHTML='<div class="aboard-empty">No action items</div>';return;}
+  el.innerHTML=items.map(function(i){return '<div class="aitem"><span class="atype '+i.type+'">'+i.type.toUpperCase()+'</span>'+i.text+'</div>';}).join('');
 }
-function showLogin() {
-  document.getElementById('register-overlay').style.display = 'none';
-  document.getElementById('auth-overlay').style.display = 'flex';
+function updateCreditsUI(n){if(n!==undefined)document.getElementById('credits-num').textContent=n;}
+
+function activatePS(id){document.querySelectorAll('.pstep').forEach(function(s){if(s.id==='ps-'+id)s.className='pstep active';else if(s.className.includes('active'))s.className='pstep done';});}
+function resetPhaseSteps(){document.querySelectorAll('.pstep').forEach(function(s){s.className='pstep pending';});}
+function activateCP(id){const el=document.getElementById('cp-'+id);if(el){el.className='cp active';el.querySelector('.cp-ico').textContent='\u25cf';}}
+function completeCP(id,ms){const el=document.getElementById('cp-'+id);if(el){el.className='cp done';el.querySelector('.cp-ico').textContent='\u2714';const m=el.querySelector('.cp-model');if(m&&ms)m.textContent=ms+'ms';}}
+function resetCPhases(){document.querySelectorAll('.cp').forEach(function(c){c.className='cp pending';c.querySelector('.cp-ico').textContent='\u25cb';});}
+function startWorking(){S.isWorking=true;document.getElementById('send-btn').disabled=true;document.getElementById('phase-strip').classList.add('on');}
+function resetWorking(){S.isWorking=false;document.getElementById('send-btn').disabled=false;document.getElementById('phase-strip').classList.remove('on');resetPhaseSteps();}
+
+function addUserMsg(text){
+  S.lastUserMsg=text;
+  var wrap=document.createElement('div'); wrap.className='umsg-wrap';
+  var bubble=document.createElement('div'); bubble.className='umsg'; bubble.textContent=text;
+  var actions=document.createElement('div'); actions.className='msg-actions';
+  var bCopy=document.createElement('button'); bCopy.className='mact'; bCopy.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy'; bCopy.addEventListener('click',function(){copyMsg(bCopy,text);});
+  var bEdit=document.createElement('button'); bEdit.className='mact'; bEdit.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit'; bEdit.addEventListener('click',function(){editMsg(text);});
+  var bRetry=document.createElement('button'); bRetry.className='mact'; bRetry.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>Retry'; bRetry.addEventListener('click',function(){resendMsg(text);});
+  actions.appendChild(bCopy); actions.appendChild(bEdit); actions.appendChild(bRetry);
+  wrap.appendChild(bubble); wrap.appendChild(actions);
+  document.getElementById('chat-area').appendChild(wrap); scrollChat();
 }
-async function doRegister() {
-  const email = document.getElementById('reg-email').value.trim();
-  const pwd = document.getElementById('reg-password').value;
-  const pwd2 = document.getElementById('reg-password2').value;
-  const err = document.getElementById('reg-err');
-  err.style.color = ''; err.textContent = '';
-  if (!email || !pwd) { err.textContent = 'Fill in all fields'; return; }
-  if (pwd.length < 6) { err.textContent = 'Password must be at least 6 chars'; return; }
-  if (pwd !== pwd2) { err.textContent = 'Passwords do not match'; return; }
-  try {
-    const r = await fetch(CFG.BASE_URL + '/register', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email, password: pwd})
-    });
-    const d = await r.json();
-    if (!r.ok) { err.textContent = d.detail || 'Registration error'; return; }
-    err.style.color = '#22c55e'; err.textContent = 'Account created! Signing in...';
-    setTimeout(showLogin, 1200);
-  } catch(e) { err.textContent = 'Server unavailable. Try demo mode.'; }
+function toggleCard(hdr){hdr.nextElementSibling.classList.toggle('collapsed');}
+function scrollChat(){const a=document.getElementById('chat-area');a.scrollTop=a.scrollHeight;}
+function setConn(cls,text){document.getElementById('conn-dot').className='conn-dot '+cls;document.getElementById('conn-text').textContent=text;}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,150)+'px';}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function toggleDD(id){document.querySelectorAll('.dd-menu').forEach(function(m){if(m.id!==id)m.classList.remove('open');});const el=document.getElementById(id);if(el)el.classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.dd'))document.querySelectorAll('.dd-menu').forEach(function(m){m.classList.remove('open');});});
+function pickWS(el,name){document.getElementById('h-ws').textContent=name;el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(function(i){i.classList.remove('active');});el.classList.add('active');toggleDD('');}
+const PROTO_TAGS={Standard:'STD',Strategy:'STR',Crisis:'CRS',Reflection:'RFL',Planning:'PLN',Deep:'DPA'};
+function pickProto(el,name,tag){document.getElementById('h-proto').textContent=name;document.getElementById('h-proto-tag').textContent=tag;document.getElementById('inp-proto-lbl').textContent=name;el.closest('.dd-menu').querySelectorAll('.dd-item').forEach(function(i){i.classList.remove('active');});el.classList.add('active');toggleDD('');S.currentProto=name.toLowerCase();toast('\u26a1','Protocol: '+name);}
+function pickProtoInp(name){document.getElementById('inp-proto-lbl').textContent=name;document.getElementById('h-proto').textContent=name;document.getElementById('h-proto-tag').textContent=PROTO_TAGS[name]||'?';toggleDD('inp-proto');S.currentProto=name.toLowerCase();}
+function toast(icon,text){const area=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';el.innerHTML='<span>'+icon+'</span>'+text;area.appendChild(el);setTimeout(function(){el.remove();},2800);}
+function updateLogoForTheme(theme){const g=document.getElementById('greeting-logo');if(g)g.src=theme==='light'?'img/logo1.png':'img/logo.jpg';const h=document.getElementById('header-icon');if(h)h.src=theme==='light'?'img/icon2.jpg':'img/icon.png';}
+function toggleTheme(){const root=document.documentElement;const next=(root.getAttribute('data-theme')||'dark')==='dark'?'light':'dark';root.setAttribute('data-theme',next);localStorage.setItem('consilium-theme',next);updateLogoForTheme(next);const icon=document.getElementById('theme-icon');const label=document.getElementById('theme-label');if(next==='light'){icon&&(icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');label&&(label.textContent='Light');}else{icon&&(icon.innerHTML='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>');label&&(label.textContent='Dark');}}
+(function(){const t=localStorage.getItem('consilium-theme');if(t)document.documentElement.setAttribute('data-theme',t);document.addEventListener('DOMContentLoaded',function(){if(t==='light'){const i=document.getElementById('theme-icon'),l=document.getElementById('theme-label');i&&(i.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');l&&(l.textContent='Light');updateLogoForTheme('light');}});})();
+(async function init(){if(S.token){try{await loadUser();hideAuth();}catch(e){}}})();
+
+// ── MESSAGE ACTIONS ──
+function copyMsg(btn,text){navigator.clipboard.writeText(text).then(function(){btn.classList.add('copied');var orig=btn.innerHTML;btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Copied';setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('copied');},1500);}).catch(function(){toast('\u274c','Copy failed');});}
+function editMsg(text){var inp=document.getElementById('msg-in');inp.value=text;inp.focus();inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';showView('chat');}
+function resendMsg(text){showView('chat');document.getElementById('msg-in').value=text;doSend();}
+function addAIActionBar(block,response){
+  if(!block)return; var old=block.querySelector('.ai-actions-bar');if(old)old.remove();
+  var sid=S.sid; var bar=document.createElement('div'); bar.className='msg-actions ai-actions-bar';
+  var bCopy=document.createElement('button');bCopy.className='mact';bCopy.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy';bCopy.addEventListener('click',function(){copyMsg(bCopy,response);});
+  var bRerun=document.createElement('button');bRerun.className='mact';bRerun.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>Re-run';bRerun.addEventListener('click',function(){if(S.lastUserMsg)resendMsg(S.lastUserMsg);});
+  var bGood=document.createElement('button');bGood.className='mact good';bGood.id='fb-good-'+sid;bGood.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Good';bGood.addEventListener('click',function(){submitFeedback(sid,true,bGood,bBad);});
+  var bBad=document.createElement('button');bBad.className='mact bad';bBad.id='fb-bad-'+sid;bBad.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>Poor';bBad.addEventListener('click',function(){submitFeedback(sid,false,bGood,bBad);});
+  bar.appendChild(bCopy);bar.appendChild(bRerun);bar.appendChild(bGood);bar.appendChild(bBad);block.appendChild(bar);
+}
+function submitFeedback(sid,isGood,goodBtn,badBtn){
+  goodBtn.classList.remove('active');badBtn.classList.remove('active');(isGood?goodBtn:badBtn).classList.add('active');
+  toast(isGood?'\u2705':'\uD83D\uDCCA',isGood?'Good \u2014 AI will learn':'Poor \u2014 noted');
+  if(!S.token||CFG.DEMO_MODE)return;
+  fetch(CFG.BASE_URL+'/api/experience/sessions?limit=1',{headers:{Authorization:'Bearer '+S.token}}).then(function(r){return r.json();}).then(function(d){var s=(d.sessions||[])[0];if(!s)return;return fetch(CFG.BASE_URL+'/api/experience/feedback',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.token},body:JSON.stringify({session_id:s.id,rating:isGood?5:2,helpful:isGood,comment:isGood?'User: good':'User: poor'})});}).catch(function(){});
 }
 
+// ── VIEW SYSTEM ──
+const VIEWS=['chat','history','decisions','principles','wiki','dashboard','reflective','settings'];
+function showView(view){
+  const chatView=document.getElementById('view-chat');if(chatView)chatView.style.display='none';
+  VIEWS.forEach(function(v){const el=document.getElementById('view-'+v);if(el)el.style.display='none';});
+  if(view==='chat'){if(chatView)chatView.style.display='flex';}else{const panel=document.getElementById('view-'+view);if(panel)panel.style.display='flex';}
+  VIEWS.forEach(function(v){const nav=document.getElementById('nav-'+v);if(nav)nav.classList.toggle('active',v===view);});
+  if(view==='history')loadHistoryView(); if(view==='decisions')loadDecisionsView(); if(view==='principles')loadPrinciplesView();
+  if(view==='dashboard')loadDashboardView(); if(view==='reflective')initReflective(); if(view==='settings')initSettings();
+}
 
-// Approval States —   Chairman-
-function setApproval(journalId, state, btn) {
-  if (!S.token || CFG.DEMO_MODE) return;
-  fetch(`${CFG.BASE_URL}/api/knowledge/journal/${journalId}/approve`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-    body: JSON.stringify({ state })
-  }).then(r => {
-    if (r.ok) {
-      //   
-      btn.closest('div').querySelectorAll('button').forEach(b => b.style.fontWeight = 'normal');
-      btn.style.fontWeight = '700';
-      const labels = { draft: '📝 Черновик', verified: '✓ Verified', approved: '✅ Approved' };
-      toast('📋', `Decision: ${labels[state]}`);
-    }
-  }).catch(() => toast('❌', 'Status save error'));
+// ── SESSION HISTORY ──
+async function loadHistoryView(){
+  const el=document.getElementById('history-list');if(!el)return;
+  if(CFG.DEMO_MODE){el.innerHTML=renderHistoryItems([{id:1,query_text:'Strategic analysis of product roadmap',outcome_label:'success',created_at:new Date().toISOString(),latency_ms:14200},{id:2,query_text:'Architecture: microservices vs monolith',outcome_label:'success',created_at:new Date(Date.now()-86400000).toISOString(),latency_ms:11800},{id:3,query_text:'Risk assessment for market entry',outcome_label:'partial_success',created_at:new Date(Date.now()-172800000).toISOString(),latency_ms:9500}]);return;}
+  el.innerHTML='<div class="vp-empty">Loading...</div>';
+  try{const r=await fetch(CFG.BASE_URL+'/api/experience/sessions?limit=30',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();el.innerHTML=d.sessions&&d.sessions.length?renderHistoryItems(d.sessions):'<div class="vp-empty">No sessions yet.</div>';document.getElementById('history-cnt').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load sessions.</div>';}
+}
+function renderHistoryItems(sessions){return sessions.map(function(s){const dt=new Date(s.created_at);const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});const latency=s.latency_ms?(s.latency_ms/1000).toFixed(1)+'s':'\u2014';const statusCls=s.outcome_label==='success'?'success':'partial';const q=(s.query_text||'Unnamed').slice(0,120);return '<div class="hist-item" onclick="sendQ(\''+q.replace(/'/g,"\\'")+'\')"><div class="hist-title">'+q+'</div><div class="hist-meta"><span>'+dateStr+'</span><span>'+latency+'</span><span class="hist-status '+statusCls+'">'+(s.outcome_label||'session')+'</span></div></div>';}).join('');}
+
+// ── DECISIONS ──
+var _allDecisions=[];
+async function loadDecisionsView(){
+  const el=document.getElementById('decisions-list');if(!el)return;
+  if(CFG.DEMO_MODE){_allDecisions=[{id:1,title:'Use PostgreSQL for production',query_text:'Migrate to PostgreSQL?',verdict:'Decided to migrate. AWS RDS selected.',approval_state:'approved',is_pinned:true,created_at:new Date().toISOString()},{id:2,title:'MVP: FastAPI monolith',query_text:'Architecture decision',verdict:'Start with monolith. Split only when needed.',approval_state:'verified',is_pinned:false,created_at:new Date(Date.now()-86400000).toISOString()},{id:3,title:'Freemium with credits',query_text:'Monetization strategy',verdict:'10 free credits. Stripe next.',approval_state:'draft',is_pinned:false,created_at:new Date(Date.now()-172800000).toISOString()}];renderDecisions(_allDecisions);return;}
+  el.innerHTML='<div class="vp-empty">Loading...</div>';
+  try{const r=await fetch(CFG.BASE_URL+'/api/knowledge/journal?limit=50',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();_allDecisions=d.entries||[];renderDecisions(_allDecisions);document.getElementById('dec-cnt').textContent=d.count||0;document.getElementById('kp-decisions').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load decisions.</div>';}
+}
+function renderDecisions(items){
+  const el=document.getElementById('decisions-list');if(!el)return;
+  if(!items||!items.length){el.innerHTML='<div class="vp-empty">No decisions yet.<br>Chairman verdicts auto-save here.</div>';return;}
+  const pinned=items.filter(function(d){return d.is_pinned;}); const rest=items.filter(function(d){return !d.is_pinned;}); const all=pinned.concat(rest);
+  const approvalMap={draft:'\uD83D\uDCDD Draft',verified:'\u2713 Verified',approved:'\u2705 Approved'};
+  el.innerHTML=all.map(function(d){const dt=new Date(d.created_at);const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});const approval=approvalMap[d.approval_state]||'\uD83D\uDCDD Draft';const vp=(d.verdict||'').slice(0,300);
+  return '<div class="dec-item"><div class="dec-head" onclick="toggleDecision(this)"><span style="font-size:10px;color:var(--text-dim);">'+(d.is_pinned?'\uD83D\uDCCC':'\uD83D\uDCCB')+'</span><span class="dec-title-text">'+(d.title||'Untitled')+'</span><span class="dec-date">'+dateStr+'</span><span style="font-family:var(--font-mono);font-size:9px;padding:1px 6px;background:var(--accent-glow);color:var(--accent);border-radius:2px;">'+approval+'</span></div><div class="dec-body"><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:6px;">'+(d.query_text||'').slice(0,120)+'</div><div>'+vp+(d.verdict&&d.verdict.length>300?'...':'')+'</div><div class="dec-approval"><button class="'+(d.approval_state==='draft'?'active':'')+'" onclick="setApproval('+d.id+',\'draft\',this)">Draft</button><button class="'+(d.approval_state==='verified'?'active':'')+'" onclick="setApproval('+d.id+',\'verified\',this)">Verified</button><button class="'+(d.approval_state==='approved'?'active':'')+'" onclick="setApproval('+d.id+',\'approved\',this)">Approved</button><button onclick="deleteDecision('+d.id+',this)" style="margin-left:auto;padding:3px 9px;border-radius:2px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--red);font-family:var(--font-mono);">Del</button></div></div></div>';}).join('');
+}
+function toggleDecision(head){head.classList.toggle('open');head.nextElementSibling.classList.toggle('open');}
+function filterDecisions(q){const filtered=q.trim()?_allDecisions.filter(function(d){return(d.title||'').toLowerCase().includes(q.toLowerCase())||(d.verdict||'').toLowerCase().includes(q.toLowerCase())||( d.query_text||'').toLowerCase().includes(q.toLowerCase());}):_allDecisions;renderDecisions(filtered);}
+async function deleteDecision(id,btn){if(!confirm('Delete?'))return;if(CFG.DEMO_MODE){_allDecisions=_allDecisions.filter(function(d){return d.id!==id;});renderDecisions(_allDecisions);return;}try{await fetch(CFG.BASE_URL+'/api/knowledge/journal/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+S.token}});_allDecisions=_allDecisions.filter(function(d){return d.id!==id;});renderDecisions(_allDecisions);toast('\uD83D\uDDD1\uFE0F','Deleted');loadKnowledgeCounts();}catch(e){toast('\u274c','Failed');}}
+
+// ── PRINCIPLES ──
+var _allPrinciples=[];
+async function loadPrinciplesView(){
+  const el=document.getElementById('principles-list');if(!el)return;
+  if(CFG.DEMO_MODE){_allPrinciples=[{id:1,title:'MVP First',body:'Ship smallest thing that proves concept.',category:'engineering'},{id:2,title:'Surgical changes',body:'Touch only what is asked.',category:'engineering'},{id:3,title:'Data over intuition',body:'Use Scout to gather evidence first.',category:'strategy'}];renderPrinciples(_allPrinciples);return;}
+  el.innerHTML='<div class="vp-empty">Loading...</div>';
+  try{const r=await fetch(CFG.BASE_URL+'/api/knowledge/principles',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();_allPrinciples=d.principles||[];renderPrinciples(_allPrinciples);document.getElementById('prin-cnt').textContent=d.count||0;document.getElementById('kp-principles').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load.</div>';}
+}
+function renderPrinciples(items){const el=document.getElementById('principles-list');if(!el)return;if(!items||!items.length){el.innerHTML='<div class="vp-empty">No principles yet.</div>';return;}const cats={engineering:'\u2699\uFE0F',strategy:'\uD83C\uDFAF',personal:'\uD83E\uDDE0',general:'\u2B50'};el.innerHTML=items.map(function(p){const ico=cats[p.category]||'\u2B50';return '<div class="prin-item"><span class="prin-ico">'+ico+'</span><div class="prin-content"><div class="prin-title">'+(p.title||'Untitled')+'</div><div class="prin-body">'+(p.body||'')+'</div></div><button class="prin-del" onclick="deletePrinciple('+p.id+',this)">\u2715</button></div>';}).join('');}
+async function addPrinciple(){const title=document.getElementById('prin-title').value.trim();const body=document.getElementById('prin-body').value.trim();if(!title||!body){toast('\u26a0\ufe0f','Fill in title and body');return;}if(CFG.DEMO_MODE){_allPrinciples.push({id:Date.now(),title:title,body:body,category:'general'});renderPrinciples(_allPrinciples);document.getElementById('prin-title').value='';document.getElementById('prin-body').value='';toast('\u2B50','Added');return;}try{const r=await fetch(CFG.BASE_URL+'/api/knowledge/principles',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.token},body:JSON.stringify({title:title,body:body,source:'user',category:'general'})});if(!r.ok)throw new Error('API error');document.getElementById('prin-title').value='';document.getElementById('prin-body').value='';await loadPrinciplesView();toast('\u2B50','Added');loadKnowledgeCounts();}catch(e){toast('\u274c','Failed');}}
+async function deletePrinciple(id,btn){if(CFG.DEMO_MODE){_allPrinciples=_allPrinciples.filter(function(p){return p.id!==id;});renderPrinciples(_allPrinciples);return;}try{await fetch(CFG.BASE_URL+'/api/knowledge/principles/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+S.token}});_allPrinciples=_allPrinciples.filter(function(p){return p.id!==id;});renderPrinciples(_allPrinciples);toast('\uD83D\uDDD1\uFE0F','Deleted');loadKnowledgeCounts();}catch(e){toast('\u274c','Failed');}}
+
+// ── DASHBOARD ──
+async function loadDashboardView(){const el=document.getElementById('dashboard-body');if(!el)return;if(CFG.DEMO_MODE){renderDashboard({sessions:12,decisions:3,principles:5,avgLatency:12400,credits:10});return;}try{const[sessR,decR,prinR]=await Promise.all([fetch(CFG.BASE_URL+'/api/experience/sessions?limit=100',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/journal/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/principles/count',{headers:{Authorization:'Bearer '+S.token}})]);const sess=await sessR.json().catch(function(){return{sessions:[],count:0};});const dec=await decR.json().catch(function(){return{count:0};});const prin=await prinR.json().catch(function(){return{count:0};});const sessions=sess.sessions||[];const avgLatency=sessions.length?Math.round(sessions.reduce(function(a,s){return a+(s.latency_ms||0);},0)/sessions.length):0;const credits=parseInt(document.getElementById('credits-num').textContent)||0;renderDashboard({sessions:sess.count||sessions.length,decisions:dec.count,principles:prin.count,avgLatency:avgLatency,credits:credits});}catch(e){el.innerHTML='<div class="vp-empty">Could not load.</div>';}}
+function renderDashboard(d){const el=document.getElementById('dashboard-body');if(!el)return;const latStr=d.avgLatency?(d.avgLatency/1000).toFixed(1)+'s':'\u2014';el.innerHTML='<div class="dash-grid"><div class="dash-stat"><div class="dash-stat-num">'+d.sessions+'</div><div class="dash-stat-label">Deliberations</div></div><div class="dash-stat"><div class="dash-stat-num">'+d.decisions+'</div><div class="dash-stat-label">Decisions</div></div><div class="dash-stat"><div class="dash-stat-num">'+d.principles+'</div><div class="dash-stat-label">Principles</div></div><div class="dash-stat"><div class="dash-stat-num">'+d.credits+'<span>cr</span></div><div class="dash-stat-label">Credits</div></div></div><div class="dash-stat" style="margin-top:8px;"><div class="dash-stat-num">'+latStr+'</div><div class="dash-stat-label">Avg deliberation time</div></div><div style="margin-top:16px;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font-mono);font-size:10px;color:var(--text-dim);line-height:1.8;">Board: 7 directors &middot; PostgreSQL<br>AI chain: Groq &rarr; DeepSeek &rarr; OpenRouter &rarr; Gemini<br>Deploy: Render.com &middot; ai-consilium.com</div>';}
+
+// ── REFLECTIVE PAUSE ──
+const REFL_PROMPTS=['What decision have I been avoiding that the Board could help clarify?','What assumption am I making that I have not yet questioned?','What would I do differently if this decision had 10x the consequences?','What information am I missing that would change my course of action?','What would my best future self think of this decision in 5 years?','Which of my principles is most at stake in my current challenge?','What is the simplest version of this problem I could solve today?','What would a trusted advisor say about my current direction?','What patterns from past decisions apply here?','If I had to explain this decision to someone I respect, what would I say?'];
+function initReflective(){nextReflection();}
+function nextReflection(){const el=document.getElementById('refl-q');if(el)el.textContent=REFL_PROMPTS[Math.floor(Math.random()*REFL_PROMPTS.length)];}
+function saveReflection(){const notes=document.getElementById('refl-notes').value.trim();if(!notes){toast('\u26a0\ufe0f','Write something first');return;}toast('\u2705','Reflection saved');document.getElementById('refl-notes').value='';}
+
+// ── SETTINGS ──
+function initSettings(){if(S.user){const emailEl=document.getElementById('s-email');if(emailEl)emailEl.textContent=S.user.email||'\u2014';}const credEl=document.getElementById('s-credits');if(credEl)credEl.textContent=document.getElementById('credits-num').textContent+' credits';}
+
+// ── FILE / WIKI ──
+function openFileAttach(){toast('\uD83D\uDCCE','File attachment \u2014 coming in v3.1');}
+function openWikiInsert(){showView('wiki');}
+
+// ── APPROVAL ──
+function setApproval(journalId,state,btn){
+  if(!S.token||CFG.DEMO_MODE){btn.closest('.dec-approval').querySelectorAll('button').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');toast('\uD83D\uDCCB','Status: '+state);return;}
+  fetch(CFG.BASE_URL+'/api/knowledge/journal/'+journalId+'/approve',{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.token},body:JSON.stringify({state:state})}).then(function(r){if(r.ok){btn.closest('.dec-approval').querySelectorAll('button').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');toast('\uD83D\uDCCB','Decision: '+state);}}).catch(function(){toast('\u274c','Failed');});
+}
+
+async function doRegister(){
+  const email=document.getElementById('reg-email').value.trim(); const pwd=document.getElementById('reg-password').value; const pwd2=document.getElementById('reg-password2').value; const err=document.getElementById('reg-err');
+  err.style.color='';err.textContent='';
+  if(!email||!pwd){err.textContent='Fill in all fields';return;} if(pwd.length<6){err.textContent='Password min 6 chars';return;} if(pwd!==pwd2){err.textContent='Passwords do not match';return;}
+  try{const r=await fetch(CFG.BASE_URL+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pwd})});const d=await r.json();if(!r.ok){err.textContent=d.detail||'Error';return;}S.token=d.token||d.access_token;localStorage.setItem('consilium_token',S.token);await loadUser();hideAuth();toast('\u2705','Account created!');}catch(e){err.textContent='Server unavailable. Try demo mode.';}
 }
 </script>
 
 <div class="auth-overlay" id="register-overlay" style="display:none;">
   <div class="auth-box">
-    <div class="auth-logo">
-      <img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI">
-    </div>
+    <div style="text-align:center;margin-bottom:8px;"><img src="img/logo.jpg" style="width:160px;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto;" alt="Consilium AI"></div>
     <div style="display:flex;gap:4px;margin-bottom:16px;">
       <button onclick="showLogin()" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;">Sign In</button>
       <button style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600;">Sign Up</button>
@@ -1803,14 +1060,13 @@ function setApproval(journalId, state, btn) {
     <div class="auth-fields">
       <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"/></div>
       <div class="auth-field"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••"/></div>
-      <div class="auth-field"><label>Confirm Password</label><input type="password" id="reg-password2" placeholder="••••••••"/></div>
+      <div class="auth-field"><label>Confirm</label><input type="password" id="reg-password2" placeholder="••••••••"/></div>
       <div class="auth-err" id="reg-err"></div>
     </div>
     <button class="auth-btn" onclick="doRegister()">Create Account</button>
-    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">⚡ Demo mode (no server)</button></div>
+    <div class="auth-demo"><button class="demo-btn" onclick="doDemo()">Demo mode (no server)</button></div>
     <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim);">Server: <a href="http://localhost:8000" style="color:var(--accent);">http://localhost:8000</a></div>
   </div>
 </div>
 </body>
 </html>
-
