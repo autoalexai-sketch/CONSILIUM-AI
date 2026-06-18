@@ -20,6 +20,7 @@ from core.structured_handoff import (
     extract_scout_json,
     format_handoff_for_director,
     build_insufficiency_response,
+    get_response_mode,
 )
 from app.dependencies import save_classification_log
 from app.middleware.rate_limiter import rate_limiter
@@ -75,14 +76,15 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
     """Single director call with fallback chain."""
 
     CHAIRMAN_SYSTEM = (
-        "You are the Chairman — final decision maker of Consilium AI council. "
+        "You are the Chairman -- final decision maker of Consilium AI council. "
         "STRICT RULES: "
-        "1) Give CONCRETE actionable steps, NOT analysis or recommendations to 'consider'. "
-        "2) Use specific numbers from the context (amounts, %, dates, names). "
-        "3) FORBIDDEN phrases: 'it is recommended', 'consider', 'it is worth studying', 'analyze'. "
-        "4) Every step: WHAT exactly + HOW specifically + WHEN (deadline). "
-        "5) If data is missing — give best estimate with explicit caveat. "
-        "6) Be direct, like a senior advisor talking to a friend."
+        "1) Read the response_mode instruction carefully and follow it. "
+        "2) For DIRECT_ANSWER mode: give a clear helpful answer, NO invented action plans. "
+        "3) For ACTION_PLAN mode: give CONCRETE actionable steps with specific numbers. "
+        "4) FORBIDDEN phrases: 'it is recommended', 'consider', 'it is worth studying'. "
+        "5) NEVER invent PLN/USD budgets unless the user asked about budget. "
+        "6) Respond ONLY in the language of the query. Never mix languages. "
+        "7) Be direct, like a senior advisor talking to a friend."
     )
 
     if role == "chairman":
@@ -278,7 +280,7 @@ async def run_council_deliberation(
 
     # Parse Scout JSON handoff
     scout_json = extract_scout_json(facts) if facts else None
-    logger.debug(f"Scout JSON: {'parsed' if scout_json else 'not found — using raw text'}")
+    logger.debug(f"Scout JSON: {'parsed' if scout_json else 'not found -- using raw text'}")
 
     # Two-stage controller: check for HIGH-impact missing data
     if scout_json and not is_free:
@@ -397,10 +399,15 @@ async def run_council_deliberation(
                                    "preview": "Contradiction analysis complete"})
 
     # ── 8. CHAIRMAN ──────────────────────────────────────────────────────
+    # Determine response mode from Scout JSON (informational vs strategic)
+    resp_mode = get_response_mode(scout_json, query)
+    logger.info(f"Chairman response_mode: {resp_mode}")
+
     chairman_result = None
     if "chairman" in directors:
         await _emit(on_phase, {"type": "phase_start", "phase": "chairman",
-                               "text": "Verdict: synthesizing final decision..."})
+                               "text": "Verdict: synthesizing final decision...",
+                               "response_mode": resp_mode})
         prompt = (_build_free_prompt("chairman", query, profile.suggested_language,
                                      f"{analysis}\n{solutions}") if is_free
                   else PromptUtils.add_language_context(
@@ -444,7 +451,7 @@ async def run_council_deliberation(
                 content = results[phase_key].get("content", "")
                 if content and not content.startswith("[Error"):
                     logger.warning(f"⚠️ Fallback: using {phase_key}")
-                    final_response = f"⚠️ Chairman unavailable — response from {phase_key.capitalize()}:\n\n{content}"
+                    final_response = f"⚠️ Chairman unavailable -- response from {phase_key.capitalize()}:\n\n{content}"
                     break
 
     if not final_response:
@@ -487,7 +494,7 @@ async def run_council_deliberation(
                 "cost_usd": round(res.get("cost_usd", 0), 4),
             }
 
-    logger.info(f"🏁 Deliberation complete | cost=${total_cost:.4f} | errors={len(errors)}")
+    logger.info(f"🏁 Deliberation complete | cost=${total_cost:.4f} | errors={len(errors)} | mode={resp_mode}")
 
     return {
         "success": len(errors) == 0 or (chairman_result and not chairman_result.get("error")),
@@ -510,6 +517,7 @@ async def run_council_deliberation(
         "credits_needed":   max(1, int(total_cost * 100)),
         "errors":           errors if errors else None,
         "synthesis_report": results.get("synthesizer", {}).get("analysis"),
+        "response_mode":    resp_mode,
     }
 
 
