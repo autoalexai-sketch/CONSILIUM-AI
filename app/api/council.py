@@ -13,7 +13,7 @@ from loguru import logger
 from core.ai_fallback import fallback_manager
 from core.cognitive_classifier import CognitiveDimension, TaskProfile
 from core.council_selector import CouncilSelector
-from core.prompts import PromptBuilder, PromptUtils
+from core.prompts import PromptBuilder, PromptUtils, get_director_config
 from core.synthesizer_integration import SynthesizerPhase
 from core.context_gateway import context_gateway
 from core.structured_handoff import (
@@ -73,7 +73,19 @@ def _is_simple_query(query: str) -> bool:
 
 
 async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -> dict:
-    """Single director call with fallback chain."""
+    """Single director call with fallback chain.
+
+    Uses per-director temperature/max_tokens from core/prompts.py
+    DIRECTOR_CONFIG (sourced from the official board-of-directors spec):
+      scout=0.0, analyst=0.3, architect=0.6, devil=0.2,
+      synthesizer=0.1, verifier=0.0, chairman=0.4
+    Lower temperature for fact-heavy roles (Scout/Verifier) reduces
+    hallucination; higher temperature for Architect allows more creative
+    solution design.
+    """
+    director_cfg = get_director_config(role)
+    temperature = director_cfg["temperature"]
+    max_tokens = director_cfg["max_tokens"]
 
     CHAIRMAN_SYSTEM = (
         "You are the Chairman -- final decision maker of Consilium AI council. "
@@ -94,10 +106,11 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
                 result = await fallback_manager._call_groq_with_system(
                     system=CHAIRMAN_SYSTEM,
                     user_prompt=prompt,
-                    temperature=0.35,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
                 )
                 if result.get("success") and result.get("content"):
-                    logger.info("Chairman: Groq OK")
+                    logger.info(f"Chairman: Groq OK (temp={temperature})")
                     return result
                 logger.warning(f"Chairman Groq failed: {result.get('error', 'no content')}")
             except Exception as e:
@@ -107,7 +120,9 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
         if fallback_manager.deepseek_available:
             try:
                 result = await fallback_manager._call_deepseek(
-                    prompt=CHAIRMAN_SYSTEM + "\n\n" + prompt
+                    prompt=CHAIRMAN_SYSTEM + "\n\n" + prompt,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
                 )
                 if result.get("success") and result.get("content"):
                     logger.info("Chairman: DeepSeek OK")
@@ -130,11 +145,14 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
 
         logger.error("Chairman: ALL providers failed")
 
-    # Non-chairman directors: standard fallback chain
+    # Non-chairman directors: standard fallback chain with per-director
+    # temperature/max_tokens (e.g. Scout=0.0 for precision, Architect=0.6 for design)
     return await fallback_manager.call_with_backup(
         openrouter.call_director,
         director_spec,
-        [{"role": "user", "content": prompt}]
+        [{"role": "user", "content": prompt}],
+        temperature=temperature,
+        max_tokens=max_tokens,
     )
 
 

@@ -3,6 +3,12 @@ AI Fallback Manager для Consilium AI
 Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama
 Groq добавлен первым — бесплатный, быстрый, свежий ключ.
 DeepSeek V4 вторым — дешевый (~$0.28/1M), MoE-архитектура, OpenAI-совместим.
+
+Per-director temperature/max_tokens (см. core/prompts.py DIRECTOR_CONFIG)
+передаются через kwargs temperature/max_tokens в call_with_backup и
+применяются на уровне каждого провайдера, где это технически возможно
+(Groq, DeepSeek). Остальные провайдеры (OpenRouter/Gemini/Ollama) используют
+свои дефолты, так как это backup-уровни, не основной путь.
 """
 
 import os
@@ -85,7 +91,8 @@ class AIFallbackManager:
             return False
 
     # ── DeepSeek V4 вызов ────────────────────────────────────────────────
-    async def _call_deepseek(self, prompt: str, model: str = None) -> Dict[str, Any]:
+    async def _call_deepseek(self, prompt: str, model: str = None,
+                              temperature: float = 0.7, max_tokens: int = 2000) -> Dict[str, Any]:
         """DeepSeek V4 API (OpenAI-compatible). ~$0.28/1M tokens."""
         target = model or self.deepseek_model
         try:
@@ -97,8 +104,8 @@ class AIFallbackManager:
                     json={
                         "model": target,
                         "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 2000,
-                        "temperature": 0.7,
+                        "max_tokens": max_tokens,
+                        "temperature": temperature,
                     },
                 )
                 if response.status_code == 200:
@@ -118,8 +125,11 @@ class AIFallbackManager:
             return {"success": False, "error": f"DeepSeek exception: {str(e)[:100]}"}
 
     # ── Groq вызов ───────────────────────────────────────────────────────
-    async def _call_groq(self, prompt: str, model: str = None) -> Dict[str, Any]:
-        """Прямой вызов Groq API (OpenAI-compatible)."""
+    async def _call_groq(self, prompt: str, model: str = None,
+                          temperature: float = 0.7, max_tokens: int = 2000) -> Dict[str, Any]:
+        """Прямой вызов Groq API (OpenAI-compatible).
+        temperature/max_tokens: per-director values from core/prompts.py
+        DIRECTOR_CONFIG, passed through call_with_backup -> here."""
         target = model or self.groq_model
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
@@ -130,8 +140,8 @@ class AIFallbackManager:
                     json={
                         "model": target,
                         "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 2000,
-                        "temperature": 0.7,
+                        "max_tokens": max_tokens,
+                        "temperature": temperature,
                     },
                 )
                 if response.status_code == 200:
@@ -149,7 +159,8 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"Groq exception: {str(e)[:100]}"}
 
-    async def _call_groq_with_system(self, system: str, user_prompt: str, model: str = None, temperature: float = 0.35) -> dict:
+    async def _call_groq_with_system(self, system: str, user_prompt: str, model: str = None,
+                                       temperature: float = 0.35, max_tokens: int = 2500) -> dict:
         """Groq call with explicit system + user messages. Used for Chairman."""
         target = model or self.groq_model
         try:
@@ -164,7 +175,7 @@ class AIFallbackManager:
                             {"role": "system", "content": system},
                             {"role": "user",   "content": user_prompt},
                         ],
-                        "max_tokens": 2500,
+                        "max_tokens": max_tokens,
                         "temperature": temperature,
                     },
                 )
@@ -180,8 +191,16 @@ class AIFallbackManager:
             return {"success": False, "error": f"Groq system call error: {str(e)[:100]}"}
 
     # ── Main fallback chain ───────────────────────────────────────────────────
-    async def call_with_backup(self, primary_func: Callable, *args, **kwargs) -> Dict[str, Any]:
-        """Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama"""
+    async def call_with_backup(self, primary_func: Callable, *args,
+                                temperature: float = 0.7, max_tokens: int = 2000,
+                                **kwargs) -> Dict[str, Any]:
+        """Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama
+
+        temperature/max_tokens: per-director values from core/prompts.py
+        DIRECTOR_CONFIG (council.py passes these in based on the director role).
+        Applied directly to Groq and DeepSeek calls; OpenRouter/Gemini/Ollama
+        are backup levels and keep their own internal defaults.
+        """
 
         # Если локальная модель (без '/') → сразу Ollama
         spec_arg = args[0] if args else None
@@ -197,7 +216,7 @@ class AIFallbackManager:
                     return result
             # Fallback на Groq если Ollama упала
             if self.groq_available:
-                result = await self._call_groq(prompt)
+                result = await self._call_groq(prompt, temperature=temperature, max_tokens=max_tokens)
                 if result.get("success"):
                     print("   ✅ Groq fallback для local model")
                     return result
@@ -208,9 +227,9 @@ class AIFallbackManager:
         if self.groq_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
-                result = await self._call_groq(prompt)
+                result = await self._call_groq(prompt, temperature=temperature, max_tokens=max_tokens)
                 if result.get("success"):
-                    print(f"✅ Groq: {len(result.get('content',''))} chars")
+                    print(f"✅ Groq: {len(result.get('content',''))} chars (temp={temperature})")
                     return result
                 else:
                     print(f"⚠️ Groq failed: {result.get('error','')[:80]}")
@@ -221,9 +240,9 @@ class AIFallbackManager:
         if self.deepseek_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
-                result = await self._call_deepseek(prompt)
+                result = await self._call_deepseek(prompt, temperature=temperature, max_tokens=max_tokens)
                 if result.get("success"):
-                    print(f"✅ DeepSeek: {len(result.get('content',''))} chars")
+                    print(f"✅ DeepSeek: {len(result.get('content',''))} chars (temp={temperature})")
                     return result
                 else:
                     print(f"⚠️ DeepSeek failed: {result.get('error','')[:80]}")

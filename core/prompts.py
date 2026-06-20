@@ -1,12 +1,72 @@
 """
 core/prompts.py -- Director prompt templates for Consilium AI.
 All prompts in English. Language instruction injected via add_language_context().
-Temperature recommendations: Chairman=0.35, Analyst=0.25, Architect=0.4, Critic=0.25
+Temperature/confidence/token settings sourced from director configuration
+(see DIRECTOR_CONFIG below) -- aligned with the official board-of-directors spec.
 """
 
 from typing import Dict, List, Optional, Any
 from core.cognitive_classifier import TaskProfile, CognitiveDimension
 from core.structured_handoff import SCOUT_JSON_PROMPT_SUFFIX
+
+
+# ── DIRECTOR CONFIGURATION ─────────────────────────────────────────────────
+# Sourced from the Consilium AI Board of Directors configuration spec.
+# temperature: lower = more deterministic/factual, higher = more creative.
+# confidence_threshold: minimum confidence required before a director may
+#   assert a fact/recommendation without hedging (used for prompt instructions
+#   and for council.py's call-time temperature/max_tokens selection).
+# max_tokens: per-director output budget (token_budget * ~4 for word->token headroom).
+DIRECTOR_CONFIG: Dict[str, Dict[str, Any]] = {
+    "scout": {
+        "temperature": 0.0,
+        "confidence_threshold": 0.9,
+        "max_tokens": 900,
+        "core_principle": "Precision over speed",
+    },
+    "analyst": {
+        "temperature": 0.3,
+        "confidence_threshold": 0.7,
+        "max_tokens": 1400,
+        "core_principle": "Complexity must not be hidden",
+    },
+    "architect": {
+        "temperature": 0.6,
+        "confidence_threshold": 0.75,
+        "max_tokens": 1600,
+        "core_principle": "Simplicity over beauty",
+    },
+    "devil": {
+        "temperature": 0.2,
+        "confidence_threshold": 0.6,
+        "max_tokens": 1200,
+        "core_principle": "Honesty over comfort",
+    },
+    "synthesizer": {
+        "temperature": 0.1,
+        "confidence_threshold": 0.8,
+        "max_tokens": 900,
+        "core_principle": "Coherence over speed",
+    },
+    "verifier": {
+        "temperature": 0.0,
+        "confidence_threshold": 0.85,
+        "max_tokens": 700,
+        "core_principle": "Quality over speed",
+    },
+    "chairman": {
+        "temperature": 0.4,
+        "confidence_threshold": 0.8,
+        "max_tokens": 1300,
+        "core_principle": "Balance over one-sidedness",
+    },
+}
+
+
+def get_director_config(role: str) -> Dict[str, Any]:
+    """Return temperature/confidence_threshold/max_tokens for a director role.
+    Falls back to Chairman's conservative settings for unknown roles."""
+    return DIRECTOR_CONFIG.get(role, DIRECTOR_CONFIG["chairman"])
 
 
 # ── CONSILIUM AI PRODUCT IDENTITY ─────────────────────────────────────────
@@ -97,13 +157,20 @@ class PromptBuilder:
             if about_consilium else ""
         )
 
+        scout_cfg = get_director_config("scout")
+        confidence_threshold = scout_cfg["confidence_threshold"]
+
         return f"""{CONSILIUM_IDENTITY}
 You are SCOUT -- Intelligence Gatherer of Consilium AI.
 Mission: deliver objective facts, zero speculation.
+Core principle: {scout_cfg['core_principle']}.
 {consilium_note}
 <scout_protocol>
 Facts only, with confidence markers. Source transparency required.
 CRITICAL: If you do not know something -- write "unconfirmed", NEVER fabricate.
+CONFIDENCE GATE: Only assert a fact as settled if your confidence is at or
+above {confidence_threshold:.0%}. Below that, label it [MEDIUM]/[LOW]/[DISPUTED]
+rather than presenting it as certain.
 For questions about Consilium AI -- answer from product_identity context.
 For external topics -- gather real facts with confidence markers.
 LANGUAGE: Respond ONLY in the same language as the query. Never mix languages.
@@ -169,8 +236,10 @@ LANGUAGE: Respond ONLY in the same language as the query. Never mix languages.
     @staticmethod
     def build_analyst_prompt(query: str, profile: TaskProfile, facts: List[str]) -> str:
         facts_text = "\n".join(f"- {f}" for f in facts) if facts else "- [no facts from Scout]"
+        analyst_cfg = get_director_config("analyst")
         return f"""{CONSILIUM_IDENTITY}
 You are the Analyst of Consilium AI council. Strict fact-checker and mathematician.
+Core principle: {analyst_cfg['core_principle']}.
 
 - Lead with the most important numbers and conclusions.
 - Separate confirmed facts from assumptions -- clearly label each.
@@ -210,8 +279,10 @@ Language: {profile.suggested_language} | Depth: {profile.required_depth}/10 | Ur
     # === ARCHITECT ===
     @staticmethod
     def build_architect_prompt(query: str, profile: TaskProfile, analysis: str) -> str:
+        architect_cfg = get_director_config("architect")
         return f"""{CONSILIUM_IDENTITY}
 You are the Architect of Consilium AI council. Builder of realistic working solutions.
+Core principle: {architect_cfg['core_principle']}.
 
 - Propose the main solution first.
 - Then briefly: why it works, trade-offs, risks.
@@ -259,8 +330,10 @@ Phase 3 (3 months): [action] -- [deadline]
     @staticmethod
     def build_devil_advocate_prompt(query: str, profile: TaskProfile,
                                     facts: str, analysis: str, plan: str) -> str:
+        devil_cfg = get_director_config("devil")
         return f"""{CONSILIUM_IDENTITY}
 You are the Critic (Devil's Advocate) of Consilium AI. Ruthless risk detector.
+Core principle: {devil_cfg['core_principle']}.
 
 - Find everything that can go wrong.
 - Clearly separate: "What exactly is risky" and "How critical is it".
@@ -321,6 +394,7 @@ Language: {profile.suggested_language} | Complexity: {profile.required_depth}/10
                               facts: str, analysis: str,
                               solutions: str, criticism: str = "") -> str:
         query_type = _detect_query_type(query)
+        chairman_cfg = get_director_config("chairman")
 
         if query_type == "informational":
             output_format = """<output_format>
@@ -358,7 +432,8 @@ NO invented action plans. NO deadlines. NO PLN/USD budgets unless asked.]
 
         return f"""{CONSILIUM_IDENTITY}
 You are the Chairman of Consilium AI council. Final integrator and decision maker.
-temperature: 0.35 (conservative realist mode)
+Core principle: {chairman_cfg['core_principle']}.
+temperature: {chairman_cfg['temperature']} (conservative realist mode)
 
 Query type detected: {query_type.upper()}
 
