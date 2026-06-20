@@ -1,6 +1,6 @@
 """
-app/api/knowledge.py — Decision Journal + User Principles
-P0 — персональная база решений и принципов пользователя
+app/api/knowledge.py — Decision Journal + User Principles + Knowledge Vault (Wiki)
+P0 — персональная база решений, принципов и заметок пользователя
 """
 
 import json
@@ -9,12 +9,12 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from sqlalchemy.sql import select, update, desc
+from sqlalchemy.sql import select, update, desc, or_
 from sqlalchemy import func
 from loguru import logger
 
 from app.dependencies import get_current_user
-from app.database import engine, decision_journal, user_principles
+from app.database import engine, decision_journal, user_principles, wiki_pages
 
 router = APIRouter(prefix="/api/knowledge", tags=["knowledge"])
 
@@ -201,3 +201,188 @@ async def set_approval_state(
         )
     logger.info(f"📋 Journal entry {entry_id} → {payload.state} (user={current_user.id})")
     return {"status": "ok", "id": entry_id, "approval_state": payload.state}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# KNOWLEDGE VAULT (LLM Wiki) — free-form notes the user curates manually.
+# Distinct from decision_journal (auto-saved Chairman verdicts) and
+# user_principles (rules injected into every deliberation).
+# ═══════════════════════════════════════════════════════════════════════════
+
+class WikiPageEntry(BaseModel):
+    title: str
+    body: str
+    tags: Optional[str] = None              # comma-separated, e.g. "architecture,postgres"
+    source_journal_id: Optional[int] = None  # optional link back to a decision
+
+
+class WikiPageUpdate(BaseModel):
+    title: Optional[str] = None
+    body: Optional[str] = None
+    tags: Optional[str] = None
+
+
+@router.get("/wiki")
+async def get_wiki_pages(
+    q: Optional[str] = None,
+    tag: Optional[str] = None,
+    limit: int = 50,
+    current_user=Depends(get_current_user),
+):
+    """List wiki pages, newest first. Optional ?q= full-text-ish search
+    over title/body, optional ?tag= exact tag filter."""
+    with engine.connect() as conn:
+        stmt = select(wiki_pages).where(wiki_pages.c.user_id == current_user.id)
+
+        if q:
+            pattern = f"%{q}%"
+            stmt = stmt.where(
+                or_(
+                    wiki_pages.c.title.ilike(pattern) if hasattr(wiki_pages.c.title, "ilike")
+                    else wiki_pages.c.title.like(pattern),
+                    wiki_pages.c.body.ilike(pattern) if hasattr(wiki_pages.c.body, "ilike")
+                    else wiki_pages.c.body.like(pattern),
+                )
+            )
+        if tag:
+            stmt = stmt.where(wiki_pages.c.tags.like(f"%{tag}%"))
+
+        stmt = stmt.order_by(desc(wiki_pages.c.is_pinned), desc(wiki_pages.c.updated_at)).limit(min(limit, 100))
+        rows = conn.execute(stmt).fetchall()
+
+    return {"pages": [dict(r._mapping) for r in rows], "count": len(rows)}
+
+
+@router.get("/wiki/count")
+async def get_wiki_count(current_user=Depends(get_current_user)):
+    with engine.connect() as conn:
+        result = conn.execute(
+            select(func.count()).select_from(wiki_pages)
+            .where(wiki_pages.c.user_id == current_user.id)
+        ).scalar()
+    return {"count": result or 0}
+
+
+@router.get("/wiki/{page_id}")
+async def get_wiki_page(page_id: int, current_user=Depends(get_current_user)):
+    with engine.connect() as conn:
+        row = conn.execute(
+            select(wiki_pages).where(
+                (wiki_pages.c.id == page_id) &
+                (wiki_pages.c.user_id == current_user.id)
+            )
+        ).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Page not found")
+    return dict(row._mapping)
+
+
+@router.post("/wiki")
+async def add_wiki_page(entry: WikiPageEntry, current_user=Depends(get_current_user)):
+    with engine.begin() as conn:
+        result = conn.execute(
+            wiki_pages.insert().values(
+                user_id=current_user.id,
+                title=entry.title[:255],
+                body=entry.body,
+                tags=entry.tags,
+                source_journal_id=entry.source_journal_id,
+                is_pinned=False,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+        )
+    logger.info(f"📚 Wiki page added: user={current_user.id}")
+    return {"status": "ok", "id": result.inserted_primary_key[0]}
+
+
+@router.patch("/wiki/{page_id}")
+async def update_wiki_page(
+    page_id: int,
+    payload: WikiPageUpdate,
+    current_user=Depends(get_current_user),
+):
+    updates = {k: v for k, v in payload.dict(exclude_unset=True).items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    if "title" in updates:
+        updates["title"] = updates["title"][:255]
+    updates["updated_at"] = datetime.utcnow()
+
+    with engine.begin() as conn:
+        row = conn.execute(
+            select(wiki_pages).where(
+                (wiki_pages.c.id == page_id) &
+                (wiki_pages.c.user_id == current_user.id)
+            )
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Page not found")
+        conn.execute(
+            update(wiki_pages)
+            .where(wiki_pages.c.id == page_id)
+            .values(**updates)
+        )
+    return {"status": "ok", "id": page_id}
+
+
+@router.patch("/wiki/{page_id}/pin")
+async def toggle_wiki_pin(page_id: int, current_user=Depends(get_current_user)):
+    with engine.begin() as conn:
+        row = conn.execute(
+            select(wiki_pages).where(
+                (wiki_pages.c.id == page_id) &
+                (wiki_pages.c.user_id == current_user.id)
+            )
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Page not found")
+        new_pin = not row.is_pinned
+        conn.execute(
+            update(wiki_pages)
+            .where(wiki_pages.c.id == page_id)
+            .values(is_pinned=new_pin, updated_at=datetime.utcnow())
+        )
+    return {"status": "ok", "is_pinned": new_pin}
+
+
+@router.delete("/wiki/{page_id}")
+async def delete_wiki_page(page_id: int, current_user=Depends(get_current_user)):
+    with engine.begin() as conn:
+        conn.execute(
+            wiki_pages.delete().where(
+                (wiki_pages.c.id == page_id) &
+                (wiki_pages.c.user_id == current_user.id)
+            )
+        )
+    return {"status": "ok"}
+
+
+@router.post("/wiki/from-journal/{journal_id}")
+async def create_wiki_from_journal(journal_id: int, current_user=Depends(get_current_user)):
+    """Convenience endpoint: snapshot a Decision Journal entry into a Wiki page,
+    so the user can curate/tag/edit it independently of the original decision."""
+    with engine.begin() as conn:
+        jrow = conn.execute(
+            select(decision_journal).where(
+                (decision_journal.c.id == journal_id) &
+                (decision_journal.c.user_id == current_user.id)
+            )
+        ).fetchone()
+        if not jrow:
+            raise HTTPException(status_code=404, detail="Journal entry not found")
+
+        result = conn.execute(
+            wiki_pages.insert().values(
+                user_id=current_user.id,
+                title=jrow.title,
+                body=jrow.verdict,
+                tags="from-decision",
+                source_journal_id=journal_id,
+                is_pinned=False,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+        )
+    logger.info(f"📚 Wiki page created from journal #{journal_id}: user={current_user.id}")
+    return {"status": "ok", "id": result.inserted_primary_key[0]}

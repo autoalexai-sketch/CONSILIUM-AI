@@ -133,6 +133,25 @@ user_principles = Table(
     Column("created_at", DateTime,    default=datetime.utcnow),
 )
 
+# ── Knowledge Vault (LLM Wiki) ─────────────────────────────────────────────
+# Personal knowledge base: notes/snippets the user saves for reuse, optionally
+# linked back to a Decision Journal entry they originated from. Distinct from
+# decision_journal (auto-saved Chairman verdicts) and user_principles (rules
+# the user wants injected into every deliberation) — wiki_pages is free-form
+# reference material the user curates manually.
+wiki_pages = Table(
+    "wiki_pages", metadata,
+    Column("id",             Integer,     primary_key=True),
+    Column("user_id",        Integer,     nullable=False),
+    Column("title",          String(255), nullable=False),
+    Column("body",           Text,        nullable=False),
+    Column("tags",           String(500), nullable=True),   # comma-separated
+    Column("source_journal_id", Integer,  nullable=True),   # optional link to decision_journal.id
+    Column("is_pinned",      Boolean,     default=False),
+    Column("created_at",     DateTime,    default=datetime.utcnow),
+    Column("updated_at",     DateTime,    default=datetime.utcnow),
+)
+
 
 def init_database() -> None:
     """
