@@ -1,4 +1,4 @@
-﻿"""
+"""
 app/api/ws_council.py - WebSocket endpoint for streaming deliberation.
 
 Protocol:
@@ -130,12 +130,17 @@ async def ws_council(websocket: WebSocket):
                 await websocket.send_json(msg)
 
             # --- Run deliberation ---
+            # exp_session_id is passed through so council.py can link the
+            # auto-saved decision_journal row back to this experience session
+            # (decision_journal.session_id) -- this is what makes Session
+            # History able to resolve a saved verdict per session.
             result = await run_council_deliberation(
-            query=enriched_message,
-            user_credits=user_credits,
-            history_count=len(session_history),
-            on_phase=on_phase,
-            user_id=user_id,
+                query=enriched_message,
+                user_credits=user_credits,
+                history_count=len(session_history),
+                on_phase=on_phase,
+                user_id=user_id,
+                exp_session_id=exp_session_id,
             )
 
             # --- Deduct credits ---
@@ -192,6 +197,7 @@ async def ws_council(websocket: WebSocket):
                 ),
                 "synthesis_report": result.get("synthesis_report"),
                 "journal_id":      result.get("journal_id"),
+                "session_id":      exp_session_id,
             })
 
     except WebSocketDisconnect:

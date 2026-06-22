@@ -162,7 +162,15 @@ async def run_council_deliberation(
     history_count: int = 0,
     on_phase: Optional[Callable[[dict], Any]] = None,
     user_id: int = 0,
+    exp_session_id: Optional[int] = None,
 ) -> dict:
+    """
+    exp_session_id: optional id of the experience_sessions row created by the
+    caller (ws_council.py) BEFORE deliberation starts. When provided, it is
+    stored on the auto-saved decision_journal row (session_id column) so
+    Session History can later join to the saved Chairman verdict via
+    GET /api/experience/sessions/{id} -> decision_journal lookup.
+    """
     if not query:
         raise HTTPException(status_code=400, detail="Query is required")
 
@@ -216,6 +224,7 @@ async def run_council_deliberation(
             "credits_needed": 1,
             "errors": None,
             "synthesis_report": None,
+            "journal_id": None,
         }
 
     # ── 1. CLASSIFIER ────────────────────────────────────────────────────
@@ -327,6 +336,7 @@ async def run_council_deliberation(
                 "deliberation": {}, "final_decision": clarify,
                 "total_cost_usd": round(total_cost, 4),
                 "credits_needed": 1, "errors": None, "synthesis_report": None,
+                "journal_id": None,
             }
 
     # ── 4. ANALYST ───────────────────────────────────────────────────────
@@ -482,21 +492,26 @@ async def run_council_deliberation(
         )
 
     # ── 10. AUTOSAVE to Decision Journal ─────────────────────────────────
+    # Links back to the experience_sessions row (if any) via session_id, so
+    # Session History can resolve "what was the saved verdict for this
+    # session" without duplicating the verdict text into experience_sessions.
+    journal_id = None
     if final_response and user_id and not final_response.startswith("System"):
         try:
             import json as _json
             from datetime import datetime as _dt
             from app.database import decision_journal as _dj, engine
             with engine.begin() as _conn:
-                _conn.execute(_dj.insert().values(
-                    user_id=user_id, session_id=None,
+                _ins_result = _conn.execute(_dj.insert().values(
+                    user_id=user_id, session_id=exp_session_id,
                     title=query[:80], query_text=query[:2000],
                     verdict=final_response[:5000],
                     council_used=_json.dumps(selected_ids),
                     outcome_label="auto", is_pinned=False,
                     created_at=_dt.utcnow(), updated_at=_dt.utcnow(),
                 ))
-            logger.debug(f"Journal autosaved: user={user_id}")
+                journal_id = _ins_result.inserted_primary_key[0]
+            logger.debug(f"Journal autosaved: user={user_id} journal_id={journal_id} session_id={exp_session_id}")
         except Exception as _e:
             logger.debug(f"Journal autosave skipped: {_e}")
 
@@ -536,6 +551,7 @@ async def run_council_deliberation(
         "errors":           errors if errors else None,
         "synthesis_report": results.get("synthesizer", {}).get("analysis"),
         "response_mode":    resp_mode,
+        "journal_id":       journal_id,
     }
 
 

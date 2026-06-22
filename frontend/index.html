@@ -263,6 +263,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size
 .dash-stat-num span{color:var(--accent);font-size:16px;}
 .dash-stat-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.session-modal-box{width:560px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+.session-modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.session-modal-title{font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);}
+.session-modal-close{background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:11px;cursor:pointer;padding:4px 9px;font-family:var(--font-mono);}
+.session-modal-close:hover{border-color:var(--border-light);color:var(--text);}
+.session-modal-body{flex:1;overflow-y:auto;padding:16px;}
 </style>
 </head>
 <body>
@@ -524,6 +530,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size
     </div>
   </aside>
 </div>
+
+<div id="session-modal" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,.75);z-index:9500;align-items:center;justify-content:center;" onclick="if(event.target.id==='session-modal')closeSessionDetail();">
+  <div class="session-modal-box">
+    <div class="session-modal-head">
+      <span class="session-modal-title">Session Detail</span>
+      <button class="session-modal-close" onclick="closeSessionDetail()">Close</button>
+    </div>
+    <div class="session-modal-body" id="session-modal-body"></div>
+  </div>
+</div>
+
 <div class="toasts" id="toasts"></div>
 
 <script>
@@ -537,7 +554,7 @@ function showLogin(){document.getElementById('register-overlay').style.display='
 async function loadUser(){try{const res=await fetch(CFG.BASE_URL+'/api/auth/me',{headers:{Authorization:'Bearer '+S.token}});if(!res.ok)throw new Error('Invalid token');S.user=await res.json();const name=S.user.email?S.user.email.split('@')[0]:'User';updateUserUI(name);loadCredits();loadKnowledgeCounts();connectWS();}catch(e){localStorage.removeItem('consilium_token');S.token=null;throw e;}}
 function updateUserUI(name){const cap=name.charAt(0).toUpperCase()+name.slice(1);document.getElementById('g-name').textContent=cap;document.getElementById('user-avatar').textContent=cap.slice(0,2).toUpperCase();document.getElementById('sb-user-name').textContent=cap;document.getElementById('sb-av-text').textContent=cap.slice(0,2).toUpperCase();}
 async function loadCredits(){if(CFG.DEMO_MODE){document.getElementById('credits-num').textContent='\u221e';return;}try{const res=await fetch(CFG.BASE_URL+'/api/auth/credits',{headers:{Authorization:'Bearer '+S.token}});const d=await res.json();document.getElementById('credits-num').textContent=d.credits!==undefined?d.credits:'?';}catch(e){}}
-async function loadKnowledgeCounts(){if(CFG.DEMO_MODE){['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent='3');['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent='5');document.getElementById('kp-wiki').textContent='7';document.getElementById('wiki-cnt').textContent='7';document.getElementById('history-cnt').textContent='12';return;}try{const[jRes,pRes,wRes]=await Promise.all([fetch(CFG.BASE_URL+'/api/knowledge/journal/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/principles/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/wiki/count',{headers:{Authorization:'Bearer '+S.token}})]);const jd=await jRes.json().catch(()=>({}));const pd=await pRes.json().catch(()=>({}));const wd=await wRes.json().catch(()=>({}));const jCnt=jd.count||0;const pCnt=pd.count||0;const wCnt=wd.count||0;['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent=jCnt);['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent=pCnt);['kp-wiki','wiki-cnt'].forEach(id=>document.getElementById(id).textContent=wCnt);}catch(e){}}
+async function loadKnowledgeCounts(){if(CFG.DEMO_MODE){['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent='3');['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent='5');document.getElementById('kp-wiki').textContent='7';document.getElementById('wiki-cnt').textContent='7';document.getElementById('history-cnt').textContent='12';return;}try{const[jRes,pRes,wRes,sRes]=await Promise.all([fetch(CFG.BASE_URL+'/api/knowledge/journal/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/principles/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/knowledge/wiki/count',{headers:{Authorization:'Bearer '+S.token}}),fetch(CFG.BASE_URL+'/api/experience/sessions/count',{headers:{Authorization:'Bearer '+S.token}})]);const jd=await jRes.json().catch(()=>({}));const pd=await pRes.json().catch(()=>({}));const wd=await wRes.json().catch(()=>({}));const sd=await sRes.json().catch(()=>({}));const jCnt=jd.count||0;const pCnt=pd.count||0;const wCnt=wd.count||0;const sCnt=sd.count||0;['kp-decisions','dec-cnt'].forEach(id=>document.getElementById(id).textContent=jCnt);['kp-principles','prin-cnt'].forEach(id=>document.getElementById(id).textContent=pCnt);['kp-wiki','wiki-cnt'].forEach(id=>document.getElementById(id).textContent=wCnt);document.getElementById('history-cnt').textContent=sCnt;}catch(e){}}
 function hideAuth(){const o=document.getElementById('auth-overlay');o.style.display='none';o.classList.add('hidden');const r=document.getElementById('register-overlay');if(r){r.style.display='none';r.classList.add('hidden');}}
 function logout(){localStorage.removeItem('consilium_token');S.token=null;S.user=null;if(S.ws){S.ws.close();S.ws=null;}document.getElementById('auth-overlay').classList.remove('hidden');document.getElementById('auth-overlay').style.display='flex';setConn('offline','offline');CFG.DEMO_MODE=false;}
 
@@ -642,8 +659,66 @@ function submitFeedback(sid,isGood,goodBtn,badBtn){goodBtn.classList.remove('act
 const VIEWS=['chat','history','decisions','principles','wiki','dashboard','reflective','settings'];
 function showView(view){const chatView=document.getElementById('view-chat');if(chatView)chatView.style.display='none';VIEWS.forEach(v=>{const el=document.getElementById('view-'+v);if(el)el.style.display='none';});if(view==='chat'){if(chatView)chatView.style.display='flex';}else{const panel=document.getElementById('view-'+view);if(panel)panel.style.display='flex';}VIEWS.forEach(v=>{const nav=document.getElementById('nav-'+v);if(nav)nav.classList.toggle('active',v===view);});if(view==='history')loadHistoryView();if(view==='decisions')loadDecisionsView();if(view==='principles')loadPrinciplesView();if(view==='dashboard')loadDashboardView();if(view==='wiki')loadWikiView();if(view==='reflective')initReflective();if(view==='settings')initSettings();}
 
-async function loadHistoryView(){const el=document.getElementById('history-list');if(!el)return;if(CFG.DEMO_MODE){el.innerHTML=renderHistoryItems([{id:1,query_text:'Strategic analysis of product roadmap',outcome_label:'success',created_at:new Date().toISOString(),latency_ms:14200},{id:2,query_text:'Architecture: microservices vs monolith',outcome_label:'success',created_at:new Date(Date.now()-86400000).toISOString(),latency_ms:11800},{id:3,query_text:'Risk assessment for market entry',outcome_label:'partial_success',created_at:new Date(Date.now()-172800000).toISOString(),latency_ms:9500}]);return;}el.innerHTML='<div class="vp-empty">Loading...</div>';try{const r=await fetch(CFG.BASE_URL+'/api/experience/sessions?limit=30',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();el.innerHTML=d.sessions&&d.sessions.length?renderHistoryItems(d.sessions):'<div class="vp-empty">No sessions yet.</div>';document.getElementById('history-cnt').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load.</div>';}}
-function renderHistoryItems(sessions){return sessions.map(s=>{const dt=new Date(s.created_at);const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});const latency=s.latency_ms?(s.latency_ms/1000).toFixed(1)+'s':'\u2014';const statusCls=s.outcome_label==='success'?'success':'partial';const q=(s.query_text||'Unnamed').slice(0,120);return '<div class="hist-item" onclick="sendQ(\''+q.replace(/'/g,"\\'")+'\')"><div class="hist-title">'+q+'</div><div class="hist-meta"><span>'+dateStr+'</span><span>'+latency+'</span><span class="hist-status '+statusCls+'">'+(s.outcome_label||'session')+'</span></div></div>';}).join('');}
+var _allSessions=[];
+async function loadHistoryView(){const el=document.getElementById('history-list');if(!el)return;if(CFG.DEMO_MODE){_allSessions=[{id:1,query_text:'Strategic analysis of product roadmap',outcome_label:'success',created_at:new Date().toISOString(),latency_ms:14200},{id:2,query_text:'Architecture: microservices vs monolith',outcome_label:'success',created_at:new Date(Date.now()-86400000).toISOString(),latency_ms:11800},{id:3,query_text:'Risk assessment for market entry',outcome_label:'partial_success',created_at:new Date(Date.now()-172800000).toISOString(),latency_ms:9500}];el.innerHTML=renderHistoryItems(_allSessions);return;}el.innerHTML='<div class="vp-empty">Loading...</div>';try{const r=await fetch(CFG.BASE_URL+'/api/experience/sessions?limit=30',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();_allSessions=d.sessions||[];el.innerHTML=_allSessions.length?renderHistoryItems(_allSessions):'<div class="vp-empty">No sessions yet.</div>';document.getElementById('history-cnt').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load.</div>';}}
+function renderHistoryItems(sessions){return sessions.map(s=>{const dt=new Date(s.created_at);const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});const latency=s.latency_ms?(s.latency_ms/1000).toFixed(1)+'s':'\u2014';const statusCls=s.outcome_label==='success'?'success':'partial';const q=(s.query_text||'Unnamed').slice(0,120);return '<div class="hist-item" onclick="openSessionDetail('+s.id+')"><div class="hist-title">'+q+'</div><div class="hist-meta"><span>'+dateStr+'</span><span>'+latency+'</span><span class="hist-status '+statusCls+'">'+(s.outcome_label||'session')+'</span></div></div>';}).join('');}
+
+function openSessionDetail(id){
+  const modal=document.getElementById('session-modal');
+  const body=document.getElementById('session-modal-body');
+  modal.style.display='flex';
+  body.innerHTML='<div class="vp-empty">Loading...</div>';
+  if(CFG.DEMO_MODE){
+    const s=_allSessions.find(x=>x.id===id);
+    if(!s){body.innerHTML='<div class="vp-empty">Not found.</div>';return;}
+    body.innerHTML=renderSessionDetail(s,null);
+    return;
+  }
+  fetch(CFG.BASE_URL+'/api/experience/sessions/'+id,{headers:{Authorization:'Bearer '+S.token}})
+    .then(r=>{if(!r.ok)throw new Error('Not found');return r.json();})
+    .then(s=>{body.innerHTML=renderSessionDetail(s,s.journal);})
+    .catch(()=>{body.innerHTML='<div class="vp-empty">Could not load session.</div>';});
+}
+function renderSessionDetail(s,journal){
+  const dt=new Date(s.started_at||s.created_at);
+  const dateStr=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const latency=s.latency_ms?(s.latency_ms/1000).toFixed(1)+'s':'\u2014';
+  const coh=(s.coherence_score!=null)?Math.round(s.coherence_score)+'%':'\u2014';
+  const metaLine='<div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;"><span>'+dateStr+'</span><span>latency: '+latency+'</span><span>coherence: '+coh+'</span></div>';
+  const queryLine='<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);"><strong style="color:var(--text);">Query:</strong> '+(s.query_text||'')+'</div>';
+  let bodyHtml='';
+  if(journal && journal.verdict){
+    bodyHtml='<div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;">'+journal.verdict+'</div>';
+    bodyHtml+='<div style="margin-top:14px;display:flex;gap:8px;">';
+    bodyHtml+='<button id="session-detail-open-dec" style="padding:6px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11px;cursor:pointer;">Open in Decisions</button>';
+    bodyHtml+='<button id="session-detail-ask-again" style="padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:11px;cursor:pointer;">Ask again</button>';
+    bodyHtml+='<button id="session-detail-delete" style="margin-left:auto;padding:6px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius);color:var(--red);font-size:11px;cursor:pointer;">Delete</button>';
+    bodyHtml+='</div>';
+  }else{
+    bodyHtml='<div class="vp-empty" style="padding:20px;">No saved verdict for this session.<br>This was likely a quick reply that did not go through the full Council.</div>';
+    bodyHtml+='<div style="margin-top:10px;display:flex;gap:8px;">';
+    bodyHtml+='<button id="session-detail-ask-again" style="padding:6px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11px;cursor:pointer;">Ask again</button>';
+    bodyHtml+='<button id="session-detail-delete" style="padding:6px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius);color:var(--red);font-size:11px;cursor:pointer;">Delete</button>';
+    bodyHtml+='</div>';
+  }
+  setTimeout(()=>{
+    const openDecBtn=document.getElementById('session-detail-open-dec');
+    if(openDecBtn)openDecBtn.addEventListener('click',()=>{closeSessionDetail();showView('decisions');});
+    const askAgainBtn=document.getElementById('session-detail-ask-again');
+    if(askAgainBtn)askAgainBtn.addEventListener('click',()=>{closeSessionDetail();resendMsg(s.query_text||'');});
+    const delBtn=document.getElementById('session-detail-delete');
+    if(delBtn)delBtn.addEventListener('click',()=>deleteSessionFromDetail(s.id));
+  },0);
+  return metaLine+queryLine+bodyHtml;
+}
+function closeSessionDetail(){document.getElementById('session-modal').style.display='none';}
+function deleteSessionFromDetail(id){
+  if(!confirm('Delete this session from history?'))return;
+  if(CFG.DEMO_MODE){_allSessions=_allSessions.filter(s=>s.id!==id);closeSessionDetail();loadHistoryView();return;}
+  fetch(CFG.BASE_URL+'/api/experience/sessions/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+S.token}})
+    .then(()=>{closeSessionDetail();loadHistoryView();loadKnowledgeCounts();toast('\uD83D\uDDD1\uFE0F','Deleted');})
+    .catch(()=>toast('\u274c','Failed'));
+}
 
 var _allDecisions=[];
 async function loadDecisionsView(){const el=document.getElementById('decisions-list');if(!el)return;if(CFG.DEMO_MODE){_allDecisions=[{id:1,title:'Use PostgreSQL for production',query_text:'Migrate to PostgreSQL?',verdict:'Decided to migrate. AWS RDS selected. SSL required.',approval_state:'approved',is_pinned:true,created_at:new Date().toISOString()},{id:2,title:'MVP: FastAPI monolith',query_text:'Architecture decision',verdict:'Start with monolith. Split only when needed by load.',approval_state:'verified',is_pinned:false,created_at:new Date(Date.now()-86400000).toISOString()},{id:3,title:'Freemium with credits',query_text:'Monetization strategy',verdict:'10 free credits on signup. Stripe integration next sprint.',approval_state:'draft',is_pinned:false,created_at:new Date(Date.now()-172800000).toISOString()}];renderDecisions(_allDecisions);return;}el.innerHTML='<div class="vp-empty">Loading...</div>';try{const r=await fetch(CFG.BASE_URL+'/api/knowledge/journal?limit=50',{headers:{Authorization:'Bearer '+S.token}});if(!r.ok)throw new Error('API error');const d=await r.json();_allDecisions=d.entries||[];renderDecisions(_allDecisions);document.getElementById('dec-cnt').textContent=d.count||0;document.getElementById('kp-decisions').textContent=d.count||0;}catch(e){el.innerHTML='<div class="vp-empty">Could not load.</div>';}}
