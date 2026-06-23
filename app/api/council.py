@@ -29,6 +29,84 @@ from app.services import classifier, openrouter
 router = APIRouter()
 
 
+# ── PROTOCOL CONFIGURATION ──────────────────────────────────────────────────
+# Maps the UI protocol selector (Standard/Strategy/Crisis/Reflection/Planning/
+# Deep -> lowercased in frontend S.currentProto) onto real council behavior:
+#   - limit_directors: if set, council is HARD-CAPPED to this subset (used by
+#     Crisis -- speed over completeness)
+#   - force_directors: directors added to the selection if not already present
+#     (ignored when limit_directors is set, since the cap takes precedence)
+#   - exclude_directors: directors removed from the selection if present
+#   - framing: extra instruction block appended to the Chairman prompt so the
+#     final verdict's tone/structure actually reflects the chosen protocol
+# Only applied on the paid tier (is_free already hard-restricts the council
+# to scout/analyst/chairman, so protocol overrides would conflict with that
+# tier boundary).
+PROTOCOL_CONFIG: dict = {
+    "standard": {
+        "limit_directors": None,
+        "force_directors": [],
+        "exclude_directors": [],
+        "framing": "",
+    },
+    "strategy": {
+        "limit_directors": None,
+        "force_directors": ["devil", "synthesizer"],
+        "exclude_directors": [],
+        "framing": (
+            "STRATEGY PROTOCOL: Frame the verdict as a strategic decision. "
+            "Briefly weigh best-case, worst-case, and most-likely scenarios "
+            "before committing to a single recommendation."
+        ),
+    },
+    "crisis": {
+        "limit_directors": ["scout", "chairman"],
+        "force_directors": [],
+        "exclude_directors": [],
+        "framing": (
+            "CRISIS PROTOCOL: Speed is critical. Lead with the single most "
+            "urgent action in 1-2 sentences, then list at most 2 backup "
+            "options. Skip lengthy analysis and background."
+        ),
+    },
+    "reflection": {
+        "limit_directors": None,
+        "force_directors": [],
+        "exclude_directors": ["devil"],
+        "framing": (
+            "REFLECTION PROTOCOL: This is a retrospective, not a new plan. "
+            "Focus on what happened, what was learned, and what pattern to "
+            "carry forward. Reference the user's past decisions or "
+            "principles if relevant context was provided."
+        ),
+    },
+    "planning": {
+        "limit_directors": None,
+        "force_directors": ["architect"],
+        "exclude_directors": [],
+        "framing": (
+            "PLANNING PROTOCOL: Output must read as a goal-setting plan with "
+            "explicit milestones and target dates, not a one-off answer."
+        ),
+    },
+    "deep": {
+        "limit_directors": None,
+        "force_directors": ["scout", "analyst", "architect", "devil",
+                             "synthesizer", "verifier", "chairman"],
+        "exclude_directors": [],
+        "framing": (
+            "DEEP ANALYSIS PROTOCOL: Maximum rigor expected. Explicitly "
+            "address edge cases, second-order effects, and what could make "
+            "this analysis wrong."
+        ),
+    },
+}
+
+
+def _get_protocol_config(protocol: str) -> dict:
+    return PROTOCOL_CONFIG.get((protocol or "standard").lower(), PROTOCOL_CONFIG["standard"])
+
+
 def _build_free_prompt(role: str, query: str, lang: str, context: str = "") -> str:
     """Short prompt for Ollama / free plan."""
     lang_map = {"ru": "Russian", "uk": "Ukrainian", "ua": "Ukrainian",
@@ -96,7 +174,9 @@ async def _call_director(role: str, prompt: str, director_spec, is_free: bool) -
         "4) FORBIDDEN phrases: 'it is recommended', 'consider', 'it is worth studying'. "
         "5) NEVER invent PLN/USD budgets unless the user asked about budget. "
         "6) Respond ONLY in the language of the query. Never mix languages. "
-        "7) Be direct, like a senior advisor talking to a friend."
+        "7) Be direct, like a senior advisor talking to a friend. "
+        "8) If a <protocol_instruction> block is present in the prompt, follow it strictly -- "
+        "it overrides default tone/structure for this specific request."
     )
 
     if role == "chairman":
@@ -163,6 +243,7 @@ async def run_council_deliberation(
     on_phase: Optional[Callable[[dict], Any]] = None,
     user_id: int = 0,
     exp_session_id: Optional[int] = None,
+    protocol: str = "standard",
 ) -> dict:
     """
     exp_session_id: optional id of the experience_sessions row created by the
@@ -170,12 +251,21 @@ async def run_council_deliberation(
     stored on the auto-saved decision_journal row (session_id column) so
     Session History can later join to the saved Chairman verdict via
     GET /api/experience/sessions/{id} -> decision_journal lookup.
+
+    protocol: one of "standard"|"strategy"|"crisis"|"reflection"|"planning"|
+    "deep" (see PROTOCOL_CONFIG above). Comes from the UI protocol selector
+    (S.currentProto in frontend/index.html). Only applied on the paid tier --
+    free-plan council composition is governed solely by the existing
+    scout/analyst/chairman restriction.
     """
     if not query:
         raise HTTPException(status_code=400, detail="Query is required")
 
+    proto_cfg = _get_protocol_config(protocol)
+    protocol = (protocol or "standard").lower()
+
     logger.info(f"{'='*60}")
-    logger.info(f"📝 QUERY: {query[:70]}...")
+    logger.info(f"📝 QUERY: {query[:70]}... | protocol={protocol}")
 
     # Real server-side datetime (Warsaw/CET timezone) -- injected into all prompts
     try:
@@ -189,6 +279,9 @@ async def run_council_deliberation(
     logger.debug(f"Datetime injected: {current_datetime_str}")
 
     # ── FAST-TRACK: simple factual questions ────────────────────────────
+    # Protocol overrides are skipped here intentionally -- a 3-word factual
+    # question gets no benefit from Strategy/Deep framing, and Crisis already
+    # wants the fastest possible single-call path, which this already is.
     if _is_simple_query(query):
         logger.info("⚡ Fast-track: simple question, skipping council")
         await _emit(on_phase, {"type": "phase_start", "phase": "chairman",
@@ -225,6 +318,7 @@ async def run_council_deliberation(
             "errors": None,
             "synthesis_report": None,
             "journal_id": None,
+            "protocol_used": "standard",
         }
 
     # ── 1. CLASSIFIER ────────────────────────────────────────────────────
@@ -271,13 +365,31 @@ async def run_council_deliberation(
                 selected_ids.append("devil")
                 logger.info("Critic activated: financial/risky query detected")
 
+        # ── PROTOCOL OVERRIDE (paid tier only) ────────────────────────
+        # Applied after the normal selection logic so protocol intent wins,
+        # but before the directors dict is built so every downstream phase
+        # (3-8) naturally respects the override -- no per-phase special-casing.
+        if proto_cfg["limit_directors"]:
+            selected_ids = [d for d in selected_ids if d in proto_cfg["limit_directors"]]
+            if "chairman" not in selected_ids:
+                selected_ids.append("chairman")
+        else:
+            for d in proto_cfg["force_directors"]:
+                if d not in selected_ids:
+                    selected_ids.append(d)
+            for d in proto_cfg["exclude_directors"]:
+                if d in selected_ids and d != "chairman":
+                    selected_ids.remove(d)
+        if protocol != "standard":
+            logger.info(f"Protocol '{protocol}' applied -> council: {selected_ids}")
+
     directors = {}
     for did in selected_ids:
         spec = selector.get_director(did)
         if spec:
             directors[did] = spec
 
-    await _emit(on_phase, {"type": "council_ready", "selected": selected_ids})
+    await _emit(on_phase, {"type": "council_ready", "selected": selected_ids, "protocol": protocol})
     logger.info(f"👥 Council: {selected_ids}")
 
     results = {}
@@ -310,7 +422,9 @@ async def run_council_deliberation(
     logger.debug(f"Scout JSON: {'parsed' if scout_json else 'not found -- using raw text'}")
 
     # Two-stage controller: check for HIGH-impact missing data
-    if scout_json and not is_free:
+    # Skipped for Crisis protocol -- a clarifying-questions detour defeats
+    # the entire point of a fast emergency response.
+    if scout_json and not is_free and protocol != "crisis":
         high_missing = [
             m for m in scout_json.get("missing_data", [])
             if m.get("impact") == "HIGH"
@@ -337,6 +451,7 @@ async def run_council_deliberation(
                 "total_cost_usd": round(total_cost, 4),
                 "credits_needed": 1, "errors": None, "synthesis_report": None,
                 "journal_id": None,
+                "protocol_used": protocol,
             }
 
     # ── 4. ANALYST ───────────────────────────────────────────────────────
@@ -429,18 +544,28 @@ async def run_council_deliberation(
     # ── 8. CHAIRMAN ──────────────────────────────────────────────────────
     # Determine response mode from Scout JSON (informational vs strategic)
     resp_mode = get_response_mode(scout_json, query)
-    logger.info(f"Chairman response_mode: {resp_mode}")
+    logger.info(f"Chairman response_mode: {resp_mode} | protocol: {protocol}")
+
+    # Protocol framing is appended on top of response_mode -- response_mode
+    # decides WHAT shape the answer takes (direct answer vs action plan),
+    # protocol framing decides the TONE/EMPHASIS within that shape (e.g.
+    # Crisis still gets an action_plan shape, just compressed to 1-2 steps).
+    protocol_framing = (
+        f"\n\n<protocol_instruction>\n{proto_cfg['framing']}\n</protocol_instruction>"
+        if proto_cfg["framing"] else ""
+    )
 
     chairman_result = None
     if "chairman" in directors:
         await _emit(on_phase, {"type": "phase_start", "phase": "chairman",
                                "text": "Verdict: synthesizing final decision...",
-                               "response_mode": resp_mode})
+                               "response_mode": resp_mode, "protocol": protocol})
         prompt = (_build_free_prompt("chairman", query, profile.suggested_language,
                                      f"{analysis}\n{solutions}") if is_free
                   else PromptUtils.add_language_context(
                       PromptBuilder.build_chairman_prompt(
                           query, profile, facts, analysis, solutions, criticism)
+                      + protocol_framing
                       + "\n\n" + format_handoff_for_director(scout_json, "chairman"),
                       profile.suggested_language, profile.geo_context, current_datetime_str))
         chairman_result = await _call_director("chairman", prompt, directors["chairman"], is_free)
@@ -527,7 +652,7 @@ async def run_council_deliberation(
                 "cost_usd": round(res.get("cost_usd", 0), 4),
             }
 
-    logger.info(f"🏁 Deliberation complete | cost=${total_cost:.4f} | errors={len(errors)} | mode={resp_mode}")
+    logger.info(f"🏁 Deliberation complete | cost=${total_cost:.4f} | errors={len(errors)} | mode={resp_mode} | protocol={protocol}")
 
     return {
         "success": len(errors) == 0 or (chairman_result and not chairman_result.get("error")),
@@ -552,6 +677,7 @@ async def run_council_deliberation(
         "synthesis_report": results.get("synthesizer", {}).get("analysis"),
         "response_mode":    resp_mode,
         "journal_id":       journal_id,
+        "protocol_used":    protocol,
     }
 
 
@@ -563,6 +689,7 @@ async def council_deliberate(request: Request):
         query=data.get("query", ""),
         user_credits=data.get("credits", 15),
         history_count=data.get("history_count", 0),
+        protocol=data.get("protocol", "standard"),
     )
 
 
@@ -601,3 +728,11 @@ async def debug_select_council(request: Request):
         "council_details": selector.get_council_details(selected),
         "estimated_cost_usd": round(selector._estimate_cost(selected), 4),
     }
+
+
+@router.get("/debug/protocols")
+async def debug_protocols():
+    """Inspect the active PROTOCOL_CONFIG -- useful for verifying the
+    Standard/Strategy/Crisis/Reflection/Planning/Deep override rules without
+    running a full deliberation."""
+    return {"protocols": PROTOCOL_CONFIG}

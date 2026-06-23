@@ -3,7 +3,7 @@ app/api/ws_council.py - WebSocket endpoint for streaming deliberation.
 
 Protocol:
   Client -> Server (JSON):
-    {"token": "eyJ...", "message": "query text", "chat_id": "chat_..."}
+    {"token": "eyJ...", "message": "query text", "chat_id": "chat_...", "protocol": "standard"}
 
   Server -> Client:
     {"type": "council_ready",  "selected": [...]}
@@ -13,6 +13,11 @@ Protocol:
     {"type": "error",          "message": "..."}
 
   Connection stays open - multiple questions per session supported.
+
+  "protocol" is optional and defaults to "standard" if omitted -- see
+  app/api/council.py PROTOCOL_CONFIG for the full list of supported values
+  (standard|strategy|crisis|reflection|planning|deep) and what each one
+  actually changes about council composition and Chairman framing.
 """
 
 import json
@@ -28,6 +33,8 @@ from app.api.council import run_council_deliberation
 from core.experience.experience_service import experience_service
 
 router = APIRouter()
+
+_VALID_PROTOCOLS = {"standard", "strategy", "crisis", "reflection", "planning", "deep"}
 
 
 def _calc_fallback_coherence(result: dict) -> int:
@@ -64,6 +71,14 @@ async def ws_council(websocket: WebSocket):
             token   = data.get("token", "")
             message = data.get("message", "").strip()
             chat_id = data.get("chat_id", chat_id)
+
+            # Protocol selector from the UI (S.currentProto). Unknown/missing
+            # values silently fall back to "standard" rather than erroring --
+            # a malformed protocol string should never block a deliberation.
+            protocol = str(data.get("protocol", "standard") or "standard").lower()
+            if protocol not in _VALID_PROTOCOLS:
+                logger.debug(f"WS: unknown protocol '{protocol}', falling back to standard")
+                protocol = "standard"
 
             # Keepalive ping
             if message == "__ping__":
@@ -106,7 +121,7 @@ async def ws_council(websocket: WebSocket):
                 continue
 
             user_credits = user.credits
-            logger.info(f"WS: user={user_id} credits={user_credits} msg={message[:50]}...")
+            logger.info(f"WS: user={user_id} credits={user_credits} protocol={protocol} msg={message[:50]}...")
 
             if user_credits <= 0:
                 await websocket.send_json({"type": "error", "message": "Not enough credits"})
@@ -120,7 +135,7 @@ async def ws_council(websocket: WebSocket):
                     user_id=user_id,
                     chat_id=chat_id or "ws",
                     query_text=message,
-                    protocol_used="council",
+                    protocol_used=protocol,
                 )
             except Exception as _e:
                 logger.warning(f"ExperienceService.create_session failed: {_e}")
@@ -134,6 +149,8 @@ async def ws_council(websocket: WebSocket):
             # auto-saved decision_journal row back to this experience session
             # (decision_journal.session_id) -- this is what makes Session
             # History able to resolve a saved verdict per session.
+            # protocol is passed through so council.py's PROTOCOL_CONFIG can
+            # actually reshape council composition and Chairman framing.
             result = await run_council_deliberation(
                 query=enriched_message,
                 user_credits=user_credits,
@@ -141,6 +158,7 @@ async def ws_council(websocket: WebSocket):
                 on_phase=on_phase,
                 user_id=user_id,
                 exp_session_id=exp_session_id,
+                protocol=protocol,
             )
 
             # --- Deduct credits ---
@@ -198,6 +216,7 @@ async def ws_council(websocket: WebSocket):
                 "synthesis_report": result.get("synthesis_report"),
                 "journal_id":      result.get("journal_id"),
                 "session_id":      exp_session_id,
+                "protocol_used":   result.get("protocol_used", protocol),
             })
 
     except WebSocketDisconnect:
