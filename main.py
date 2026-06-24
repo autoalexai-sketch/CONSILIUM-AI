@@ -18,6 +18,7 @@ from app.api.council import router as council_router
 from app.api.ws_council import router as ws_router
 from app.api.experience import router as experience_router
 from app.api.knowledge import router as knowledge_router
+from app.api.billing import router as billing_router
 from app.middleware.security import add_security_headers
 try:
     from prometheus_fastapi_instrumentator import Instrumentator
@@ -52,6 +53,7 @@ app.include_router(council_router,    prefix="",           tags=["council"])
 app.include_router(ws_router,         prefix="",           tags=["websocket"])
 app.include_router(experience_router, tags=["experience"])
 app.include_router(knowledge_router, tags=["knowledge"])
+app.include_router(billing_router,    tags=["billing"])
 
 # ── Security headers ──────────────────────────────────────────────────────
 add_security_headers(app)
@@ -124,4 +126,3 @@ async def startup_event():
     logger.info("   Docs:    http://localhost:8000/docs")
     logger.info("   Health:  http://localhost:8000/health")
     logger.info("   WS:      ws://localhost:8000/ws/council")
-

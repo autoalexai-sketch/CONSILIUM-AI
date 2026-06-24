@@ -152,6 +152,27 @@ wiki_pages = Table(
     Column("updated_at",     DateTime,    default=datetime.utcnow),
 )
 
+# ── Billing (Stripe credit top-up) ──────────────────────────────────────────
+# One row per checkout attempt. stripe_session_id is UNIQUE so the webhook
+# handler can safely process retried/duplicate Stripe events without ever
+# double-crediting a user (idempotency is enforced at the DB layer, not just
+# in application logic). status starts "pending" at checkout-session
+# creation time and only the webhook handler -- never the client -- is
+# allowed to flip it to "completed".
+credit_purchases = Table(
+    "credit_purchases", metadata,
+    Column("id",                       Integer,     primary_key=True),
+    Column("user_id",                  Integer,     nullable=False),
+    Column("stripe_session_id",        String(255), unique=True, nullable=False),
+    Column("stripe_payment_intent_id", String(255), nullable=True),
+    Column("package_id",               String(50),  nullable=False),
+    Column("amount_usd_cents",         Integer,     nullable=False),
+    Column("credits_purchased",        Integer,     nullable=False),
+    Column("status",                   String(20),  default="pending"),  # pending|completed|failed
+    Column("created_at",               DateTime,    default=datetime.utcnow),
+    Column("completed_at",             DateTime,    nullable=True),
+)
+
 
 def init_database() -> None:
     """

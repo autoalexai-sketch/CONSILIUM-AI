@@ -1,6 +1,12 @@
 """
 app/api/chat.py — Чат и история разговоров.
-Эндпоинты: /chat, /buy_credits, /sync_chats, /get_chats, /delete_chat/{chat_id}
+Эндпоинты: /chat, /sync_chats, /get_chats, /delete_chat/{chat_id}
+
+NOTE: /buy_credits was removed from this file (see app/api/billing.py for
+the real Stripe-backed replacement). The old endpoint credited users based
+on client-supplied `amount`/`price` query params with NO payment
+verification whatsoever -- any authenticated user could call it directly
+and grant themselves free credits. Do not re-add anything like it here.
 """
 
 import uuid
@@ -186,18 +192,6 @@ async def chat(request: Request, current_user=Depends(get_current_user)):
     except Exception as e:
         logger.error(f"   ❌ Council deliberation failed: {str(e)[:200]}")
         raise HTTPException(status_code=500, detail=f"Deliberation error: {str(e)}")
-
-
-@router.post("/buy_credits")
-async def buy_credits(amount: int, price: float, current_user=Depends(get_current_user)):
-    credited_amount = {5: 100, 20: 500, 35: 1000}.get(int(price), amount)
-    with engine.connect() as conn:
-        conn.execute(update(users).where(users.c.id == current_user.id)
-                     .values(credits=users.c.credits + credited_amount))
-        conn.commit()
-        user = conn.execute(select(users).where(users.c.id == current_user.id)).fetchone()
-    logger.info(f"💰 Кредиты: +{credited_amount} | user={current_user.id}")
-    return {"status": "success", "credits_added": credited_amount, "credits_total": user.credits}
 
 
 @router.post("/sync_chats")
