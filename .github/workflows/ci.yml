@@ -22,6 +22,16 @@ jobs:
       SMTP_USER: ""
       SMTP_PASS: ""
       APP_ENV: test
+      # Stripe billing -- intentionally left BLANK in CI, matching the
+      # production default-safe behavior (app/api/billing.py degrades to
+      # 503 "not configured" rather than crashing). tests/test_billing.py
+      # asserts that contract directly; tests covering webhook signature
+      # verification monkeypatch dummy values for just those test functions
+      # instead of setting real secrets here.
+      STRIPE_SECRET_KEY: ""
+      STRIPE_WEBHOOK_SECRET: ""
+      STRIPE_PUBLISHABLE_KEY: ""
+      PUBLIC_BASE_URL: http://localhost:8000
 
     steps:
       - name: Checkout repository
@@ -38,10 +48,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run smoke tests
+      - name: Byte-compile entire app/core tree (fast syntax-error fail)
+        run: |
+          find app core -name '*.py' -print0 | xargs -0 python -m py_compile
+          python -m py_compile main.py
+
+      - name: Run smoke + billing + protocol tests
         run: |
           pytest tests/ -q --tb=short
 
       - name: Check health endpoint import
         run: |
-          python -c "from main import app; print('main.py imports OK')"
+          python -c "from main import app; print('main.py imports OK, routes:', len(app.routes))"

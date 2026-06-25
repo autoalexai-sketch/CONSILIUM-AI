@@ -22,6 +22,16 @@ SECURITY MODEL (read this before touching pricing logic):
     credit_purchases table has a UNIQUE constraint on that column, so even
     if Stripe retries the same event multiple times -- which it does on any
     non-2xx response -- the user cannot be double-credited).
+
+NOTE on stripe-python's StripeObject (bit us once, documenting so it doesn't
+happen again): `event["data"]["object"]` returns a StripeObject, not a plain
+dict. Bracket access (`obj["id"]`) and `getattr(obj, "id", default)` both
+work, but `obj.get("id")` does NOT -- StripeObject's __getattr__ falls
+through to `self[k]` for ANY unrecognized attribute name, including "get"
+itself, so `session.get(...)` raises AttributeError instead of behaving
+like dict.get(). Always use getattr(obj, key, default) on Stripe objects,
+never .get(). tests/test_billing.py's signature-verification tests caught
+this for real before it ever reached production.
 """
 
 from datetime import datetime
@@ -197,8 +207,9 @@ async def stripe_webhook(request: Request):
         return {"status": "ignored", "type": event["type"]}
 
     session = event["data"]["object"]
-    session_id = session.get("id")
-    payment_intent_id = session.get("payment_intent")
+    # IMPORTANT: use getattr(), not .get() -- see module docstring above.
+    session_id = getattr(session, "id", None)
+    payment_intent_id = getattr(session, "payment_intent", None)
 
     with engine.begin() as conn:
         row = conn.execute(
