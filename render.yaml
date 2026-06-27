@@ -12,15 +12,33 @@ services:
         value: production
       - key: CORS_ORIGINS
         value: "*"
+      # DATABASE_URL is sync:false on purpose -- production uses PostgreSQL
+      # on AWS RDS, set manually in the Render dashboard. Do NOT give this a
+      # literal `value:` here: a blueprint sync would silently overwrite the
+      # real RDS connection string with whatever default ends up in this
+      # file, which is exactly the "SQLite resets on every redeploy" bug
+      # this project already hit once and fixed by moving to RDS.
       - key: DATABASE_URL
-        value: sqlite:///./consilium.db
+        sync: false
       - key: SECRET_KEY
         sync: false
       - key: OPENROUTER_API_KEY
         sync: false
       - key: GROQ_API_KEY
         sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: GEMINI_API_KEY
+        sync: false
+      # Stripe billing -- optional; app degrades to 503 on billing endpoints
+      # only if these are unset, rest of the app is unaffected.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: PUBLIC_BASE_URL
         sync: false
