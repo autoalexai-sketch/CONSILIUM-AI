@@ -1,13 +1,13 @@
 """
-app/api/knowledge.py — Decision Journal + User Principles + Knowledge Vault (Wiki)
-P0 — персональная база решений, принципов и заметок пользователя
+app/api/knowledge.py -- Decision Journal + User Principles + Knowledge Vault (Wiki)
+P0 -- personal decisions, principles, and curated notes.
 """
 
 import json
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy.sql import select, update, desc, or_
 from sqlalchemy import func
@@ -15,6 +15,7 @@ from loguru import logger
 
 from app.dependencies import get_current_user
 from app.database import engine, decision_journal, user_principles, wiki_pages
+from app.middleware.rate_limiter import rate_limiter
 
 router = APIRouter(prefix="/api/knowledge", tags=["knowledge"])
 
@@ -52,7 +53,12 @@ async def get_journal_count(current_user=Depends(get_current_user)):
 
 
 @router.post("/journal")
-async def add_journal_entry(entry: JournalEntry, current_user=Depends(get_current_user)):
+async def add_journal_entry(
+    entry: JournalEntry,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         result = conn.execute(
             decision_journal.insert().values(
@@ -74,7 +80,12 @@ async def add_journal_entry(entry: JournalEntry, current_user=Depends(get_curren
 
 
 @router.patch("/journal/{entry_id}/pin")
-async def toggle_pin(entry_id: int, current_user=Depends(get_current_user)):
+async def toggle_pin(
+    entry_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         row = conn.execute(
             select(decision_journal).where(
@@ -94,7 +105,12 @@ async def toggle_pin(entry_id: int, current_user=Depends(get_current_user)):
 
 
 @router.delete("/journal/{entry_id}")
-async def delete_journal_entry(entry_id: int, current_user=Depends(get_current_user)):
+async def delete_journal_entry(
+    entry_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         conn.execute(
             decision_journal.delete().where(
@@ -140,7 +156,12 @@ async def get_principles_count(current_user=Depends(get_current_user)):
 
 
 @router.post("/principles")
-async def add_principle(entry: PrincipleEntry, current_user=Depends(get_current_user)):
+async def add_principle(
+    entry: PrincipleEntry,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         result = conn.execute(
             user_principles.insert().values(
@@ -158,7 +179,12 @@ async def add_principle(entry: PrincipleEntry, current_user=Depends(get_current_
 
 
 @router.delete("/principles/{principle_id}")
-async def delete_principle(principle_id: int, current_user=Depends(get_current_user)):
+async def delete_principle(
+    principle_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         conn.execute(
             update(user_principles)
@@ -179,12 +205,14 @@ class ApprovalUpdate(BaseModel):
 async def set_approval_state(
     entry_id: int,
     payload: ApprovalUpdate,
+    request: Request,
     current_user=Depends(get_current_user),
 ):
-    """Изменить статус решения: draft → verified → approved."""
+    """Change decision status: draft -> verified -> approved."""
     valid_states = {"draft", "verified", "approved"}
     if payload.state not in valid_states:
         raise HTTPException(status_code=400, detail=f"State must be one of: {valid_states}")
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         row = conn.execute(
             select(decision_journal).where(
@@ -199,21 +227,19 @@ async def set_approval_state(
             .where(decision_journal.c.id == entry_id)
             .values(approval_state=payload.state, updated_at=datetime.utcnow())
         )
-    logger.info(f"📋 Journal entry {entry_id} → {payload.state} (user={current_user.id})")
+    logger.info(f"📋 Journal entry {entry_id} -> {payload.state} (user={current_user.id})")
     return {"status": "ok", "id": entry_id, "approval_state": payload.state}
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# KNOWLEDGE VAULT (LLM Wiki) — free-form notes the user curates manually.
-# Distinct from decision_journal (auto-saved Chairman verdicts) and
-# user_principles (rules injected into every deliberation).
-# ═══════════════════════════════════════════════════════════════════════════
+# ==========================================================================
+# KNOWLEDGE VAULT (LLM Wiki)
+# ==========================================================================
 
 class WikiPageEntry(BaseModel):
     title: str
     body: str
-    tags: Optional[str] = None              # comma-separated, e.g. "architecture,postgres"
-    source_journal_id: Optional[int] = None  # optional link back to a decision
+    tags: Optional[str] = None
+    source_journal_id: Optional[int] = None
 
 
 class WikiPageUpdate(BaseModel):
@@ -229,11 +255,8 @@ async def get_wiki_pages(
     limit: int = 50,
     current_user=Depends(get_current_user),
 ):
-    """List wiki pages, newest first. Optional ?q= full-text-ish search
-    over title/body, optional ?tag= exact tag filter."""
     with engine.connect() as conn:
         stmt = select(wiki_pages).where(wiki_pages.c.user_id == current_user.id)
-
         if q:
             pattern = f"%{q}%"
             stmt = stmt.where(
@@ -246,10 +269,8 @@ async def get_wiki_pages(
             )
         if tag:
             stmt = stmt.where(wiki_pages.c.tags.like(f"%{tag}%"))
-
         stmt = stmt.order_by(desc(wiki_pages.c.is_pinned), desc(wiki_pages.c.updated_at)).limit(min(limit, 100))
         rows = conn.execute(stmt).fetchall()
-
     return {"pages": [dict(r._mapping) for r in rows], "count": len(rows)}
 
 
@@ -278,7 +299,12 @@ async def get_wiki_page(page_id: int, current_user=Depends(get_current_user)):
 
 
 @router.post("/wiki")
-async def add_wiki_page(entry: WikiPageEntry, current_user=Depends(get_current_user)):
+async def add_wiki_page(
+    entry: WikiPageEntry,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         result = conn.execute(
             wiki_pages.insert().values(
@@ -300,8 +326,10 @@ async def add_wiki_page(entry: WikiPageEntry, current_user=Depends(get_current_u
 async def update_wiki_page(
     page_id: int,
     payload: WikiPageUpdate,
+    request: Request,
     current_user=Depends(get_current_user),
 ):
+    await rate_limiter.check(request)
     updates = {k: v for k, v in payload.dict(exclude_unset=True).items() if v is not None}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
@@ -327,7 +355,12 @@ async def update_wiki_page(
 
 
 @router.patch("/wiki/{page_id}/pin")
-async def toggle_wiki_pin(page_id: int, current_user=Depends(get_current_user)):
+async def toggle_wiki_pin(
+    page_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         row = conn.execute(
             select(wiki_pages).where(
@@ -347,7 +380,12 @@ async def toggle_wiki_pin(page_id: int, current_user=Depends(get_current_user)):
 
 
 @router.delete("/wiki/{page_id}")
-async def delete_wiki_page(page_id: int, current_user=Depends(get_current_user)):
+async def delete_wiki_page(
+    page_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         conn.execute(
             wiki_pages.delete().where(
@@ -359,9 +397,12 @@ async def delete_wiki_page(page_id: int, current_user=Depends(get_current_user))
 
 
 @router.post("/wiki/from-journal/{journal_id}")
-async def create_wiki_from_journal(journal_id: int, current_user=Depends(get_current_user)):
-    """Convenience endpoint: snapshot a Decision Journal entry into a Wiki page,
-    so the user can curate/tag/edit it independently of the original decision."""
+async def create_wiki_from_journal(
+    journal_id: int,
+    request: Request,
+    current_user=Depends(get_current_user),
+):
+    await rate_limiter.check(request)
     with engine.begin() as conn:
         jrow = conn.execute(
             select(decision_journal).where(
@@ -371,7 +412,6 @@ async def create_wiki_from_journal(journal_id: int, current_user=Depends(get_cur
         ).fetchone()
         if not jrow:
             raise HTTPException(status_code=404, detail="Journal entry not found")
-
         result = conn.execute(
             wiki_pages.insert().values(
                 user_id=current_user.id,

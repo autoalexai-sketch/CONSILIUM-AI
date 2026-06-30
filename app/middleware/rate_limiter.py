@@ -1,5 +1,5 @@
 """
-app/middleware/rate_limiter.py — Rate Limiting.
+app/middleware/rate_limiter.py -- Rate Limiting.
 """
 
 import time
@@ -12,11 +12,15 @@ from loguru import logger
 
 class RateLimiter:
     LIMITS: Dict[str, Tuple[int, int]] = {
-        "/chat":               (10, 60),
-        "/council/deliberate": (5,  60),
-        "/register":           (5,  300),
-        "/login":              (10, 60),
-        "default":             (30, 60),
+        "/chat":                            (10, 60),
+        "/council/deliberate":              (5,  60),
+        "/register":                        (5,  300),
+        "/login":                           (10, 60),
+        # Billing: checkout creates a Stripe session (expensive + abuse vector)
+        "/api/billing/checkout-session":    (5,  300),
+        # Knowledge writes: prevent wiki/journal/principles spam
+        "/api/knowledge":                   (30, 60),
+        "default":                          (30, 60),
     }
 
     def __init__(self) -> None:
@@ -42,7 +46,7 @@ class RateLimiter:
             logger.warning(f"Rate limit exceeded | IP={client_ip} | path={path}")
             raise HTTPException(
                 status_code=429,
-                detail=f"Слишком много запросов. Подождите {wait_sec} сек.",
+                detail=f"Too many requests. Please wait {wait_sec} seconds.",
             )
 
         self._requests[key].append(now)

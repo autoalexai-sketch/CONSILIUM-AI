@@ -32,6 +32,11 @@ itself, so `session.get(...)` raises AttributeError instead of behaving
 like dict.get(). Always use getattr(obj, key, default) on Stripe objects,
 never .get(). tests/test_billing.py's signature-verification tests caught
 this for real before it ever reached production.
+
+RATE LIMITING:
+  /api/billing/checkout-session: 5 requests / 300s per IP (prevents session spam)
+  /api/billing/webhook: NOT rate-limited -- Stripe must always be able to
+    deliver events. Authenticity is enforced by signature verification instead.
 """
 
 from datetime import datetime
@@ -45,6 +50,7 @@ from loguru import logger
 from app.config import settings
 from app.database import engine, users, credit_purchases
 from app.dependencies import get_current_user
+from app.middleware.rate_limiter import rate_limiter
 
 router = APIRouter(prefix="/api/billing", tags=["billing"])
 
@@ -56,10 +62,7 @@ except ImportError:
     logger.warning("⚠️  'stripe' package not installed -- run: pip install stripe")
 
 
-# ── CREDIT PACKAGES (server-side source of truth -- never trust the client) ─
-# credits = price_usd_cents at face value (1 credit ≈ $0.01, matching how
-# council.py computes credits_needed = max(1, int(total_cost_usd * 100)))
-# plus a volume bonus on the two larger tiers to reward bigger top-ups.
+# ── CREDIT PACKAGES (server-side source of truth -- never trust the client) -
 CREDIT_PACKAGES: dict = {
     "starter": {
         "label": "Starter",
@@ -90,7 +93,7 @@ def _require_stripe_configured() -> None:
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-# ── GET /api/billing/packages ───────────────────────────────────────────────
+# ── GET /api/billing/packages ------------------------------------------------
 @router.get("/packages")
 async def list_packages():
     """Public -- no auth required. Frontend renders these as buy buttons."""
@@ -108,7 +111,7 @@ async def list_packages():
     }
 
 
-# ── POST /api/billing/checkout-session ──────────────────────────────────────
+# ── POST /api/billing/checkout-session ---------------------------------------
 class CheckoutRequest(BaseModel):
     package_id: str
 
@@ -116,8 +119,10 @@ class CheckoutRequest(BaseModel):
 @router.post("/checkout-session")
 async def create_checkout_session(
     payload: CheckoutRequest,
+    request: Request,
     current_user=Depends(get_current_user),
 ):
+    await rate_limiter.check(request)
     _require_stripe_configured()
 
     package = CREDIT_PACKAGES.get(payload.package_id)
@@ -148,8 +153,6 @@ async def create_checkout_session(
         logger.error(f"❌ Stripe checkout session creation failed: {e}")
         raise HTTPException(status_code=502, detail="Could not start checkout. Try again shortly.")
 
-    # Record the attempt as "pending" BEFORE redirecting the user to Stripe,
-    # so the webhook has a row to find/complete when payment succeeds.
     try:
         with engine.begin() as conn:
             conn.execute(credit_purchases.insert().values(
@@ -163,26 +166,20 @@ async def create_checkout_session(
                 created_at=datetime.utcnow(),
             ))
     except Exception as e:
-        # Non-fatal for the user's checkout flow, but means the webhook
-        # won't find a row to complete -- log loudly so it's caught.
         logger.error(f"❌ Failed to record pending credit_purchases row: {e}")
 
     logger.info(f"💳 Checkout session created: user={current_user.id} package={payload.package_id} session={session.id}")
     return {"checkout_url": session.url, "session_id": session.id}
 
 
-# ── POST /api/billing/webhook ────────────────────────────────────────────────
+# ── POST /api/billing/webhook ------------------------------------------------
 @router.post("/webhook")
 async def stripe_webhook(request: Request):
     """
-    Stripe calls this directly -- there is no user JWT here. Authenticity is
-    proven entirely by verifying the Stripe-Signature header against the raw
-    request body using STRIPE_WEBHOOK_SECRET. Never parse this as JSON before
-    verification -- Stripe signs the exact raw bytes.
+    Stripe calls this directly -- NOT rate-limited (Stripe must always
+    be able to deliver events). Authenticity enforced by signature verification.
     """
     if not _STRIPE_SDK_AVAILABLE or not settings.STRIPE_SECRET_KEY:
-        # Returning 503 makes Stripe retry later once billing is configured,
-        # rather than permanently dropping the event with a 4xx.
         raise HTTPException(status_code=503, detail="Billing not configured")
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -203,11 +200,9 @@ async def stripe_webhook(request: Request):
         raise HTTPException(status_code=400, detail="Malformed webhook payload")
 
     if event["type"] != "checkout.session.completed":
-        # Ack anything we don't care about so Stripe stops retrying it.
         return {"status": "ignored", "type": event["type"]}
 
     session = event["data"]["object"]
-    # IMPORTANT: use getattr(), not .get() -- see module docstring above.
     session_id = getattr(session, "id", None)
     payment_intent_id = getattr(session, "payment_intent", None)
 
@@ -221,7 +216,6 @@ async def stripe_webhook(request: Request):
             return {"status": "no_matching_purchase"}
 
         if row.status == "completed":
-            # Idempotent no-op: Stripe already got credited for this once.
             logger.info(f"ℹ️  Duplicate webhook for session={session_id}, already completed -- skipping")
             return {"status": "already_completed"}
 
@@ -244,7 +238,7 @@ async def stripe_webhook(request: Request):
     return {"status": "completed"}
 
 
-# ── GET /api/billing/history ─────────────────────────────────────────────────
+# ── GET /api/billing/history -------------------------------------------------
 @router.get("/history")
 async def billing_history(limit: int = 20, current_user=Depends(get_current_user)):
     with engine.connect() as conn:
