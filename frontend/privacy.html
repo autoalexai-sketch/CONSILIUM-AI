@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — CONSILIUM AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:   #080a0e;
+  --surface: #0d1117;
+  --border:  rgba(255,255,255,0.07);
+  --accent:  #3b82f6;
+  --white:   #f0f4ff;
+  --muted:   rgba(240,244,255,0.55);
+  --dim:     rgba(240,244,255,0.25);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,10,14,0.9);
+  position: sticky; top: 0; z-index: 10;
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+.nav-back {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--white); }
+
+.container {
+  max-width: 740px; margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+.page-label {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 16px;
+}
+h1 {
+  font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px;
+}
+.last-updated {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--dim); margin-bottom: 48px;
+}
+h2 {
+  font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+  margin: 40px 0 12px; color: var(--white);
+}
+p { color: var(--muted); margin-bottom: 16px; }
+ul { color: var(--muted); padding-left: 20px; margin-bottom: 16px; }
+ul li { margin-bottom: 6px; }
+.highlight {
+  background: rgba(59,130,246,0.07);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 6px; padding: 16px 20px;
+  margin: 24px 0; color: var(--muted);
+  font-size: 14px;
+}
+.highlight strong { color: var(--white); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 48px;
+  text-align: center;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--dim);
+}
+@media (max-width: 640px) {
+  nav { padding: 16px 20px; }
+  .container { padding: 40px 20px 64px; }
+  h1 { font-size: 28px; }
+  footer { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo"><span>CONSILIUM</span> AI</a>
+  <a href="/" class="nav-back">← Back to app</a>
+</nav>
+
+<div class="container">
+
+  <div class="page-label">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="last-updated">Last updated: July 1, 2026 &nbsp;·&nbsp; Effective: July 1, 2026</div>
+
+  <div class="highlight">
+    <strong>Short version:</strong> We collect only what is necessary to run the service.
+    We do not sell your data. We do not share it with third parties for advertising.
+    You can request deletion of your account and all associated data at any time.
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>
+    CONSILIUM AI is operated by Oleksandr Latyntsev, an individual entrepreneur based in
+    Kraków, Poland (EU). For privacy matters, contact us at:
+    <a href="mailto:privacy@ai-consilium.com">privacy@ai-consilium.com</a>
+  </p>
+  <p>
+    As we are based in Poland (European Union), this policy is designed to comply with
+    the General Data Protection Regulation (GDPR, Regulation (EU) 2016/679).
+  </p>
+
+  <h2>2. Data we collect and why</h2>
+
+  <p><strong>Account data</strong></p>
+  <ul>
+    <li><strong>Email address</strong> — required to create an account and send you
+    important service notifications (e.g. welcome email, account changes).
+    Legal basis: contract performance (Art. 6(1)(b) GDPR).</li>
+    <li><strong>Password</strong> — stored as a bcrypt hash. We never store your
+    plain-text password and cannot recover it.</li>
+    <li><strong>Credit balance</strong> — integer counter tracking your remaining
+    deliberation credits.</li>
+  </ul>
+
+  <p><strong>Content you create</strong></p>
+  <ul>
+    <li><strong>Queries / messages</strong> — text you send to the Board of Directors
+    during deliberation sessions.</li>
+    <li><strong>Decision Journal entries</strong> — titles, query text, and AI-generated
+    verdicts you choose to save.</li>
+    <li><strong>Personal Principles</strong> — notes you add to guide the Council's
+    reasoning.</li>
+    <li><strong>Knowledge Vault (Wiki) pages</strong> — notes and summaries you create.</li>
+  </ul>
+  <p>
+    This content is stored to provide the core service. It is used to personalise
+    responses via the Context Gateway (injecting your Principles and past decisions
+    into prompts). Legal basis: contract performance (Art. 6(1)(b) GDPR).
+  </p>
+
+  <p><strong>Usage data</strong></p>
+  <ul>
+    <li><strong>Session logs</strong> — timestamps, latency, credit usage, coherence
+    scores. Used to improve service quality and detect abuse.</li>
+    <li><strong>IP addresses</strong> — temporarily stored in memory for rate limiting
+    (max 5 minutes). Not persisted to database.</li>
+  </ul>
+
+  <p><strong>Payment data</strong></p>
+  <ul>
+    <li>Credit purchases are processed by <strong>Stripe</strong>. We store only the
+    Stripe session ID, package ID, credit amount, and payment status.
+    Full card details are never sent to our servers.</li>
+    <li>Stripe's privacy policy: <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></li>
+  </ul>
+
+  <h2>3. AI providers — data sent to third parties</h2>
+  <p>
+    To generate deliberation responses, your query text is sent to one or more of the
+    following AI providers. Each provider receives only the minimum context needed to
+    generate a response:
+  </p>
+  <ul>
+    <li><strong>Groq</strong> — <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">Privacy policy</a></li>
+    <li><strong>Anthropic (Claude)</strong> — <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Privacy policy</a></li>
+    <li><strong>DeepSeek</strong> — <a href="https://www.deepseek.com/privacy" target="_blank" rel="noopener">Privacy policy</a></li>
+    <li><strong>OpenRouter</strong> — <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener">Privacy policy</a></li>
+    <li><strong>Google (Gemini)</strong> — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy policy</a></li>
+  </ul>
+  <p>
+    We recommend not including sensitive personal information (names, ID numbers,
+    medical data, financial account details) in your queries.
+  </p>
+
+  <h2>4. Data storage and retention</h2>
+  <ul>
+    <li>Your data is stored in a PostgreSQL database hosted on
+    <strong>AWS RDS (eu-north-1, Stockholm region, EU)</strong>.</li>
+    <li>The application runs on <strong>Render.com</strong> (US-based infrastructure).
+    Data in transit is encrypted via TLS.</li>
+    <li>We retain your account data and content for as long as your account is active.</li>
+    <li>Session logs are retained for 90 days, then deleted automatically.</li>
+    <li>After account deletion, all your data is permanently removed within 30 days.</li>
+  </ul>
+
+  <h2>5. Your rights (GDPR)</h2>
+  <p>As an EU resident, you have the following rights:</p>
+  <ul>
+    <li><strong>Access</strong> — request a copy of all data we hold about you.</li>
+    <li><strong>Rectification</strong> — correct inaccurate data.</li>
+    <li><strong>Erasure ("right to be forgotten")</strong> — delete your account and all
+    associated data. You can do this from the app settings, or by emailing us.</li>
+    <li><strong>Portability</strong> — receive your data in a machine-readable format (JSON).</li>
+    <li><strong>Restriction</strong> — request that we stop processing your data while a
+    dispute is resolved.</li>
+    <li><strong>Objection</strong> — object to processing based on legitimate interests.</li>
+    <li><strong>Withdraw consent</strong> — where processing is based on consent, you may
+    withdraw it at any time.</li>
+  </ul>
+  <p>
+    To exercise any of these rights, email
+    <a href="mailto:privacy@ai-consilium.com">privacy@ai-consilium.com</a>.
+    We will respond within 30 days.
+  </p>
+  <p>
+    You also have the right to lodge a complaint with the Polish Data Protection Authority
+    (UODO): <a href="https://uodo.gov.pl" target="_blank" rel="noopener">uodo.gov.pl</a>
+  </p>
+
+  <h2>6. Cookies</h2>
+  <p>
+    We do not use tracking or advertising cookies. The application stores your
+    authentication token and UI preferences (theme) in <code>localStorage</code>
+    on your device. This data never leaves your browser except as part of API requests
+    to our own server.
+  </p>
+
+  <h2>7. Children</h2>
+  <p>
+    CONSILIUM AI is not directed at children under 16. We do not knowingly collect
+    personal data from anyone under 16. If you believe we have done so, contact us
+    and we will delete the data immediately.
+  </p>
+
+  <h2>8. Changes to this policy</h2>
+  <p>
+    If we make material changes, we will update the "Last updated" date and notify
+    registered users by email at least 14 days before the changes take effect.
+    Continued use of the service after that date constitutes acceptance.
+  </p>
+
+  <h2>9. Contact</h2>
+  <p>
+    <strong>Data controller:</strong> Oleksandr Latyntsev<br>
+    <strong>Address:</strong> Kraków, Poland (EU)<br>
+    <strong>Email:</strong> <a href="mailto:privacy@ai-consilium.com">privacy@ai-consilium.com</a>
+  </p>
+
+</div>
+
+<footer>
+  © 2026 CONSILIUM AI · Kraków, Poland ·
+  <a href="/">App</a> ·
+  <a href="mailto:privacy@ai-consilium.com">privacy@ai-consilium.com</a>
+</footer>
+
+</body>
+</html>

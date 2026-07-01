@@ -94,6 +94,14 @@ if os.path.exists(FRONTEND_DIR):
             return FileResponse(landing)
         return {"error": "landing not found"}
 
+    @app.get("/privacy")
+    async def serve_privacy():
+        """Privacy policy page (GDPR)."""
+        privacy = os.path.join(FRONTEND_DIR, "privacy.html")
+        if os.path.exists(privacy):
+            return FileResponse(privacy)
+        return {"error": "privacy page not found"}
+
 # ── Health & Version ──────────────────────────────────────────────────────
 @app.get("/health")
 async def health():
