@@ -24,6 +24,7 @@ class Settings:
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")
 
     # --- Ollama (optional, local only) ---
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
@@ -45,21 +46,23 @@ class Settings:
     CORS_ORIGINS: list = os.getenv("CORS_ORIGINS", "*").split(",")
 
     # --- Stripe (credit top-up billing) ---
-    # All three are blank by default -- billing endpoints check for this and
-    # return 503 "Billing not configured" rather than crashing on import, so
-    # the rest of the app keeps working even before Stripe is wired up.
     STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")
     STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
     STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
-    # Base URL used to build Stripe Checkout success_url/cancel_url redirects.
-    # Must match wherever the frontend is actually served from.
     PUBLIC_BASE_URL: str = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")
 
+    # --- hCaptcha (bot protection on /register) ---
+    # Get keys at: https://dashboard.hcaptcha.com
+    # If HCAPTCHA_SECRET is empty, captcha verification is skipped (dev mode).
+    # Site key is public -- safe to expose in frontend JS.
+    HCAPTCHA_SECRET: str = os.getenv("HCAPTCHA_SECRET", "")
+    HCAPTCHA_SITE_KEY: str = os.getenv("HCAPTCHA_SITE_KEY", "")
 
-# -- Singleton instance ──────────────────────────────────────────────────────
+
+# -- Singleton instance -------------------------------------------------------
 settings = Settings()
 
-# -- Startup checks (warnings, NOT crashes) ──────────────────────────────────
+# -- Startup checks (warnings, NOT crashes) -----------------------------------
 if not settings.OPENROUTER_API_KEY:
     logger.warning(
         "⚠️  OPENROUTER_API_KEY not found. "
@@ -75,12 +78,21 @@ if not settings.STRIPE_SECRET_KEY:
         "Credit top-up (billing) unavailable until configured in .env"
     )
 
-# -- Log active providers ────────────────────────────────────────────────────
+if not settings.HCAPTCHA_SECRET:
+    logger.warning(
+        "⚠️  HCAPTCHA_SECRET not set. "
+        "Bot protection on /register is DISABLED. "
+        "Set HCAPTCHA_SECRET + HCAPTCHA_SITE_KEY in .env to enable."
+    )
+
+# -- Log active providers -----------------------------------------------------
 _providers = []
 if settings.OPENROUTER_API_KEY: _providers.append("OpenRouter")
 if settings.ANTHROPIC_API_KEY:  _providers.append("Claude")
 if settings.GEMINI_API_KEY:     _providers.append("Gemini")
 if settings.GROQ_API_KEY:       _providers.append("Groq")
+if settings.DEEPSEEK_API_KEY:   _providers.append("DeepSeek")
 logger.info(f"🔑 Active providers: {', '.join(_providers) or 'none'}")
 logger.info(f"🔐 JWT: algorithm={settings.JWT_ALGORITHM} | expire={settings.JWT_EXPIRE_HOURS}h")
 logger.info(f"💳 Stripe billing: {'configured' if settings.STRIPE_SECRET_KEY else 'NOT configured'}")
+logger.info(f"🤖 hCaptcha: {'enabled' if settings.HCAPTCHA_SECRET else 'disabled (dev mode)'}")

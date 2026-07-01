@@ -6,6 +6,7 @@
 <title>CONSILIUM AI v3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 <style>
 :root {
   --bg:#0a0c10; --bg-card:#0f1318; --bg-hover:#161c24; --bg-active:#1a2233;
@@ -622,7 +623,10 @@ function toast(icon,text){const area=document.getElementById('toasts');const el=
 function updateLogoForTheme(theme){const g=document.getElementById('greeting-logo');if(g)g.src=theme==='light'?'img/logo1.png':'img/logo.jpg';const h=document.getElementById('header-icon');if(h)h.src=theme==='light'?'img/icon2.jpg':'img/icon.png';}
 function toggleTheme(){const root=document.documentElement;const next=(root.getAttribute('data-theme')||'dark')==='dark'?'light':'dark';root.setAttribute('data-theme',next);localStorage.setItem('consilium-theme',next);updateLogoForTheme(next);const icon=document.getElementById('theme-icon');const label=document.getElementById('theme-label');if(next==='light'){icon&&(icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');label&&(label.textContent='Light');}else{icon&&(icon.innerHTML='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>');label&&(label.textContent='Dark');}}
 (function(){const t=localStorage.getItem('consilium-theme');if(t)document.documentElement.setAttribute('data-theme',t);document.addEventListener('DOMContentLoaded',()=>{if(t==='light'){const i=document.getElementById('theme-icon'),l=document.getElementById('theme-label');i&&(i.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>');l&&(l.textContent='Light');updateLogoForTheme('light');}});})();
-(async function init(){handleBillingRedirect();if(S.token){try{await loadUser();hideAuth();}catch(e){}}})();
+(async function init(){handleBillingRedirect();loadCaptchaConfig();if(S.token){try{await loadUser();hideAuth();}catch(e){}}})();
+// hCaptcha: load site key from backend and render widget
+async function loadCaptchaConfig(){try{const r=await fetch(CFG.BASE_URL+'/api/auth/captcha-config');if(!r.ok)return;const d=await r.json();if(!d.enabled||!d.site_key)return;const el=document.getElementById('h-captcha-reg');if(!el)return;el.setAttribute('data-sitekey',d.site_key);if(typeof hcaptcha!=='undefined'){hcaptcha.render(el,{sitekey:d.site_key});}else{// Wait for hCaptcha script to load
+window.addEventListener('load',()=>{if(typeof hcaptcha!=='undefined')hcaptcha.render(el,{sitekey:d.site_key});});}}catch(e){}}
 
 // ── NEW CHAT ──
 function newChat(){
@@ -769,7 +773,12 @@ function handleBillingRedirect(){const params=new URLSearchParams(window.locatio
 function openFileAttach(){toast('\uD83D\uDCCE','File attachment \u2014 v3.1');}
 function openWikiInsert(){showView('wiki');}
 function setApproval(journalId,state,btn){if(!S.token||CFG.DEMO_MODE){btn.closest('.dec-approval').querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');toast('\uD83D\uDCCB','Status: '+state);return;}fetch(CFG.BASE_URL+'/api/knowledge/journal/'+journalId+'/approve',{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.token},body:JSON.stringify({state})}).then(r=>{if(r.ok){btn.closest('.dec-approval').querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');toast('\uD83D\uDCCB','Decision: '+state);}}).catch(()=>toast('\u274c','Failed'));}
-async function doRegister(){const email=document.getElementById('reg-email').value.trim();const pwd=document.getElementById('reg-password').value;const pwd2=document.getElementById('reg-password2').value;const err=document.getElementById('reg-err');err.style.color='';err.textContent='';if(!email||!pwd){err.textContent='Fill in all fields';return;}if(pwd.length<6){err.textContent='Password min 6 chars';return;}if(pwd!==pwd2){err.textContent='Passwords do not match';return;}try{const r=await fetch(CFG.BASE_URL+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pwd})});const d=await r.json();if(!r.ok){err.textContent=d.detail||'Error';return;}S.token=d.token||d.access_token;localStorage.setItem('consilium_token',S.token);await loadUser();hideAuth();toast('\u2705','Account created!');}catch(e){err.textContent='Server unavailable. Try demo mode.';}}
+async function doRegister(){const email=document.getElementById('reg-email').value.trim();const pwd=document.getElementById('reg-password').value;const pwd2=document.getElementById('reg-password2').value;const err=document.getElementById('reg-err');err.style.color='';err.textContent='';if(!email||!pwd){err.textContent='Fill in all fields';return;}if(pwd.length<6){err.textContent='Password min 6 chars';return;}if(pwd!==pwd2){err.textContent='Passwords do not match';return;}
+// hCaptcha: get token from widget if present
+let captcha_token=null;
+const hcEl=document.getElementById('h-captcha-reg');
+if(hcEl){const resp=hcEl.querySelector('[name="h-captcha-response"]');captcha_token=resp?resp.value:null;if(!captcha_token){err.textContent='Please complete the captcha';return;}}
+try{const body={email,password:pwd};if(captcha_token)body.captcha_token=captcha_token;const r=await fetch(CFG.BASE_URL+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok){err.textContent=d.detail||'Error';if(typeof hcaptcha!=='undefined')hcaptcha.reset();return;}S.token=d.token||d.access_token;localStorage.setItem('consilium_token',S.token);await loadUser();hideAuth();toast('\u2705','Account created!');}catch(e){err.textContent='Server unavailable. Try demo mode.';}}
 </script>
 
 <div class="auth-overlay" id="register-overlay" style="display:none;">
@@ -780,6 +789,7 @@ async function doRegister(){const email=document.getElementById('reg-email').val
       <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"/></div>
       <div class="auth-field"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••"/></div>
       <div class="auth-field"><label>Confirm</label><input type="password" id="reg-password2" placeholder="••••••••"/></div>
+      <div id="h-captcha-reg" class="h-captcha" style="margin-top:4px;" data-sitekey="placeholder_will_load"></div>
       <div class="auth-err" id="reg-err"></div>
     </div>
     <button class="auth-btn" onclick="doRegister()">Create Account</button>
