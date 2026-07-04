@@ -186,7 +186,9 @@ class AIFallbackManager:
                     return {"success": True, "content": content,
                             "provider": "groq", "model": target,
                             "tokens": tokens, "cost_usd": 0.0}
-                return {"success": False, "error": f"Groq HTTP {response.status_code}"}
+                err_body = response.text[:500]
+                print(f"[GROQ ERROR] status={response.status_code} body={err_body}")
+                return {"success": False, "error": f"Groq HTTP {response.status_code}: {err_body}"}
         except Exception as e:
             return {"success": False, "error": f"Groq system call error: {str(e)[:100]}"}
 
