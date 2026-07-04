@@ -184,7 +184,7 @@ class OpenRouterClient:
     def _estimate_cost(self, model: str, tokens: int) -> float:
         prices = {
             "mistralai/mistral-7b-instruct:free": 0.0,
-            "google/gemini-2.0-flash-001:free": 0.0,
+            "google/gemini-3.1-flash-lite:free": 0.0,
             "deepseek/deepseek-r1:free": 0.0,
             "openai/gpt-4o-mini": 0.00015,
             "openai/gpt-4o": 0.003,
@@ -192,7 +192,7 @@ class OpenRouterClient:
             "anthropic/claude-3-5-sonnet": 0.003,
             "deepseek/deepseek-chat": 0.0005,
             "google/gemini-1.5-flash": 0.00075,
-            "google/gemini-2.0-flash-001": 0.0001,
+            "google/gemini-3.1-flash-lite": 0.0001,
             "perplexity/sonar": 0.001,
         }
         return (tokens / 1000) * prices.get(model, 0.001)

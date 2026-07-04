@@ -52,7 +52,7 @@ class CouncilSelector:
             emotional_profile="detached", priority=1,
             description="Анализирует цифры, риски, варианты"),
         "architect": DirectorSpec(
-            id="architect", model="google/gemini-2.0-flash-001",
+            id="architect", model="google/gemini-3.1-flash-lite",
             cost_per_1k_in=0.0001, cost_per_1k_out=0.0004,
             avg_tokens_in=1000, avg_tokens_out=1500, latency_ms=2500,
             strengths=["планирование", "системы", "модули"],
@@ -61,7 +61,7 @@ class CouncilSelector:
             emotional_profile="caring", priority=1,
             description="Строит пошаговые планы и системы"),
         "chairman": DirectorSpec(
-            id="chairman", model="google/gemini-2.0-flash-001",
+            id="chairman", model="google/gemini-3.1-flash-lite",
             cost_per_1k_in=0.0001, cost_per_1k_out=0.0004,
             avg_tokens_in=2000, avg_tokens_out=1000, latency_ms=4000,
             strengths=["синтез", "решения", "стратегия"],
@@ -79,7 +79,7 @@ class CouncilSelector:
             emotional_profile="pragmatic", priority=2,
             description="Превращает решение в действия"),
         "translator": DirectorSpec(
-            id="translator", model="google/gemini-2.0-flash-001",
+            id="translator", model="google/gemini-3.1-flash-lite",
             cost_per_1k_in=0.0001, cost_per_1k_out=0.0004,
             avg_tokens_in=1000, avg_tokens_out=1000, latency_ms=1000,
             strengths=["перевод", "формат", "адаптация"],

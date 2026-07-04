@@ -27,7 +27,7 @@ class Director:
     name: str
     expertise: List[str]
     cognitive_profile: Dict[str, Any]
-    model: str = "google/gemini-2.0-flash-001"
+    model: str = "google/gemini-3.1-flash-lite"
     cost_per_1k: float = 0.001
     temperature: float = 0.7
     priority_score: float = 0.0
@@ -65,12 +65,12 @@ class DirectorPool:
                 type=DirectorType.OPERATOR, name="Operator",
                 expertise=["implementation", "execution_planning", "resource_coordination"],
                 cognitive_profile={"thinking_style": "pragmatic", "time_orientation": "present", "complexity_tolerance": "low"},
-                model="google/gemini-2.0-flash-001", cost_per_1k=0.00035, temperature=0.4),
+                model="google/gemini-3.1-flash-lite", cost_per_1k=0.00035, temperature=0.4),
             DirectorType.TRANSLATOR: Director(
                 type=DirectorType.TRANSLATOR, name="Translator",
                 expertise=["domain_bridge", "communication", "concept_mapping"],
                 cognitive_profile={"thinking_style": "integrative", "time_orientation": "neutral", "complexity_tolerance": "medium"},
-                model="google/gemini-2.0-flash-001", cost_per_1k=0.00035, temperature=0.5),
+                model="google/gemini-3.1-flash-lite", cost_per_1k=0.00035, temperature=0.5),
             DirectorType.DEVIL: Director(
                 type=DirectorType.DEVIL, name="Devil's Advocate",
                 expertise=["critical_thinking", "risk_identification", "bias_detection", "contrarian_analysis"],
