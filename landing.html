@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONSILIUM AI — Digital Board of Directors</title>
-<meta name="description" content="9 specialized AI directors deliberate on your strategic decisions. Multi-agent AI system for intellectual work.">
+<meta name="description" content="7 specialized AI directors deliberate on your strategic decisions. Multi-agent AI system for intellectual work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -406,6 +406,7 @@ footer {
     <a href="#directors">Directors</a>
     <a href="#how">How it works</a>
     <a href="#cases">Use cases</a>
+    <a href="#aws">Infrastructure</a>
     <a href="#founder">About</a>
     <a href="https://ai-consilium.com" class="nav-cta">Launch App →</a>
   </div>
@@ -423,7 +424,7 @@ footer {
   <h1>Your <em>Digital<br>Board</em> of<br>Directors</h1>
 
   <p class="hero-sub">
-    9 specialized AI directors deliberate on your strategic questions.
+    7 specialized AI directors deliberate on your strategic questions.
     Real-time multi-agent reasoning — not a chatbot.
   </p>
 
@@ -438,7 +439,7 @@ footer {
 
   <div class="hero-meta">
     <div class="meta-item">
-      <div class="meta-num">9<span>×</span></div>
+      <div class="meta-num">7<span>×</span></div>
       <div class="meta-label">Directors</div>
     </div>
     <div class="meta-item">
@@ -460,7 +461,7 @@ footer {
 <section class="section" id="directors">
   <div style="max-width:1200px; margin:0 auto;">
     <div class="section-label">The Council</div>
-    <h2 class="section-title">9 directors.<br>One decision.</h2>
+    <h2 class="section-title">7 directors.<br>One decision.</h2>
     <p class="section-sub">Each director brings a unique lens. Together they cover every angle before the Chairman delivers the final verdict.</p>
 
     <div class="directors-grid">
@@ -626,6 +627,38 @@ footer {
         <div class="case-icon">📋</div>
         <div class="case-title">Risk assessment</div>
         <div class="case-desc">Devil's Advocate specializes in finding what everyone else missed. Black Swan scenarios included.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY AWS -->
+<section class="section" id="aws" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label">Infrastructure</div>
+    <h2 class="section-title">Built for production<br>on AWS.</h2>
+    <p class="section-sub">Public Alpha runs on Render today. We're migrating to AWS for scale, security, and observability.</p>
+
+    <div class="cases-grid">
+      <div class="case-card">
+        <div class="case-icon">🐳</div>
+        <div class="case-title">ECS / Fargate</div>
+        <div class="case-desc">Containerized, auto-scaled FastAPI backend for the multi-agent council.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">🧠</div>
+        <div class="case-title">Amazon Bedrock</div>
+        <div class="case-desc">Foundation model experimentation and inference alongside our provider fallback chain.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">🗄️</div>
+        <div class="case-title">RDS (PostgreSQL)</div>
+        <div class="case-desc">Already in production — conversation history, agent traces, and user data.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">📈</div>
+        <div class="case-title">CloudWatch</div>
+        <div class="case-desc">Logging, metrics, and cost observability across the deliberation pipeline.</div>
       </div>
     </div>
   </div>

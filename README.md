@@ -165,6 +165,23 @@ PostgreSQL on AWS RDS in production; SQLite for local dev (`DATABASE_URL` switch
 
 ---
 
+## Planned AWS Deployment
+
+We are migrating CONSILIUM-AI to production on AWS:
+
+| Service | Purpose |
+|---------|---------|
+| ECS / Fargate | Containerized FastAPI backend, auto-scaled |
+| RDS (PostgreSQL) | Conversation history, agent traces, user data |
+| Amazon Bedrock | Foundation model experimentation & inference |
+| S3 | Knowledge artifacts, exported strategy documents |
+| CloudWatch | Logging, metrics, cost observability |
+| Secrets Manager | API key management |
+
+Current stage: **Public Alpha on Render** → migrating to AWS.
+
+---
+
 ## Features
 
 - **Multi-agent deliberation** — 7 specialized AI directors (Scout, Analyst, Architect, Devil's Advocate, Synthesizer, Verifier, Chairman)
