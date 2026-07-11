@@ -65,6 +65,29 @@ class AIFallbackManager:
             self.bedrock_client = None
             print("⚠️ AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY не найдены — Bedrock пропущен")
 
+        # Claude Haiku 4.5 через Bedrock (bedrock-mantle) — второй шанс на Claude
+        # для Synthesizer, когда у прямого ANTHROPIC_API_KEY кончился баланс.
+        # Авторизация другая, чем у Llama: не IAM access key, а Bedrock API key
+        # (bearer token) — boto3 подхватывает его сам из AWS_BEARER_TOKEN_BEDROCK,
+        # явно передавать в client() не нужно. In-Region в us-east-1, поэтому без
+        # cross-region "us." префикса (проверено по model card AWS docs).
+        # Claude Sonnet 5 не выбран: на момент подключения (07-2026) требует
+        # ручного запроса доступа через AWS Sales, самостоятельно не включается.
+        self.bedrock_claude_api_key = os.getenv("AWS_BEARER_TOKEN_BEDROCK")
+        self.bedrock_claude_region = os.getenv("BEDROCK_CLAUDE_REGION", "us-east-1")
+        self.bedrock_claude_model = os.getenv("BEDROCK_CLAUDE_MODEL_ID", "anthropic.claude-haiku-4-5-20251001-v1:0")
+        self.bedrock_claude_available = bool(self.bedrock_claude_api_key)
+        if self.bedrock_claude_available:
+            import boto3
+            self.bedrock_claude_client = boto3.client(
+                "bedrock-runtime",
+                region_name=self.bedrock_claude_region,
+            )
+            print("✅ Claude через Bedrock доступен (Haiku 4.5, для Synthesizer)")
+        else:
+            self.bedrock_claude_client = None
+            print("⚠️ AWS_BEARER_TOKEN_BEDROCK не найден — Claude через Bedrock пропущен")
+
         # DeepSeek V4 (приоритет 3 — дешево, MoE, OpenAI-совместим)
         self.deepseek_key = os.getenv("DEEPSEEK_API_KEY")
         self.deepseek_available = bool(self.deepseek_key)
@@ -237,6 +260,31 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"Bedrock error: {str(e)[:200]}"}
 
+    # ── Claude через Bedrock (system + user, для Synthesizer) ────────────
+    async def _call_bedrock_with_system(self, system: str, user_prompt: str, model: str = None,
+                                         temperature: float = 0.3, max_tokens: int = 1500) -> Dict[str, Any]:
+        """Bedrock Converse API с отдельным system-промптом. Второй шанс на Claude,
+        когда у прямого Anthropic API кончился баланс — списывается с AWS Activate credits."""
+        target = model or self.bedrock_claude_model
+        try:
+            response = await asyncio.to_thread(
+                lambda: self.bedrock_claude_client.converse(
+                    modelId=target,
+                    system=[{"text": system}],
+                    messages=[{"role": "user", "content": [{"text": user_prompt}]}],
+                    inferenceConfig={"maxTokens": max_tokens, "temperature": temperature},
+                )
+            )
+            content = response["output"]["message"]["content"][0]["text"]
+            usage = response.get("usage", {})
+            tokens = usage.get("inputTokens", 0) + usage.get("outputTokens", 0)
+            self.last_provider = "bedrock-claude"
+            return {"success": True, "content": content,
+                    "provider": "bedrock-claude", "model": target,
+                    "tokens": tokens, "cost_usd": 0.0}
+        except Exception as e:
+            return {"success": False, "error": f"Bedrock Claude error: {str(e)[:200]}"}
+
     # ── Main fallback chain ───────────────────────────────────────────────────
     async def call_with_backup(self, primary_func: Callable, *args,
                                 temperature: float = 0.7, max_tokens: int = 2000,
@@ -368,7 +416,7 @@ class AIFallbackManager:
                 "provider": "none",
                 "content": "[Ошибка: все провайдеры недоступны. Проверьте GROQ_API_KEY в .env]"}
 
-    # ── Synthesizer (Claude → Groq → Gemini → Ollama) ───────────────────
+    # ── Synthesizer (Claude → Claude via Bedrock → Groq → Gemini → Ollama) ──
     async def call_claude_for_synthesis(self, system_prompt: str, user_prompt: str) -> Dict[str, Any]:
         if not user_prompt or len(user_prompt.strip()) < 50:
             return {"success": False, "error": "Empty context", "content": ""}
@@ -392,6 +440,18 @@ class AIFallbackManager:
                 print(f"⚠️ Claude failed: {err_str[:100]}")
                 if any(x in err_str.lower() for x in ["credit", "billing", "400", "invalid_request"]):
                     self.claude_available = False
+
+        # Claude через Bedrock — второй шанс на Claude без баланса Anthropic
+        if self.bedrock_claude_available:
+            try:
+                result = await self._call_bedrock_with_system(system_prompt, user_prompt[:4000])
+                if result.get("success"):
+                    print("✅ Bedrock Claude synthesis")
+                    return result
+                else:
+                    print(f"⚠️ Bedrock Claude synthesis failed: {result.get('error','')[:80]}")
+            except Exception as e:
+                print(f"⚠️ Bedrock Claude synthesis exception: {str(e)[:80]}")
 
         # Groq для синтеза
         if self.groq_available:
