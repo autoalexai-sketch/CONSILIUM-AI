@@ -1,8 +1,10 @@
 """
 AI Fallback Manager для Consilium AI
-Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama
+Цепочка: Groq → Bedrock → DeepSeek V4 → OpenRouter → Gemini → Ollama
 Groq добавлен первым — бесплатный, быстрый, свежий ключ.
-DeepSeek V4 вторым — дешевый (~$0.28/1M), MoE-архитектура, OpenAI-совместим.
+Bedrock вторым — снимает нагрузку с Groq TPM-лимита (12000/мин), оплачивается
+из AWS Activate credits.
+DeepSeek V4 третьим — дешевый (~$0.28/1M), MoE-архитектура, OpenAI-совместим.
 
 Per-director temperature/max_tokens (см. core/prompts.py DIRECTOR_CONFIG)
 передаются через kwargs temperature/max_tokens в call_with_backup и
@@ -26,10 +28,11 @@ class AIFallbackManager:
     """
     Провайдеры в порядке приоритета:
       1. Groq         — бесплатный, быстрый (llama3-70b-8192)
-      2. DeepSeek V4  — дешево, MoE, OpenAI-совместим
-      3. OpenRouter   — платный, все модели
-      4. Gemini       — бесплатный лимит
-      5. Ollama       — локальный
+      2. Bedrock      — AWS Activate credits, снимает нагрузку с Groq TPM
+      3. DeepSeek V4  — дешево, MoE, OpenAI-совместим
+      4. OpenRouter   — платный, все модели
+      5. Gemini       — бесплатный лимит
+      6. Ollama       — локальный
     """
 
     def __init__(self):
@@ -43,7 +46,26 @@ class AIFallbackManager:
         else:
             print("⚠️ GROQ_API_KEY не найден")
 
-        # DeepSeek V4 (приоритет 2 — дешево, MoE, OpenAI-совместим)
+        # Amazon Bedrock (приоритет 2 — AWS Activate credits, снимает нагрузку с Groq)
+        self.aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+        self.aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+        self.aws_region = os.getenv("AWS_REGION", "us-east-2")
+        self.bedrock_model = os.getenv("BEDROCK_MODEL_ID", "meta.llama3-3-70b-instruct-v1:0")
+        self.bedrock_available = bool(self.aws_access_key and self.aws_secret_key)
+        if self.bedrock_available:
+            import boto3
+            self.bedrock_client = boto3.client(
+                "bedrock-runtime",
+                region_name=self.aws_region,
+                aws_access_key_id=self.aws_access_key,
+                aws_secret_access_key=self.aws_secret_key,
+            )
+            print("✅ Bedrock доступен (приоритет 2, AWS Activate credits)")
+        else:
+            self.bedrock_client = None
+            print("⚠️ AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY не найдены — Bedrock пропущен")
+
+        # DeepSeek V4 (приоритет 3 — дешево, MoE, OpenAI-совместим)
         self.deepseek_key = os.getenv("DEEPSEEK_API_KEY")
         self.deepseek_available = bool(self.deepseek_key)
         self.deepseek_url = "https://api.deepseek.com/v1/chat/completions"
@@ -192,15 +214,38 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"Groq system call error: {str(e)[:100]}"}
 
+    # ── Amazon Bedrock вызов ─────────────────────────────────────────────
+    async def _call_bedrock(self, prompt: str, model: str = None,
+                             temperature: float = 0.7, max_tokens: int = 2000) -> Dict[str, Any]:
+        """Amazon Bedrock через Converse API (единый формат для всех моделей Bedrock)."""
+        target = model or self.bedrock_model
+        try:
+            response = await asyncio.to_thread(
+                lambda: self.bedrock_client.converse(
+                    modelId=target,
+                    messages=[{"role": "user", "content": [{"text": prompt}]}],
+                    inferenceConfig={"maxTokens": max_tokens, "temperature": temperature},
+                )
+            )
+            content = response["output"]["message"]["content"][0]["text"]
+            usage = response.get("usage", {})
+            tokens = usage.get("inputTokens", 0) + usage.get("outputTokens", 0)
+            self.last_provider = "bedrock"
+            return {"success": True, "content": content,
+                    "provider": "bedrock", "model": target,
+                    "tokens": tokens, "cost_usd": 0.0}
+        except Exception as e:
+            return {"success": False, "error": f"Bedrock error: {str(e)[:200]}"}
+
     # ── Main fallback chain ───────────────────────────────────────────────────
     async def call_with_backup(self, primary_func: Callable, *args,
                                 temperature: float = 0.7, max_tokens: int = 2000,
                                 **kwargs) -> Dict[str, Any]:
-        """Цепочка: Groq → DeepSeek V4 → OpenRouter → Gemini → Ollama
+        """Цепочка: Groq → Bedrock → DeepSeek V4 → OpenRouter → Gemini → Ollama
 
         temperature/max_tokens: per-director values from core/prompts.py
         DIRECTOR_CONFIG (council.py passes these in based on the director role).
-        Applied directly to Groq and DeepSeek calls; OpenRouter/Gemini/Ollama
+        Applied directly to Groq, Bedrock and DeepSeek calls; OpenRouter/Gemini/Ollama
         are backup levels and keep their own internal defaults.
         """
 
@@ -238,7 +283,20 @@ class AIFallbackManager:
             except Exception as e:
                 print(f"⚠️ Groq exception: {str(e)[:80]}")
 
-        # ── УРОВЕНЬ 2: DeepSeek V4 ───────────────────────────────────────
+        # ── УРОВЕНЬ 2: Amazon Bedrock ────────────────────────────────────
+        if self.bedrock_available:
+            try:
+                prompt = self._extract_prompt(args, kwargs)
+                result = await self._call_bedrock(prompt, temperature=temperature, max_tokens=max_tokens)
+                if result.get("success"):
+                    print(f"✅ Bedrock: {len(result.get('content',''))} chars (temp={temperature})")
+                    return result
+                else:
+                    print(f"⚠️ Bedrock failed: {result.get('error','')[:80]}")
+            except Exception as e:
+                print(f"⚠️ Bedrock exception: {str(e)[:80]}")
+
+        # ── УРОВЕНЬ 3: DeepSeek V4 ───────────────────────────────────────
         if self.deepseek_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
@@ -251,7 +309,7 @@ class AIFallbackManager:
             except Exception as e:
                 print(f"⚠️ DeepSeek exception: {str(e)[:80]}")
 
-        # ── УРОВЕНЬ 3: OpenRouter ────────────────────────────────────────
+        # ── УРОВЕНЬ 4: OpenRouter ────────────────────────────────────────
         try:
             result = await asyncio.wait_for(primary_func(*args, **kwargs), timeout=60.0)
             if result and hasattr(result, '__dataclass_fields__'):
@@ -276,7 +334,7 @@ class AIFallbackManager:
         except Exception as e:
             print(f"⚠️ OpenRouter failed: {str(e)[:100]}")
 
-        # ── УРОВЕНЬ 4: Gemini ────────────────────────────────────────────
+        # ── УРОВЕНЬ 5: Gemini ────────────────────────────────────────────
         if self.gemini_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
@@ -291,7 +349,7 @@ class AIFallbackManager:
             except Exception as e:
                 print(f"⚠️ Gemini failed: {str(e)[:100]}")
 
-        # ── УРОВЕНЬ 5: Ollama ────────────────────────────────────────────
+        # ── УРОВЕНЬ 6: Ollama ────────────────────────────────────────────
         if self.ollama_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
@@ -306,7 +364,7 @@ class AIFallbackManager:
                 print(f"⚠️ Ollama failed: {str(e)[:120]}")
 
         return {"success": False,
-                "error": "All providers failed (Groq → DeepSeek → OpenRouter → Gemini → Ollama)",
+                "error": "All providers failed (Groq → Bedrock → DeepSeek → OpenRouter → Gemini → Ollama)",
                 "provider": "none",
                 "content": "[Ошибка: все провайдеры недоступны. Проверьте GROQ_API_KEY в .env]"}
 
