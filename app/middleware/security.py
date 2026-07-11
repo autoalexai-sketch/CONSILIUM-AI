@@ -24,11 +24,12 @@ from fastapi import FastAPI, Request
 # embedding/clickjacking and plugin-based attacks regardless of script-src.
 _CSP = (
     "default-src 'self'; "
-    "script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+    "script-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com; "
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://hcaptcha.com https://*.hcaptcha.com; "
     "font-src 'self' https://fonts.gstatic.com; "
     "img-src 'self' data:; "
-    "connect-src 'self' ws: wss:; "
+    "connect-src 'self' ws: wss: https://hcaptcha.com https://*.hcaptcha.com; "
+    "frame-src https://hcaptcha.com https://*.hcaptcha.com; "
     "object-src 'none'; "
     "base-uri 'self'; "
     "frame-ancestors 'none'"
