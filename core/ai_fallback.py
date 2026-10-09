@@ -530,7 +530,7 @@ class AIFallbackManager:
         except Exception as e:
             return {"success": False, "error": f"{type(e).__name__}: {str(e)[:100]}"}
 
-    # ── Helpers ───────────────────────────────────────────────────────────────────
+    # ── Helpers ───────────────────────────────────────────────────────────
     def _extract_prompt(self, args, kwargs) -> str:
         """Извлекает текст промпта из args/kwargs любого формата."""
         # Именованный аргумент
