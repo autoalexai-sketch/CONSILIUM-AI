@@ -1,4 +1,4 @@
-﻿# CLAUDE.md — CONSILIUM AI v3.0
+# CLAUDE.md — CONSILIUM AI v3.0
 # Этот файл читается в начале каждой сессии Claude Code.
 # Obsidian vault: C:\Users\HP\OneDrive\Документы\my-ai-wiki\Consilium AI\
 
@@ -48,7 +48,7 @@ For CONSILIUM-AI specifically:
 - profile.dimensions — Set[CognitiveDimension], NOT a field. Use: next(iter(profile.dimensions), None)
 - conftest.py — edit only as whole file via write_file
 - Unicode files (Russian text) — use PowerShell with UTF8 encoding, not str_replace
-- Provider chain order: Groq(1) → DeepSeek(2) → OpenRouter(3) → Gemini(4) → Ollama(5) — never change order
+- Provider chain order: Groq(1) → Bedrock(2) → DeepSeek(3) → OpenRouter(4) → Gemini(5) → Ollama(6) — never change order
 - WebSocket: token in message body, not URL. while True loop — never break it.
 
 ## 6. Obsidian Memory Rules
