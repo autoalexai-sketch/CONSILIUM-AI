@@ -1,4 +1,4 @@
-# CLAUDE.md — CONSILIUM AI v3.0
+﻿# CLAUDE.md — CONSILIUM AI v3.0
 # Этот файл читается в начале каждой сессии Claude Code.
 # Obsidian vault: C:\Users\HP\OneDrive\Документы\my-ai-wiki\Consilium AI\
 
