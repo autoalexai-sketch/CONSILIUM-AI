@@ -20,6 +20,7 @@ from typing import Optional, Dict, Any, Callable
 from google import genai
 from dotenv import load_dotenv
 import anthropic
+from loguru import logger
 
 load_dotenv()
 
@@ -386,6 +387,10 @@ class AIFallbackManager:
         if self.gemini_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
+                if len(prompt) > 8000:
+                    logger.warning(
+                        f"Gemini: prompt truncated {len(prompt)} -> 8000 chars "
+                        f"(limit 8000, lost {len(prompt) - 8000})")
                 response = self.client.models.generate_content(
                     model="gemini-2.0-flash", contents=prompt[:8000])
                 self.last_provider = "gemini"
