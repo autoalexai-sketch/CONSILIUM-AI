@@ -386,8 +386,9 @@ class AIFallbackManager:
         if self.gemini_available:
             try:
                 prompt = self._extract_prompt(args, kwargs)
-                response = self.client.models.generate_content(
-                    model="gemini-2.0-flash", contents=prompt[:8000])
+                response = await asyncio.to_thread(
+                    lambda: self.client.models.generate_content(
+                        model="gemini-2.0-flash", contents=prompt[:8000]))
                 self.last_provider = "gemini"
                 print("✅ Gemini backup")
                 return {"success": True, "content": response.text,
@@ -468,8 +469,9 @@ class AIFallbackManager:
         if self.gemini_available:
             try:
                 combined = f"{system_prompt}\n\n{user_prompt[:3000]}"
-                response = self.client.models.generate_content(
-                    model="gemini-2.0-flash", contents=combined)
+                response = await asyncio.to_thread(
+                    lambda: self.client.models.generate_content(
+                        model="gemini-2.0-flash", contents=combined))
                 self.last_provider = "gemini"
                 print("✅ Gemini synthesis backup")
                 return {"success": True, "content": response.text,
