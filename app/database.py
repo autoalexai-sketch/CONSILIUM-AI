@@ -18,7 +18,22 @@ from loguru import logger
 from app.config import settings
 
 # ── Engine ─────────────────────────────────────────────────────────────────────
-_db_url = settings.DATABASE_URL
+
+def normalize_db_url(url: str) -> str:
+    """Pin the PostgreSQL driver to psycopg2 (the one in requirements.txt).
+
+    SQLAlchemy 2.1 changed the default driver for bare ``postgresql://`` URLs
+    from psycopg2 to psycopg (v3). Without an explicit driver, an unpinned
+    upgrade crashes the app at import: ``No module named 'psycopg'``.
+    URLs that already name a driver (``postgresql+...://``) are left as is.
+    """
+    for prefix in ("postgresql://", "postgres://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg2://" + url[len(prefix):]
+    return url
+
+
+_db_url = normalize_db_url(settings.DATABASE_URL)
 
 if _db_url.startswith("sqlite"):
     engine = create_engine(
