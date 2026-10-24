@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
 from loguru import logger
+from sqlalchemy.engine import make_url
 import os
 
 from app.config import settings
@@ -126,7 +127,8 @@ async def version():
 async def startup_event():
     logger.info("🚀 Starting Consilium AI v3.0...")
     init_database()
-    logger.info(f"Database initialized: {settings.DATABASE_URL}")
+    # Never log the raw URL: it carries the DB password.
+    logger.info(f"Database initialized: {make_url(settings.DATABASE_URL).render_as_string(hide_password=True)}")
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
     logger.info(f"Frontend: {FRONTEND_DIR}")
     logger.info("🎯 Consilium AI v3.0 is ready!")
