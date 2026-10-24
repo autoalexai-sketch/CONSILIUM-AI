@@ -15,6 +15,10 @@ aiosmtplib>=3.0.2
 pytz>=2024.1
 psycopg2-binary>=2.9.9
 
+# ── Security ─────────────────────────────────────────────────────────────
+# 2026-10: certifi before 2026.10.19 trusts compromised eMudhra intermediates
+certifi>=2026.10.19
+
 # ── AWS ──────────────────────────────────────────────────────────────────
 boto3>=1.35.0
 
